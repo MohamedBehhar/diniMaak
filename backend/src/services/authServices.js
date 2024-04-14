@@ -35,8 +35,10 @@ const register = async ({ username, password }, res) => {
 			'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
 			[username, hashedPassword]
 		).then((result) => {
-			const maxAge = 5 * 60;
-			const refreshTokenMaxAge = 24 * 60 * 60;
+			// 1 minute
+			const maxAge = 1 * 30;
+			// two days
+			const refreshTokenMaxAge = 2 * 24 * 60 * 60;
 			console.log(result.rows[0]);
 			console.log(process.env.JWT_SECRET);
 			const token = jwt.sign({ id: result.rows[0].id }, process.env.JWT_SECRET, {
@@ -79,7 +81,8 @@ const login = async ({ username, password }) => {
 				return null;
 			}
 			const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-				expiresIn: 5 * 60
+				// one minute
+				expiresIn: 1 * 30
 			});
 			const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
 				expiresIn: 5 * 60
@@ -108,13 +111,11 @@ const logout = async (id) => {
 	}
 }
 
-const updateToken = async ({ refreshToken, username }) => {
+const updateToken = async ({ refreshToken }) => {
 	try {
-		const user = await getUserByUsername(username);
-		if (!user)
-			return null;
-
 		// verify refresh token
+		let user = await db.query('SELECT * FROM users WHERE refresh_token = $1', [refreshToken]);
+
 		try {
 			jwt.verify(refreshToken, process.env.REFRESH_SECRET);
 		}
@@ -125,10 +126,14 @@ const updateToken = async ({ refreshToken, username }) => {
 			return null;
 		}
 
+		console.log(user.rows[0]);
 
 
-		if (refreshToken !== user.refresh_token)
+		if (refreshToken !== user.rows[0].refresh_token) {
+			console.log('refresh token not in db');
+			logout(user.id);
 			return null
+		}
 
 		const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
 			expiresIn: 5 * 60

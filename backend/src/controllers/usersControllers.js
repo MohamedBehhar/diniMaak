@@ -23,7 +23,9 @@ const getUsers = async (req, res, next) => {
 		const authorized = await isAuthorized(req, res, next);
 		console.log(authorized);
 		if (!authorized) {
+
 			return res.status(401).json({ error: 'Unauthorized' });
+
 		}
 		const users = await usersServices.getUsers();
 		res.send(users);

@@ -41,13 +41,17 @@ const login = async (req, res) => {
 }
 
 const updateToken = async (req, res) => {
+	console.log('oooooo ', req.body);
+	console.log('oooooo000000000 ');
+
 	try {
-		const { refreshToken, username } = req.body;
+		const { refreshToken } = req.body;
+
 		if (!refreshToken) {
 			return res.status(400).json({ error: 'Missing required fields: refreshToken' });
 		}
 
-		const user = await authServices.updateToken({ refreshToken, username });
+		const user = await authServices.updateToken({ refreshToken });
 		if (!user) {
 			return res.status(401).json({ error: 'Invalid credentials' });
 		}
