@@ -28,10 +28,14 @@ instance.interceptors.response.use(
 		const originalRequest = error.config;
 
 		// Check if the error is due to an expired access token
+		if (error.response.status === 403) {
+			// Redirect to login or handle as needed
+			// Example: window.location.href = "/login";
+			localStorage.removeItem("token");
+			localStorage.removeItem("refreshToken");
+			window.location.href = "/login";
+		}
 		if (error.response.status === 401 && !originalRequest._retry) {
-			console.log("hehehehehe");
-			console.log("Access token expired. Refreshing token...");
-			console.log("Refresh token:", getRefreshToken());
 			try {
 				// Request to refresh the access token using the refresh token
 
@@ -43,6 +47,12 @@ instance.interceptors.response.use(
 					}
 				);
 				console.log("respspsps", response);
+				if (!response.data.accessToken) {
+					// Redirect to login or handle as needed
+					// Example: window.location.href = "/login";
+
+					throw new Error("No access token provided");
+				}
 				// Update the new access token in local storage
 				localStorage.setItem("token", response.data.accessToken);
 
@@ -51,6 +61,7 @@ instance.interceptors.response.use(
 
 
 				// Retry the original request with the new token
+				originalRequest._retry = true;
 				return axios(originalRequest);
 			} catch (refreshError) {
 				// Handle refresh token error (e.g., user needs to log in again)

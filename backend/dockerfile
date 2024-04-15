@@ -1,11 +1,21 @@
+ARG POSTGRES_USER
+ARG POSTGRES_PASSWORD
+
 FROM node:alpine
 
-WORKDIR /usr/src/app
+RUN apk update && apk add postgresql
+
+
+WORKDIR /app
 
 COPY . .
 
 RUN npm install
 
+RUN cd /app/src/ && chmod +x ./init.sh
+
 EXPOSE 3000
+
+ENTRYPOINT [ "sh" , "/app/src/init.sh" ]
 
 CMD ["npm", "run", "dev"]

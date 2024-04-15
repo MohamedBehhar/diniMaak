@@ -2,6 +2,11 @@ const db = require('../db/db');
 const bcrypt = require("bcryptjs")
 const jwt = require('jsonwebtoken')
 
+// 1 minute
+const accessTokenMaxAge = 1 * 30;
+// two days
+const refreshTokenMaxAge = 2 * 30;
+
 const getUserByUsername = async (username) => {
 	try {
 		const user = await db.query('SELECT * FROM users WHERE username = $1', [username]);
@@ -35,14 +40,11 @@ const register = async ({ username, password }, res) => {
 			'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
 			[username, hashedPassword]
 		).then((result) => {
-			// 1 minute
-			const maxAge = 1 * 30;
-			// two days
-			const refreshTokenMaxAge = 2 * 24 * 60 * 60;
+
 			console.log(result.rows[0]);
 			console.log(process.env.JWT_SECRET);
 			const token = jwt.sign({ id: result.rows[0].id }, process.env.JWT_SECRET, {
-				expiresIn: maxAge
+				expiresIn: accessTokenMaxAge
 			});
 			const refreshToken = jwt.sign({ id: result.rows[0].id }, process.env.REFRESH_SECRET, {
 				expiresIn: refreshTokenMaxAge
@@ -82,10 +84,10 @@ const login = async ({ username, password }) => {
 			}
 			const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
 				// one minute
-				expiresIn: 1 * 30
+				expiresIn: accessTokenMaxAge
 			});
 			const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
-				expiresIn: 5 * 60
+				expiresIn: refreshTokenMaxAge
 			});
 
 			hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
@@ -114,14 +116,21 @@ const logout = async (id) => {
 const updateToken = async ({ refreshToken }) => {
 	try {
 		// verify refresh token
+
 		let user = await db.query('SELECT * FROM users WHERE refresh_token = $1', [refreshToken]);
+		console.log("555555 ", user.rows[0]);
+		if (!user.rows[0]) {
+			console.log('no user found');
+			return null;
+		}
 
 		try {
 			jwt.verify(refreshToken, process.env.REFRESH_SECRET);
 		}
 		catch (err) {
 			if (err.name === 'TokenExpiredError') {
-				logout(user.id);
+				console.log('refresh token expired');				
+				return null;
 			}
 			return null;
 		}
@@ -136,10 +145,10 @@ const updateToken = async ({ refreshToken }) => {
 		}
 
 		const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-			expiresIn: 5 * 60
+			expiresIn: accessTokenMaxAge
 		});
 		const newRefreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
-			expiresIn: 5 * 60
+			expiresIn: refreshTokenMaxAge
 		});
 
 		const hashedRefreshToken = await bcrypt.hash(newRefreshToken, 10);

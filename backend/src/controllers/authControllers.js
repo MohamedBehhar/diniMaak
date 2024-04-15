@@ -41,9 +41,6 @@ const login = async (req, res) => {
 }
 
 const updateToken = async (req, res) => {
-	console.log('oooooo ', req.body);
-	console.log('oooooo000000000 ');
-
 	try {
 		const { refreshToken } = req.body;
 
@@ -53,7 +50,10 @@ const updateToken = async (req, res) => {
 
 		const user = await authServices.updateToken({ refreshToken });
 		if (!user) {
-			return res.status(401).json({ error: 'Invalid credentials' });
+			
+			return res.status(403).json({ error: 'Invalid credentials22' });
+
+
 		}
 		res.status(200).json({ accessToken: user.token, refreshToken: user.refreshToken })
 	}
