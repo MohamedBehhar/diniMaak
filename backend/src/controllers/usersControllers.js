@@ -7,7 +7,6 @@ const isAuthorized = async (req, res, next) => {
 			return false;
 		}
 		const token = req.headers.authorization.split(' ')[1];
-		console.log('- - - - - - -', token);
 		const isAuthorized = await authServices.isAuthorized(token);
 		if (isAuthorized == true) {
 			return true

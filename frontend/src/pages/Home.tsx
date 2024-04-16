@@ -1,5 +1,6 @@
 import { getUsers } from "../api/methods";
 import { useState } from "react";
+import PostCarpooling from "../components/PostCarpooling";
 
 function Home() {
   const signOut = () => {
@@ -16,10 +17,16 @@ function Home() {
     console.log(response);
   };
   return (
-    <div className="flex justify-between">
-      <h1>Home</h1>
+    <div className=" flex flex-col ">
       <button
-        className="bg-blue-600 p-9"
+        className="bg-red-600 p-2 rounded-md text-white absolute w-1/4 mx-auto m-1 right-1"
+        onClick={signOut}
+      >
+        Sign Out
+      </button>
+      <h1 className="text-center text-2xl font-bold p-6">Home</h1>
+      <button
+        className="bg-blue-600 p-2 rounded-md text-white w-1/4 mx-auto m-5"
         onClick={() => {
           getUsersData();
         }}
@@ -27,11 +34,13 @@ function Home() {
         Get users
       </button>
       <ul>
-        {users && users.map((user) => <li key={user.id}>{user.username}</li>)}
+        {users &&
+          users.map((user: { id: any; username: any }) => (
+            <li key={user.id}>{user.username}</li>
+          ))}
       </ul>
-      <button className="bg-red-600 p-9" onClick={signOut}>
-        Sign Out
-      </button>
+
+      <PostCarpooling />
     </div>
   );
 }

@@ -14,6 +14,7 @@ export const login = async ({ username, password }) => {
 	}
 };
 
+
 export const register = async ({ username, password }) => {
 	try {
 		const response = await instance.post("/auth/register", { username, password });
@@ -52,6 +53,15 @@ export const getTodos = async () => {
 export const getUsers = async () => {
 	try {
 		const response = await instance.get("/users");
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export const getCities = async (letters) => {
+	try {
+		const response = await instance.get(`/cities/${letters}`);
 		return response.data;
 	} catch (error) {
 		throw error;

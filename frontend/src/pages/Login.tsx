@@ -29,6 +29,7 @@ function Login() {
   };
 
   return (
+    <div>
     <form
       onSubmit={handleLogin}
       className="flex flex-col gap-5 justify-center items-center"
@@ -116,40 +117,14 @@ function Login() {
         </div>
       </div>
     </form>
-    // <div className="bg-white text-black flex flex-col gap-10">
-    //   <h2>Login</h2>
-    //   <form
-    //     onSubmit={handleLogin}
-    //     className="flex flex-col gap-5 justify-center items-center"
-    //   >
-    //     <div className="bg-white">
-    //       <label htmlFor="username">Username:</label>
-    //       <input
-    //         className="border-2 rounded p-3"
-    //         type="text"
-    //         id="username"
-    //         value={username}
-    //         onChange={(e) => setUsername(e.target.value)}
-    //         required
-    //       />
-    //     </div>
-    //     <div>
-    //       <label htmlFor="password">Password:</label>
-    //       <input
-    //         className="border-2 rounded p-3"
-    //         type="password"
-    //         id="password"
-    //         value={password}
-    //         onChange={(e) => setPassword(e.target.value)}
-    //         required
-    //       />
-    //     </div>
-    //     <div>
-    //       <button type="submit bg-green">Login</button>
-    //     </div>
-    //     {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-    //   </form>
-    // </div>
+    <div>
+      <h4>Don't have an Account</h4>
+      <button>
+        <a href="/signup">Sign Up</a>
+      </button>
+    </div>
+    </div>
+
   );
 }
 

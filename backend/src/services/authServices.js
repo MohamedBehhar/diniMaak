@@ -3,13 +3,14 @@ const bcrypt = require("bcryptjs")
 const jwt = require('jsonwebtoken')
 
 // 1 minute
-const accessTokenMaxAge = 1 * 30;
+const accessTokenMaxAge = 1 * 60;
 // two days
-const refreshTokenMaxAge = 2 * 30;
+const refreshTokenMaxAge = 2 * 24 * 60 * 60;
 
 const getUserByUsername = async (username) => {
 	try {
 		const user = await db.query('SELECT * FROM users WHERE username = $1', [username]);
+		console.log(user.rows[0]);
 		return user.rows[0];
 	} catch (err) {
 		console.error(err);
@@ -73,12 +74,12 @@ const login = async ({ username, password }) => {
 		// compare password
 		const salt = await bcrypt.genSalt(10);
 		const user = await getUserByUsername(username);
-
 		if (!user) {
 			return null;
 		}
 		else {
 			const isMatch = await bcrypt.compare(password, user.password);
+			console.log("isMatch ", isMatch);
 			if (!isMatch) {
 				return null;
 			}
@@ -92,7 +93,8 @@ const login = async ({ username, password }) => {
 
 			hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
 			// replace refresh token in db
-			db.query('UPDATE users SET refresh_token = $1 WHERE id = $2', [refreshToken, user.id]);
+			console.log('user id333 ', user.id);
+			await db.query('UPDATE users SET refresh_token = $1 WHERE id = $2', [refreshToken, user.id]);
 
 			return { ...user, token, refreshToken };
 		}
@@ -106,7 +108,10 @@ const generateToken = (id, expiresIn) => jwt.sign({ id }, process.env.REFRESH_SE
 
 const logout = async (id) => {
 	try {
+		console.log('id ', id);
+		const user = await db.query('SELECT * FROM users WHERE id = $1', [id]);
 		await db.query('UPDATE users SET refresh_token = null WHERE id = $1', [id]);
+		console.log('uuuuuu ', user.rows[0]);
 	} catch (err) {
 		console.error(err);
 		throw err;
@@ -118,7 +123,6 @@ const updateToken = async ({ refreshToken }) => {
 		// verify refresh token
 
 		let user = await db.query('SELECT * FROM users WHERE refresh_token = $1', [refreshToken]);
-		console.log("555555 ", user.rows[0]);
 		if (!user.rows[0]) {
 			console.log('no user found');
 			return null;
@@ -129,7 +133,11 @@ const updateToken = async ({ refreshToken }) => {
 		}
 		catch (err) {
 			if (err.name === 'TokenExpiredError') {
-				console.log('refresh token expired');				
+				console.log('refresh token expired');
+				// remove refresh token from db
+				console.log('---- ',user.rows[0].id);
+				logout(user.rows[0].id);
+
 				return null;
 			}
 			return null;
