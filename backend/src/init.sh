@@ -18,4 +18,4 @@ echo "Database initialization completed"
 # Run other commands or start your application
 exec "$@"
 
-# psql -h postgres -U "postgres" -d "postgres" -y 'postgres'
+# psql -h postgres -U "postgres" -d "postgres"
