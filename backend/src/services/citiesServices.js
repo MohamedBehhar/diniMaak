@@ -2,9 +2,7 @@ const db = require('../db/db');
 
 const searchCitieByInitialLetter = async (letters) => {
 	try {
-		console.log("5555555  ",letters);
-		const cities = await db.query('SELECT * FROM cities WHERE name LIKE $1', [letters + '%']);
-		console.log("cities ", cities.rows);
+		const cities = await db.query('SELECT * FROM cities WHERE name ILIKE $1', [letters + '%']);
 		return cities.rows;
 	} catch (err) {
 		console.error(err);

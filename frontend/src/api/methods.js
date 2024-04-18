@@ -67,3 +67,12 @@ export const getCities = async (letters) => {
 		throw error;
 	}
 }
+
+export const postCarpooling = async (data) => {
+	try {
+		const response = await instance.post("/carpooling", data);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
