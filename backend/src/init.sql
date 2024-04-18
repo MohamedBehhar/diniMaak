@@ -9,8 +9,7 @@ CREATE TABLE
 IF NOT EXISTS users
 (
     id SERIAL PRIMARY KEY,
-    username VARCHAR
-(50) NOT NULL,
+    username VARCHAR(50) NOT NULL,
     password VARCHAR
 (250) NOT NULL,
 	refresh_token VARCHAR
@@ -94,16 +93,16 @@ IF NOT EXISTS chat
 );
 
 -- create a moroccan cities table
-CREATE TABLE
-IF NOT EXISTS cities
-(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR
-(50) NOT NULL
-);
+-- CREATE TABLE
+-- IF NOT EXISTS cities
+-- (
+--     id SERIAL PRIMARY KEY,
+--     name VARCHAR
+-- (50) NOT NULL
+-- );
 
--- insert some moroccan cities into the cities table only once
-INSERT INTO cities (name) VALUES ('Casablanca'), ('Rabat'), ('Tanger'), ('Fes'), ('Marrakech'), ('Agadir'), ('Oujda'),
-('Kenitra'), ('Tetouan'), ('Safi'), ('El Jadida'), ('Nador'), ('Beni Mellal'), ('Khouribga'), ('Taza'), ('Mohammedia'),
-('Khemisset'), ('Taourirt'), ('Berrech'), ('Ouarzazate'), ('Larache'), ('Settat'), ('Ksar El Kebir'), ('Guelmim'),
-('Tiznit'), ('Lagouira'), ('Dakhla'), ('Tantan'), ('Sidi Ifni')
+-- -- insert some moroccan cities into the cities table only once
+-- INSERT INTO cities (name) VALUES ('Casablanca'), ('Rabat'), ('Tanger'), ('Fes'), ('Marrakech'), ('Agadir'), ('Oujda'),
+-- ('Kenitra'), ('Tetouan'), ('Safi'), ('El Jadida'), ('Nador'), ('Beni Mellal'), ('Khouribga'), ('Taza'), ('Mohammedia'),
+-- ('Khemisset'), ('Taourirt'), ('Berrech'), ('Ouarzazate'), ('Larache'), ('Settat'), ('Ksar El Kebir'), ('Guelmim'),
+-- ('Tiznit'), ('Lagouira'), ('Dakhla'), ('Tantan'), ('Sidi Ifni')

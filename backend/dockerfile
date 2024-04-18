@@ -1,10 +1,8 @@
-ARG POSTGRES_USER
-ARG POSTGRES_PASSWORD
-
 FROM node:alpine
 
-RUN apk update && apk add postgresql
-
+RUN apk update \
+    && apk add --no-cache postgresql \
+    && rm -rf /var/cache/apk/*
 
 WORKDIR /app
 
