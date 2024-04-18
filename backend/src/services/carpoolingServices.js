@@ -11,9 +11,10 @@ const getCarpooling = async () => {
 }
 
 // creat a carpooling with user id, departure, destination, date, time, seats, price, and description
-const createCarpooling = async ({ user_id, departure, destination, date, time, seats, price, description }) => {
+const createCarpooling = async ({ user_id, departure, destination, departure_time, number_of_seats }) => {
+
 	try {
-		const carpooling = await db.query('INSERT INTO carpooling (user_id, departure, destination, date, time, seats, price, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *', [user_id, departure, destination, date, time, seats, price, description]);
+		const carpooling = await db.query('INSERT INTO carpooling (user_id, departure, destination, departure_time, number_of_seats) VALUES ( $1, $2, $3, $4, $5 ) RETURNING *', [user_id, departure, destination, departure_time, number_of_seats]);
 		return carpooling.rows[0];
 	} catch (err) {
 		console.error(err);

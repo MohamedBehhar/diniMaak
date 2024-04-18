@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCities } from "../api/methods";
+import { getCities, creatCarpooling } from "../api/methods";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -12,42 +12,60 @@ type Inputs = {
   destination: string;
   departure_time: string;
   number_of_seats: number;
+  user_id: number;
 };
 
 function PostCarpooling() {
   const [departure, setDeparture] = useState("");
   const [destination, setDestination] = useState("");
-  const [cities, setCities] = useState([]);
+  const [departureCities, setDepartureCities] = useState([]);
+  const [destinationCities, setDestinationCities] = useState([]);
 
   const { register, handleSubmit } = useForm<Inputs>();
-  const onsubmit: SubmitHandler<Inputs> = (data) => {
+  const onsubmit: SubmitHandler<Inputs> = async (data) => {
+    // user_id, departure, destination, departure_time, number_of_seats
+    data.departure_time = new Date(data.departure_time).toISOString();
+    data.user_id = 1;
     console.log(data);
-  }
-
+    await creatCarpooling(data).then((response:any) => {
+      console.log(response);
+    }).catch((error:any) => {
+      console.log(error);
+    });
+  };
 
   useEffect(() => {
-    console.log(departure);
     if (departure.length == 0 || departure == "") {
-      setCities([]);
+      setDepartureCities([]);
       return;
     }
     if (departure.length < 2) {
       return;
     }
     getCities(departure).then((response: any) => {
-      console.log(response);
-      setCities(response);
+      setDepartureCities(response);
     });
   }, [departure]);
+
+  useEffect(() => {
+    if (destination.length == 0 || destination == "") {
+      setDestinationCities([]);
+      return;
+    }
+    if (destination.length < 2) {
+      return;
+    }
+    getCities(destination).then((response: any) => {
+      console.log(response);
+      setDestinationCities(response);
+    });
+  }, [destination]);
 
   interface City {
     id: number;
     name: string;
   }
 
-  const PostCarpooling = async () => {
-    PostCarpooling();
-  };
 
   return (
     <div>
@@ -66,10 +84,13 @@ function PostCarpooling() {
             onInputChange={(e: object, value: any) => {
               setDeparture(value);
             }}
-            {...register("departure", { required: true })}
-            options={cities.map((option: City) => option.name)}
+            options={departureCities.map((option: City) => option.name)}
             renderInput={(params) => (
-              <TextField {...params} label="Enter your departure" />
+              <TextField
+                {...params}
+                label="Enter your departure"
+                {...register("departure", { required: true })}
+              />
             )}
           />
         </div>
@@ -81,10 +102,13 @@ function PostCarpooling() {
             onInputChange={(e: object, value: any) => {
               setDestination(value);
             }}
-            {...register("destination", { required: true })}
-            options={cities.map((option: City) => option.name)}
+            options={destinationCities.map((option: City) => option.name)}
             renderInput={(params) => (
-              <TextField {...params} label="Enter your departure" />
+              <TextField
+                {...params}
+                label="Enter your departure"
+                {...register("destination", { required: true })}
+              />
             )}
           />{" "}
         </div>
@@ -99,7 +123,13 @@ function PostCarpooling() {
           />
         </div>
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <TextField id="number_of_seats" type="number" required fullWidth />
+          <TextField
+            id="number_of_seats"
+            type="number"
+            required
+            fullWidth
+            {...register("number_of_seats", { required: true })}
+          />
         </div>
         <button type="submit">Post carpooling</button>
       </form>

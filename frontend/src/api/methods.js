@@ -68,7 +68,7 @@ export const getCities = async (letters) => {
 	}
 }
 
-export const postCarpooling = async (data) => {
+export const creatCarpooling = async (data) => {
 	try {
 		const response = await instance.post("/carpooling", data);
 		return response.data;
