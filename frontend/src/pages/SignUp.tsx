@@ -13,7 +13,7 @@ function SignUp() {
         console.log(response);
       })
       .catch((error: any) => {
-        console.log(error.response.data.message);
+        console.log(error);
       });
   };
   return (
