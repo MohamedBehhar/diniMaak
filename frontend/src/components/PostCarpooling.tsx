@@ -11,6 +11,7 @@ type Inputs = {
   departure: string;
   destination: string;
   departure_time: string;
+  departure_day: string;
   number_of_seats: number;
   user_id: number;
 };
@@ -23,15 +24,16 @@ function PostCarpooling() {
 
   const { register, handleSubmit } = useForm<Inputs>();
   const onsubmit: SubmitHandler<Inputs> = async (data) => {
-    // user_id, departure, destination, departure_time, number_of_seats
-    data.departure_time = new Date(data.departure_time).toISOString();
+    data.departure_day = new Date(data.departure_day).toISOString();
     data.user_id = 1;
     console.log(data);
-    await creatCarpooling(data).then((response:any) => {
-      console.log(response);
-    }).catch((error:any) => {
-      console.log(error);
-    });
+    await creatCarpooling(data)
+      .then((response: any) => {
+        console.log(response);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -66,15 +68,12 @@ function PostCarpooling() {
     name: string;
   }
 
-
   return (
     <div>
       <form
         className="flex flex-col gap-5 justify-center items-center"
         onSubmit={handleSubmit(onsubmit)}
       >
-        {departure}
-        {destination}
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <label htmlFor="departure">Departurer</label>
 
@@ -113,10 +112,20 @@ function PostCarpooling() {
           />{" "}
         </div>
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <label htmlFor="departure_time">Departure time</label>
-          <input
+          <label htmlFor="departure_time">Departure day</label>
+          <TextField
             id="departure_time"
-            type="datetime-local"
+            type="date"
+            required
+            className={inputClass}
+            {...register("departure_day", { required: true })}
+          />
+        </div>
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+          <label htmlFor="departure_time">Departure time</label>
+          <TextField
+            id="departure_time"
+            type="time"
             required
             className={inputClass}
             {...register("departure_time", { required: true })}

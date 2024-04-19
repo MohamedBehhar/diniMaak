@@ -28,8 +28,13 @@ body {
   min-height: 100vh;
   background: whitesmoke;
   color: #242424;
+  padding: 1rem;
 }
 
 input{
   background: transparent;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }

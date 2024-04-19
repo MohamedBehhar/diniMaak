@@ -3,6 +3,7 @@ import { useState } from "react";
 import PostCarpooling from "../components/PostCarpooling";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import SearchForCarPooling from "../components/SearchForCarPooling";
 
 function Home() {
   const signOut = () => {
@@ -13,7 +14,7 @@ function Home() {
   };
 
   const [users, setUsers] = useState([]);
-  const user = useSelector((state: RootState) => state.user.user?.username);
+  const user = useSelector((state: RootState) => state.user.user);
   const getUsersData = async () => {
     const response = await getUsers();
     setUsers(response);
@@ -48,7 +49,7 @@ function Home() {
           ))}
       </ul>
 
-      <PostCarpooling />
+      <SearchForCarPooling />
     </div>
   );
 }

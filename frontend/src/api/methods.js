@@ -76,3 +76,13 @@ export const creatCarpooling = async (data) => {
 		throw error;
 	}
 }
+
+export const searchCarpooling = async (data) => {
+	alert("searching");
+	try {
+		const response = await instance.post("/carpooling/search", data);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}

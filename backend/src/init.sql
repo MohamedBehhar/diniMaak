@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS carpooling
     user_id INT NOT NULL,
     departure VARCHAR(50) NOT NULL,
     destination VARCHAR(50) NOT NULL,
-    departure_time TIMESTAMP NOT NULL,
+    departure_day TIMESTAMP NOT NULL,
+    departure_time TIME NOT NULL,
     number_of_seats INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
@@ -86,7 +87,8 @@ CREATE TABLE IF NOT EXISTS cities
 );
 
 -- insert some moroccan cities into the cities table only once
-INSERT INTO cities (name) VALUES 
+INSERT INTO cities (name) 
+SELECT name FROM (VALUES 
 ('Casablanca'), 
 ('Rabat'), 
 ('Tanger'), 
@@ -111,4 +113,5 @@ INSERT INTO cities (name) VALUES
 ('Settat'), 
 ('Ksar El Kebir'), 
 ('Guelmim'),
-('Tiznit')
+('Tiznit')) AS cities(name)
+WHERE NOT EXISTS (SELECT 1 FROM cities);
