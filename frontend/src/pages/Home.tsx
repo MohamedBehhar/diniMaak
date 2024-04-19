@@ -1,6 +1,8 @@
 import { getUsers } from "../api/methods";
 import { useState } from "react";
 import PostCarpooling from "../components/PostCarpooling";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 function Home() {
   const signOut = () => {
@@ -11,6 +13,7 @@ function Home() {
   };
 
   const [users, setUsers] = useState([]);
+  const user = useSelector((state: RootState) => state.user.user?.username);
   const getUsersData = async () => {
     const response = await getUsers();
     setUsers(response);
@@ -25,6 +28,11 @@ function Home() {
         Sign Out
       </button>
       <h1 className="text-center text-2xl font-bold p-6">Home</h1>
+      {user && (
+        <h1 className="text-center text-2xl font-bold p-6">
+          Welcome {user == null ? "null" : "not null"}
+        </h1>
+      )}
       <button
         className="bg-blue-600 p-2 rounded-md text-white w-1/4 mx-auto m-5"
         onClick={() => {

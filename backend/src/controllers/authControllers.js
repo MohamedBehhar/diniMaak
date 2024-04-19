@@ -4,7 +4,7 @@ const authServices = require('../services/authServices');
 const register = async (req, res) => {
 	const user = await authServices.getUserByUsername(req.body.username);
 	if (user) {
-		 res.status(409).json({ error: 'Username already exists' });
+		res.status(409).json({ error: 'Username already exists' });
 		return;
 	}
 
@@ -33,7 +33,7 @@ const login = async (req, res) => {
 		if (!user) {
 			return res.status(401).json({ error: 'Invalid credentials' });
 		}
-		res.status(200).json({ accessToken: user.token, refreshToken: user.refreshToken })
+		res.status(200).json({ accessToken: user.token, refreshToken: user.refreshToken, id: user.id, username: user.username })
 	}
 	catch (error) {
 		console.error(error);
@@ -51,7 +51,7 @@ const updateToken = async (req, res) => {
 
 		const user = await authServices.updateToken({ refreshToken });
 		if (!user) {
-			
+
 
 
 			return res.status(403).json({ error: 'Invalid credentials' });
