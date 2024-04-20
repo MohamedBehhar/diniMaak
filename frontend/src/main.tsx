@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login.tsx";
-import SignUp from "./pages/SignUp.tsx";
+import SignUp from "./pages/CreateAccount.tsx";
 import "./index.css";
 import ProtectedRoutes from "./utils/ProtectedRoutes.tsx";
 import { Provider } from "react-redux";

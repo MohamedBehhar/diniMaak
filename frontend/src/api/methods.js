@@ -15,9 +15,9 @@ export const login = async ({ username, password }) => {
 };
 
 
-export const register = async ({ username, password }) => {
+export const signUp = async ({ username, password, email }) => {
 	try {
-		const response = await instance.post("/auth/register", { username, password });
+		const response = await instance.post("/auth/register", { username, password, email });
 		return response.data;
 	} catch (error) {
 		throw error;
@@ -70,7 +70,8 @@ export const getCities = async (letters) => {
 
 export const creatCarpooling = async (data) => {
 	try {
-		const response = await instance.post("/carpooling", data);
+		const { departure, destination, departure_day } = data;
+		const response = await instance.get(`/search/carpooling/${departure}/${destination}/${departure_day}`,);
 		return response.data;
 	} catch (error) {
 		throw error;
@@ -80,7 +81,7 @@ export const creatCarpooling = async (data) => {
 export const searchCarpooling = async (data) => {
 	alert("searching");
 	try {
-		const response = await instance.post("/carpooling/search", data);
+		const response = await instance.get("/carpooling/search", data);
 		return response.data;
 	} catch (error) {
 		throw error;

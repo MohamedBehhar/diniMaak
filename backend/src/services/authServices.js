@@ -28,21 +28,36 @@ const isAuthorized = async (token) => {
 	}
 };
 
+const checkUsernames = async (username) => {
+	try {
+		const user = await db.query('SELECT * FROM users WHERE username = $1', [username]);
+		return user.rows[0];
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+}
 
+const checkEmail = async (email) => {
+	try {
+		const user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+		return user.rows[0];
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+}
 
-const register = async ({ username, password }, res) => {
+const signUp = async ({ username, password, email }, res) => {
 
 	try {
-		// hash password
 		const salt = await bcrypt.genSalt(10);
-
 		const hashedPassword = await bcrypt.hash(password, salt);
 		const newUser = await db.query(
-			'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
-			[username, hashedPassword]
+			'INSERT INTO users (username, password, email) VALUES ($1, $2, $3) RETURNING *',
+			[username, hashedPassword, email]
 		).then((result) => {
 
-			console.log(result.rows[0]);
 			console.log(process.env.JWT_SECRET);
 			const token = jwt.sign({ id: result.rows[0].id }, process.env.JWT_SECRET, {
 				expiresIn: accessTokenMaxAge
@@ -83,7 +98,7 @@ const login = async ({ username, password }) => {
 			if (!isMatch) {
 				return null;
 			}
-			const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+			const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, {
 				// one minute
 				expiresIn: accessTokenMaxAge
 			});
@@ -135,7 +150,7 @@ const updateToken = async ({ refreshToken }) => {
 			if (err.name === 'TokenExpiredError') {
 				console.log('refresh token expired');
 				// remove refresh token from db
-				console.log('---- ',user.rows[0].id);
+				console.log('---- ', user.rows[0].id);
 				logout(user.rows[0].id);
 
 				return null;
@@ -173,9 +188,11 @@ const updateToken = async ({ refreshToken }) => {
 
 
 module.exports = {
-	register,
+	signUp,
 	getUserByUsername,
 	login,
 	isAuthorized,
 	updateToken,
+	checkUsernames,
+	checkEmail
 }

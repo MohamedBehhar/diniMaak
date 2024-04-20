@@ -104,30 +104,24 @@ function Login() {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className=" mt-2 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Sign in
               </button>
             </div>
 
             <p className="mt-10 text-center text-sm text-gray-500">
-              Not a member?{" "}
+              Don't have an Account?
               <a
-                href="#"
+                href="/signup"
                 className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
               >
-                Start a 14 day free trial
+                Sign Up
               </a>
             </p>
           </div>
         </div>
       </form>
-      <div>
-        <h4>Don't have an Account</h4>
-        <button>
-          <a href="/signup">Sign Up</a>
-        </button>
-      </div>
     </div>
   );
 }

@@ -23,7 +23,7 @@ instance.interceptors.response.use(
 		return response;
 	},
 	async (error) => {
-		console.log("Response error:", error);
+		
 		const originalRequest = error.config;
 
 		// Check if the error is due to an expired access token
@@ -34,7 +34,7 @@ instance.interceptors.response.use(
 			localStorage.removeItem("refreshToken");
 			window.location.href = "/login";
 		}
-		if (error.response.status === 401 && !originalRequest._retry) {
+		if (error?.response?.status === 401 && !originalRequest._retry) {
 			try {
 				// Request to refresh the access token using the refresh token
 

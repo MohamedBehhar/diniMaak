@@ -1,19 +1,20 @@
 const authServices = require('../services/authServices');
 
 
-const register = async (req, res) => {
-	const user = await authServices.getUserByUsername(req.body.username);
-	if (user) {
-		res.status(409).json({ error: 'Username already exists' });
-		return;
-	}
+const signUp = async (req, res) => {
 
 	try {
-		const { username, password } = req.body;
+		const { username, password, email } = req.body;
+		if (await authServices.checkUsernames(username)) {
+			return res.status(409).json({ error: { key: 'username', message: 'Username already exists' }});
+		}
+		if (await authServices.checkEmail(email)) {
+			return res.status(409).json({ error: { key: 'email', message: 'Email already exists' } });
+		}
 		if (!username || !password) {
 			return res.status(400).json({ error: 'Missing required fields: username and password' });
 		}
-		const createdUser = await authServices.register({ username, password });
+		const createdUser = await authServices.signUp({ username, password, email });
 		res.status(201).json(createdUser);
 	} catch (error) {
 		console.error(error);
@@ -67,7 +68,7 @@ const updateToken = async (req, res) => {
 }
 
 module.exports = {
-	register,
+	signUp,
 	login,
 	updateToken,
 }

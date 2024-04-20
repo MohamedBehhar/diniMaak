@@ -12,7 +12,8 @@ const getCarpooling = async (req, res) => {
 
 const searchCarpooling = async (req, res) => {
 	try {
-		const { departure, destination, departure_day } = req.body;
+		const { departure, destination, departure_day } = req.params;
+		console.log("info", departure, destination, departure_day);
 		if (!departure || !destination || !departure_day) {
 			return res.status(400).json({ error: 'Missing required fields: departure, destination, departure_day' });
 		}

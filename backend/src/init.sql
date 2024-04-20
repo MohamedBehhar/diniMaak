@@ -8,8 +8,9 @@ CREATE DATABASE IF NOT EXISTS TODO_DB;
 CREATE TABLE IF NOT EXISTS users
 (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(250) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
     refresh_token VARCHAR(250),
     rating INT
 );

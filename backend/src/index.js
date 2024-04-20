@@ -5,6 +5,7 @@ const usersRouter = require("./v1/routes/usersRoutes");
 const citiesRouter = require("./v1/routes/citiesRoutes");
 const bodyParser = require("body-parser");
 const carpoolingRouter = require("./v1/routes/carpoolingRoutes");
+const verifyJWT = require("./middlewares/verifyJWT");
 const cors = require('cors')
 
 
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 app.use("/api/v1/tasks", tasksRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", usersRouter);
+app.use(verifyJWT); // this is a middleware that checks if the user is authorized
 app.use("/api/v1/cities", citiesRouter);
 app.use("/api/v1/carpooling", carpoolingRouter);
 

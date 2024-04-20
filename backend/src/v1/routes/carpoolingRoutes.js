@@ -6,6 +6,7 @@ const carpoolingControllers = require('../../controllers/carpoolingControllers')
 
 router.get('/', carpoolingControllers.getCarpooling);
 router.post('/', carpoolingControllers.createCarpooling);
-router.post('/search', carpoolingControllers.searchCarpooling);
+router.get('/search/:departure/:destination/:departure_day', carpoolingControllers.searchCarpooling);
+
 
 module.exports = router;
