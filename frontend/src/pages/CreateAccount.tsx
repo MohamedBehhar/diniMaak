@@ -1,5 +1,5 @@
 import { signUp } from "../api/methods";
-import { useForm, SubmitHandler, set } from "react-hook-form";
+import { useForm, SubmitHandler} from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";

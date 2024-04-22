@@ -7,7 +7,7 @@ import SignUp from "./pages/CreateAccount.tsx";
 import "./index.css";
 import ProtectedRoutes from "./utils/ProtectedRoutes.tsx";
 import { Provider } from "react-redux";
-import {store} from "./store/store.ts";
+import { store } from "./store/store.ts";
 import CreatCarPooling from "./pages/CreatCarPooling.tsx";
 
 const router = createBrowserRouter([
@@ -19,14 +19,14 @@ const router = createBrowserRouter([
     children: [{ path: "/", element: <Home /> }],
   },
   {
-    path: "/carpooling",
+    path: "/post-carpooling",
     element: <ProtectedRoutes />,
-    children: [{ path: "/carpooling", element: <CreatCarPooling /> }],
+    children: [{ path: "/post-carpooling", element: <CreatCarPooling /> }],
   },
   {
     path: "*",
-    element: <div>Not Found</div>,  
-  }
+    element: <div>Not Found</div>,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

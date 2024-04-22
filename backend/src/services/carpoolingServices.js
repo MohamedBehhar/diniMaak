@@ -11,6 +11,7 @@ const getCarpooling = async () => {
 }
 
 const searchCarpooling = async ({ departure, destination, departure_day }) => {
+	console.log("info", departure, destination, departure_day);
 	try {
 		const carpooling = await db.query(`
 		SELECT 

@@ -23,6 +23,8 @@ function Login() {
         console.log(response);
         localStorage.setItem("token", response.accessToken);
         localStorage.setItem("refreshToken", response.refreshToken);
+        localStorage.setItem("username", response.username);
+        localStorage.setItem("id", response.id);
         const { id, username } = response;
         console.log(id, username);
         dispatch({ type: "user/setUser", payload: { id, username } });

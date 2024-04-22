@@ -23,11 +23,11 @@ instance.interceptors.response.use(
 		return response;
 	},
 	async (error) => {
-		
+
 		const originalRequest = error.config;
 
 		// Check if the error is due to an expired access token
-		if (error?.response?.status === 403 || error?.response?.status === 400) {
+		if (error?.response?.status === 403) {
 			// Redirect to login or handle as needed
 			// Example: window.location.href = "/login";
 			localStorage.removeItem("token");
