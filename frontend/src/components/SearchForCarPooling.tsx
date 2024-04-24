@@ -148,6 +148,7 @@ const SearchForCarPooling = () => {
               departureTime={carpooling.departure_time}
               availableSeats={carpooling.number_of_seats}
               driverName={carpooling.driver_name}
+              carpooling_id={carpooling.id}
             />
           );
         })

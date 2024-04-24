@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS booking
     user_id INT NOT NULL,
     carpooling_id INT NOT NULL,
     number_of_seats INT NOT NULL,
-    status status NOT NULL,
+    status status DEFAULT 'pending',
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (carpooling_id) REFERENCES carpooling(id)
 );

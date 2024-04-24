@@ -93,3 +93,15 @@ export const searchCarpooling = async (data) => {
 		throw error;
 	}
 }
+
+export const bookCarpooling = async ({ user_id, carpooling_id, numberOfSeats }) => {
+	try {
+		console.log('user_id', user_id);
+		console.log('carpooling_id', carpooling_id);
+		console.log('numberOfSeats', numberOfSeats);
+		const response = await instance.post("/carpooling/book", { user_id, carpooling_id, numberOfSeats });
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}

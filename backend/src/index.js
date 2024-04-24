@@ -5,6 +5,7 @@ const authRouter = require("./v1/routes/authRoutes");
 const usersRouter = require("./v1/routes/usersRoutes");
 const citiesRouter = require("./v1/routes/citiesRoutes");
 const bodyParser = require("body-parser");
+const carpoolingBookingRouter = require("./v1/routes/bookCarpoolingRoutes");
 const carpoolingRouter = require("./v1/routes/carpoolingRoutes");
 const verifyJWT = require("./middlewares/verifyJWT");
 const cors = require('cors');
@@ -37,7 +38,13 @@ app.use("/api/v1/users", usersRouter);
 // app.use(verifyJWT); // this is a middleware that checks if the user is authorized
 app.use("/api/v1/cities", citiesRouter);
 app.use("/api/v1/carpooling", carpoolingRouter);
+app.use("/api/v1/carpooling", carpoolingBookingRouter);
+
 
 server.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
 });
+
+module.exports = {
+	io,
+}

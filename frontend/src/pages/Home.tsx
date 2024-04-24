@@ -12,9 +12,12 @@ function Home() {
     socket.on("connection", () => {
       console.log("connected");
     });
-    socket.on("new", () => {
-      alert("disconnected");
-    })
+
+    socket.on("booking", (data: any) => {
+      alert("New booking!");
+      console.log(data);
+    });
+
     return () => {
       socket.off("connect");
     };
@@ -37,12 +40,6 @@ function Home() {
   return (
     <>
       <header>
-        <button
-          className=""
-          onClick={() => {
-            socket.emit("test", "test from client");
-          }}
-        >test socket</button>
         <button
           className="bg-red-600 p-2 rounded-md text-white absolute w-1/4 mx-auto m-1 right-1"
           onClick={signOut}
