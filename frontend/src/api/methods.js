@@ -78,9 +78,16 @@ export const creatCarpooling = async (data) => {
 }
 
 export const searchCarpooling = async (data) => {
-	const { departure, destination, departure_day } = data;
+	const { departure, destination, user_id, departure_day } = data;
+	let url = `/carpooling/search/${user_id}/${departure}/${destination}`;
+
+	if (departure_day) {
+		alert("departure_day", departure_day);
+		url += `/${departure_day}`;
+	}
+
 	try {
-		const response = await instance.get(`/carpooling/search/${departure}/${destination}/${departure_day}`);
+		const response = await instance.get(url);
 		return response.data;
 	} catch (error) {
 		throw error;

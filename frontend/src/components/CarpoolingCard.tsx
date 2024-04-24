@@ -1,9 +1,11 @@
 import { Button } from "@mui/material";
 import React from "react";
+import { format } from "date-fns";
 
 interface CarpoolingCardProps {
   destination: string;
   departureTime: string;
+  departureDay: string;
   availableSeats: number;
   driverName: string;
   departure: string;
@@ -12,6 +14,7 @@ interface CarpoolingCardProps {
 const CarpoolingCard = ({
   departure,
   destination,
+  departureDay,
   departureTime,
   availableSeats,
   driverName,
@@ -21,6 +24,9 @@ const CarpoolingCard = ({
       <h5 className="">
         {departure} - {destination}
       </h5>
+      <h6 className="mb-2 text-muted">
+        {format(departureDay, "MMMM/dd/yyyy")}
+      </h6>
       <h6 className="mb-2 text-muted">{departureTime}</h6>
       <p className="t">Available seats: {availableSeats}</p>
       <p className="">Driver: {driverName}</p>

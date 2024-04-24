@@ -22,18 +22,21 @@ CREATE TABLE IF NOT EXISTS carpooling
     user_id INT NOT NULL,
     departure VARCHAR(50) NOT NULL,
     destination VARCHAR(50) NOT NULL,
-    departure_day TIMESTAMP NOT NULL,
+    departure_day TIMESTAMP ,
     departure_time TIME NOT NULL,
     number_of_seats INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 -- create a table for booking when each user can book many carpooling
+CREATE TYPE status AS ENUM ('pending', 'accepted', 'rejected');
 CREATE TABLE IF NOT EXISTS booking
 (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     carpooling_id INT NOT NULL,
+    number_of_seats INT NOT NULL,
+    status status NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (carpooling_id) REFERENCES carpooling(id)
 );

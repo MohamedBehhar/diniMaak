@@ -32,7 +32,8 @@ const SearchForCarPooling = () => {
 
   const onsubmit: SubmitHandler<Inputs> = async (data) => {
     console.log(data);
-    await searchCarpooling(data)
+    const user_id = localStorage.getItem("id");
+    await searchCarpooling({ ...data, user_id })
       .then((response: any) => {
         console.log(response);
         setAvailableCarpooling(response);
@@ -112,11 +113,11 @@ const SearchForCarPooling = () => {
               )}
             />{" "}
           </div>
-          <div className="w-full flex-1">
+          <div className="w-full flex-1 ">
             <TextField
               type="date"
               className={inputClass + " p-5 h-full"}
-              {...register("departure_day", { required: true })}
+              {...register("departure_day")}
             />
           </div>
           <div className="w-full flex-1">
@@ -136,18 +137,23 @@ const SearchForCarPooling = () => {
         </div>
       </form>
       {/* available car pooling  */}
-      {availableCarpooling.map((carpooling: any) => {
-        return (
-          <CarpoolingCard
-            key={carpooling.id}
-            departure={carpooling.departure}
-            destination={carpooling.destination}
-            departureTime={carpooling.departure_time}
-            availableSeats={carpooling.number_of_seats}
-            driverName={carpooling.driver_name}
-          />
-        );
-      })}
+      {availableCarpooling ? (
+        availableCarpooling.map((carpooling: any) => {
+          return (
+            <CarpoolingCard
+              key={carpooling.id}
+              departure={carpooling.departure}
+              destination={carpooling.destination}
+              departureDay={carpooling.departure_day}
+              departureTime={carpooling.departure_time}
+              availableSeats={carpooling.number_of_seats}
+              driverName={carpooling.driver_name}
+            />
+          );
+        })
+      ) : (
+        <p>No carpooling available</p>
+      )}
     </div>
   );
 };

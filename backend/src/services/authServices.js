@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs")
 const jwt = require('jsonwebtoken')
 
 // 1 minute
-const accessTokenMaxAge = 1 * 60;
+const accessTokenMaxAge = 1 * 30;
 // two days
 const refreshTokenMaxAge = 2 * 24 * 60 * 60;
 

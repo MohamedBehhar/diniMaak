@@ -1,5 +1,5 @@
 import { signUp } from "../api/methods";
-import { useForm, SubmitHandler} from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -26,8 +26,8 @@ function CreateAccount() {
     const { username, email, password } = data;
     await signUp({ username, email, password })
       .then((response: any) => {
-        console.log(response);
         localStorage.setItem("token", response.token);
+        localStorage.setItem("refreshToken", response.refreshToken);
         localStorage.setItem("username", response.username);
         localStorage.setItem("id", response.id);
         window.location.href = "/";

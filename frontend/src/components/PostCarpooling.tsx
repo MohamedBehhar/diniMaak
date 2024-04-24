@@ -6,10 +6,7 @@ import { useForm, SubmitHandler, set } from "react-hook-form";
 import Snackbar from "@mui/material/Snackbar";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import Alert from "@mui/material/Alert";
 
 const inputClass: string =
   " p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6";
@@ -19,6 +16,7 @@ const schema = z.object({
   destination: z.string(),
   departure_time: z.string(),
   number_of_seats: z.string(),
+  departure_day: z.string(),
 });
 
 type Inputs = z.infer<typeof schema>;
@@ -28,7 +26,10 @@ function PostCarpooling() {
   const [destination, setDestination] = useState("");
   const [departureCities, setDepartureCities] = useState([]);
   const [destinationCities, setDestinationCities] = useState([]);
-
+  const [carPoolingCreationMsg, setCarPoolingCreationMsg] = useState({
+    message: "",
+    severity: "",
+  });
   const {
     register,
     handleSubmit,
@@ -38,25 +39,28 @@ function PostCarpooling() {
     resolver: zodResolver(schema),
   });
   const onsubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log("eeeee ", data);
-    data = {
-      ...data,
-      departure_day: new Date(data.departure_day).toISOString(),
-    };
-
-    console.log(data);
     const user_id = localStorage.getItem("id");
     await creatCarpooling({ ...data, user_id })
       .then((response: any) => {
         console.log(response);
-        setOpen(true);
+        setCarPoolingCreationMsg({
+          message: response,
+          severity: "success",
+        });
+      }).then(()=> {
+        window.location.href = "/";
       })
       .catch((error: any) => {
         console.log(error.response.data.error);
         const key = error.response.data.error.key;
         const message = error.response.data.error.message;
         setError(key, { message: message });
+        setCarPoolingCreationMsg({
+          message: message,
+          severity: "error",
+        });
       });
+    setOpen(true);
   };
 
   const [open, setOpen] = useState(false);
@@ -113,13 +117,16 @@ function PostCarpooling() {
 
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         onClose={handleClose}
-        message="Carpooling posted successfully"
         action={
           <button className="text-white" onClick={handleClose}>
             X
           </button>
         }
-      />
+      >
+        <Alert severity={carPoolingCreationMsg.severity}>
+          {carPoolingCreationMsg.message}
+        </Alert>
+      </Snackbar>
       <form
         className="flex flex-col gap-5 justify-center items-center"
         onSubmit={handleSubmit(onsubmit)}
@@ -173,18 +180,13 @@ function PostCarpooling() {
           }
         </div>
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                label="Basic date picker"
-                className={inputClass}
-                disablePast
-                onChange={(date) => {
-                  console.log(date);
-                }}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
+          <TextField
+            id="departure_day"
+            type="date"
+            required
+            className={inputClass}
+            {...register("departure_day")}
+          />
           {
             errors.departure_day && (
               <p className="text-red-500 text-sm font-semibold">
