@@ -1,12 +1,25 @@
 import { getUsers } from "../api/methods";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PostCarpooling from "../components/PostCarpooling";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import SearchForCarPooling from "../components/SearchForCarPooling";
 import { Link } from "react-router-dom";
+import { socket } from "../socket/socket";
 
 function Home() {
+  useEffect(() => {
+    socket.on("connection", () => {
+      console.log("connected");
+    });
+    socket.on("new", () => {
+      alert("disconnected");
+    })
+    return () => {
+      socket.off("connect");
+    };
+  }, []);
+
   const signOut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
@@ -24,6 +37,12 @@ function Home() {
   return (
     <>
       <header>
+        <button
+          className=""
+          onClick={() => {
+            socket.emit("test", "test from client");
+          }}
+        >test socket</button>
         <button
           className="bg-red-600 p-2 rounded-md text-white absolute w-1/4 mx-auto m-1 right-1"
           onClick={signOut}
