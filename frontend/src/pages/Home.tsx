@@ -13,7 +13,7 @@ function Home() {
       console.log("connected");
     });
 
-    socket.on("booking", (data: any) => {
+    socket.on("newBooking", (data: any) => {
       alert("New booking!");
       console.log(data);
     });
