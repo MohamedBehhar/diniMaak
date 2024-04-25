@@ -3,11 +3,10 @@ const bookCarpoolingService = require('../services/bookCarpoolingServices');
 
 
 const bookCarpooling = async (req, res) => {
-    const { user_id, carpooling_id, numberOfSeats } = req.body;
+    const { booker_id, carpooling_id, numberOfSeats } = req.body;
     try {
-        const booking = await bookCarpoolingService.bookCarpooling({ user_id, carpooling_id, numberOfSeats });
+        const booking = await bookCarpoolingService.bookCarpooling({ booker_id, carpooling_id, numberOfSeats });
 
-        io.emit('newBooking', booking);
 
 
         res.status(200).json(booking);

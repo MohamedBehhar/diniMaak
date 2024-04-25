@@ -14,8 +14,13 @@ function Home() {
     });
 
     socket.on("newBooking", (data: any) => {
-      alert("New booking!");
-      console.log(data);
+      const user_id = localStorage.getItem("id");
+      console.log("data : ", data);
+      console.log("hh 3 h : ", data.user_id);
+      console.log("hh 3 h : ", user_id);
+      if (data.user_id == user_id) {
+        alert("You have a new booking");
+      }
     });
 
     return () => {

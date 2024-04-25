@@ -5,7 +5,7 @@ const getAllTasks = async () => {
 	// check if authorized
 	// if not authorized, return error
 	// if authorized, return tasks
-	
+
 
 	try {
 		const tasks = await db.query('SELECT * FROM tasks');

@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS booking
 (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
+    booker_id INT NOT NULL,
     carpooling_id INT NOT NULL,
     number_of_seats INT NOT NULL,
     status status DEFAULT 'pending',

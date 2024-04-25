@@ -12,10 +12,11 @@ const cors = require('cors');
 const initializeSocket = require('./initSocket'); // Import the initializeSocket function
 
 const app = express();
-const port = 3000;
-
 const server = http.createServer(app);
 const io = initializeSocket(server); // Use initializeSocket function to initialize io
+const port = 3000;
+
+
 
 global.io = io; // Make io global
 

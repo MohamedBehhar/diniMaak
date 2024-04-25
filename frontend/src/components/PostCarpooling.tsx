@@ -47,7 +47,8 @@ function PostCarpooling() {
           message: response,
           severity: "success",
         });
-      }).then(()=> {
+      })
+      .then(() => {
         window.location.href = "/";
       })
       .catch((error: any) => {

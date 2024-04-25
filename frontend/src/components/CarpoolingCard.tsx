@@ -23,12 +23,12 @@ const CarpoolingCard = ({
   carpooling_id,
 }: CarpoolingCardProps) => {
   const bookCarpooling = async () => {
-    const user_id = localStorage.getItem("id");
+    const booker_id = localStorage.getItem("id");
     const numberOfSeats = 1;
-    console.log(user_id);
+    console.log(booker_id);
     console.log(carpooling_id);
-    console.log(numberOfSeats); 
-    await bookCarpoolingMethod({user_id, carpooling_id, numberOfSeats}).then(
+    console.log(numberOfSeats);
+    await bookCarpoolingMethod({ booker_id, carpooling_id, numberOfSeats }).then(
       (response: any) => {
         console.log(response);
       }

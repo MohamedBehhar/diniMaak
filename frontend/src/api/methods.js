@@ -94,12 +94,12 @@ export const searchCarpooling = async (data) => {
 	}
 }
 
-export const bookCarpooling = async ({ user_id, carpooling_id, numberOfSeats }) => {
+export const bookCarpooling = async ({ booker_id, carpooling_id, numberOfSeats }) => {
 	try {
-		console.log('user_id', user_id);
+		console.log('booker_id', booker_id);
 		console.log('carpooling_id', carpooling_id);
 		console.log('numberOfSeats', numberOfSeats);
-		const response = await instance.post("/carpooling/book", { user_id, carpooling_id, numberOfSeats });
+		const response = await instance.post("/carpooling/book", { booker_id, carpooling_id, numberOfSeats });
 		return response.data;
 	} catch (error) {
 		throw error;
