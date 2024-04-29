@@ -138,6 +138,7 @@ export const getBookedCarpooling = async (user_id) => {
 
 export const acceptCarpoolingRequest = async (data) => {
 	try {
+		console.log('l l l l l l l  ',data);
 		const response = await instance.post("/carpooling/requests/accept", data);
 		return response.data;
 	} catch (error) {
@@ -155,3 +156,11 @@ export const rejectCarpoolingRequest = async (data) => {
 }
 
 
+export const getSingleRequestInfo = async (requester_id, carpooling_id) => {
+	try {
+		const response = await instance.get(`/carpooling/request/${requester_id}/${carpooling_id}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}

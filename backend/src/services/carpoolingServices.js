@@ -51,6 +51,9 @@ const searchCarpooling = async ({ departure, destination, departure_day, request
 				WHERE
 					booker_id = $4
 			)
+		ORDER BY
+			carpooling.departure_day
+
 	`, [departure, destination, departure_day, requester_id, number_of_seats]);
 		return carpooling.rows;
 	} catch (err) {
@@ -147,6 +150,117 @@ const getBookedCarpooling = async (user_id) => {
 	}
 }
 
+const getSingleRequestInfo = async (requester_id, carpooling_id) => {
+	try {
+		const requestInfo = await db.query(`
+		SELECT
+			booking.*,
+			users.username as booker_name,
+			users.rating as booker_rating,
+			carpooling.departure,
+			carpooling.destination,
+			carpooling.departure_time,
+			carpooling.departure_day,
+			carpooling.price,
+			carpooling.driver_name
+		FROM
+			booking
+		INNER JOIN
+			users
+		ON
+			booking.booker_id = users.id
+		INNER JOIN
+			carpooling
+		ON
+			booking.carpooling_id = carpooling.id
+		WHERE
+			booking.booker_id = $1
+			AND booking.carpooling_id = $2
+	`, [requester_id, carpooling_id]);
+
+		return requestInfo.rows[0];
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+}
+
+const getAvailableSeats = async (carpooling_id, number_of_seats) => {
+	try {
+		const availableSeats = await db.query(`
+		SELECT
+			number_of_seats
+		FROM
+			carpooling
+		WHERE
+			id = $1
+	`, [carpooling_id]);
+
+		return availableSeats.rows[0].number_of_seats
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+}
+
+const acceptCarpoolingRequest = async (requester_id, carpooling_id, number_of_seats) => {
+	// update the booking status to accepted and decrease the number of seats in the carpooling
+	try {
+		console.log("acceptCarpoolingRequest", requester_id, carpooling_id, number_of_seats);
+		const carpooling = await db.query(`
+		UPDATE
+			carpooling
+		SET
+			number_of_seats = number_of_seats - $1
+		WHERE
+			id = $2
+		RETURNING *
+	`, [number_of_seats, carpooling_id]);
+
+		console.log("carpooling updated",
+			carpooling.rows[0]);
+
+
+		const requestInfo = await db.query(`
+		UPDATE
+			booking
+		SET
+			status = 'accepted'
+		WHERE
+			booker_id = $1
+			AND carpooling_id = $2
+		RETURNING *
+	`, [requester_id, carpooling_id]);
+
+		return requestInfo.rows[0];
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+
+
+}
+
+const rejectCarpoolingRequest = async (requester_id, carpooling_id, number_of_seats) => {
+	try {
+		const requestInfo = await db.query(`
+		UPDATE
+			booking
+		SET
+			status = 'rejected'
+		WHERE
+			booker_id = $1
+			AND carpooling_id = $2
+		RETURNING *
+	`, [requester_id, carpooling_id]);
+
+		return requestInfo.rows[0];
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+}
+
 module.exports = {
 	getCarpooling,
 	getCarpoolingById,
@@ -155,4 +269,8 @@ module.exports = {
 	checkCarpooling,
 	getCarpoolingRequests,
 	getBookedCarpooling,
+	getSingleRequestInfo,
+	acceptCarpoolingRequest,
+	rejectCarpoolingRequest,
+	getAvailableSeats
 }

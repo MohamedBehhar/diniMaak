@@ -3,10 +3,11 @@ import { getCities, searchCarpooling } from "../api/methods";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
-
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import TextField from "@mui/material/TextField";
 import CarpoolingCard from "./CarpoolingCard";
+import { useSearchParams } from "react-router-dom";
+import MyDialog from "./MyDialog";
 
 const inputClass: string =
   " p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6";
@@ -36,10 +37,21 @@ const SearchForCarPooling = () => {
   const [departureCities, setDepartureCities] = useState([]);
   const [destinationCities, setDestinationCities] = useState([]);
   const [availableCarpooling, setAvailableCarpooling] = useState([]);
+  const [open, setOpen] = useState(false);
+  const handelClose = () => {
+    setOpen(false);
+  };
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  console.log("searchParams---- ", searchParams.values());
 
   const onsubmit: SubmitHandler<Inputs> = async (data) => {
     console.log("0-0-0-0-0-0-0-0-0-", data);
     const user_id = localStorage.getItem("id");
+    setSearchParams(
+      `?departure=${data.departure}&destination=${data.destination}&departure_day=${data.departure_day}&number_of_seats=${data.number_of_seats}`
+    );
+
     await searchCarpooling({ ...data, user_id })
       .then((response: any) => {
         console.log(response);
@@ -49,6 +61,29 @@ const SearchForCarPooling = () => {
         console.log(error);
       });
   };
+
+  useEffect(() => {
+    const { departure, destination } = searchParams;
+    console.log("searchParams", searchParams);
+
+    if (departure && destination) {
+      setDeparture(departure);
+      setDestination(destination);
+
+      searchCarpooling({
+        departure,
+        destination,
+        departure_day: new Date().toISOString().split("T")[0],
+        number_of_seats: 1,
+      })
+        .then((response: any) => {
+          setAvailableCarpooling(response);
+        })
+        .catch((error: any) => {
+          console.log(error);
+        });
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (departure.length == 0 || departure == "") {

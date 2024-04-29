@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS users
     rating INT,
     role role DEFAULT 'passenger',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    
 );
 
 -- create a car table for each user

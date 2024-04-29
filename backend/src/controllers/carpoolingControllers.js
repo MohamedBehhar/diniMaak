@@ -26,7 +26,6 @@ const searchCarpooling = async (req, res) => {
 	try {
 		const { departure, destination, user_id, departure_day, number_of_seats } = req.params;
 
-		console.log("searchCarpooling ccccccc", departure, destination, user_id, departure_day, number_of_seats);
 
 		const carpooling = await carpoolingServices.searchCarpooling({ departure, destination, requester_id: user_id, departure_day, number_of_seats });
 		res.status(200).json(carpooling);
@@ -42,10 +41,7 @@ const createCarpooling = async (req, res) => {
 		const { user_id, departure, destination, departure_time, departure_day, number_of_seats, price } = req.body;
 		const driver_name = await usersServices.getUsersById(user_id);
 
-		console.log("createCarpooling", user_id, departure, destination, departure_time, departure_day, number_of_seats, price, driver_name);
-		console.log("-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
 		const duplicateCarpooling = await carpoolingServices.checkCarpooling(user_id, departure_day);
-		console.log("duplicateCarpooling", duplicateCarpooling);
 		if (!user_id || !departure || !destination || !departure_time || !number_of_seats || !departure_day) {
 			res.status(400).json({ error: 'Missing required fields: user_id, departure, destination, date, time, seats, price, description' });
 		} else if (number_of_seats < 1 || number_of_seats > 4) {
@@ -88,7 +84,6 @@ const createCarpooling = async (req, res) => {
 const getCarpoolingRequests = async (req, res) => {
 	try {
 		const { user_id } = req.params;
-		console.log("getCarpoolingRequests", user_id);
 		const carpoolingRequests = await carpoolingServices.getCarpoolingRequests(user_id);
 		res.status(200).json(carpoolingRequests);
 	} catch (error) {
@@ -100,9 +95,50 @@ const getCarpoolingRequests = async (req, res) => {
 const getBookedCarpooling = async (req, res) => {
 	try {
 		const { user_id } = req.params;
-		console.log("getBookedCarpooling", user_id);
 		const bookedCarpooling = await carpoolingServices.getBookedCarpooling(user_id);
 		res.status(200).json(bookedCarpooling);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+}
+
+const getSingleRequestInfo = async (req, res) => {
+	try {
+		const { requester_id, carpooling_id } = req.params;
+		const requestInfo = await carpoolingServices.getSingleRequestInfo(requester_id, carpooling_id);
+		res.status(200).json(requestInfo);
+	}catch(error){
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+}
+
+const acceptCarpoolingRequest = async (req, res) => {
+	try {
+		const { carpooling_id, booker_id: requester_id, number_of_seats } = req.body;
+
+		const availableSeats = await carpoolingServices.getAvailableSeats(carpooling_id);
+		console.log("availableSeats", availableSeats);
+		console.log("number_of_seats", number_of_seats);
+		if (availableSeats < number_of_seats) {
+			res.status(400).json({ error: 'Not enough available seats' });
+			return;
+		}
+
+		await carpoolingServices.acceptCarpoolingRequest(carpooling_id, requester_id, number_of_seats);
+		res.status(200).json({ message: 'Request accepted' });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+}
+
+const rejectCarpoolingRequest = async (req, res) => {
+	try {
+		const { carpooling_id, requester_id, number_of_seats } = req.body;
+		await carpoolingServices.rejectCarpoolingRequest(carpooling_id, requester_id, number_of_seats);
+		res.status(200).json({ message: 'Request rejected' });
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ error: 'Internal Server Error' });
@@ -118,4 +154,7 @@ module.exports = {
 	searchCarpooling,
 	getCarpoolingRequests,
 	getBookedCarpooling,
+	getSingleRequestInfo,
+	acceptCarpoolingRequest,
+	rejectCarpoolingRequest
 }
