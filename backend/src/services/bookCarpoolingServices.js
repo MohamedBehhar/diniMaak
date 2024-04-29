@@ -17,14 +17,14 @@ const bookCarpooling = async ({ booker_id, carpooling_id, numberOfSeats }) => {
                 id = $1
         `, [carpooling_id]);
 
-        if (carpooling.rows.length === 0) {
+        if (carpooling.rows[0].length === 0) {
             throw new Error('Carpooling not found');
         }
 
         const carpoolingData = carpooling.rows[0];
-        const user_id = carpoolingData.user_id;
+        const publisher_id = carpoolingData.publisher_id;
 
-        if (user_id === booker_id) {
+        if (publisher_id === booker_id) {
             throw new Error('You cannot book your own carpooling');
         }
 
@@ -32,16 +32,30 @@ const bookCarpooling = async ({ booker_id, carpooling_id, numberOfSeats }) => {
             throw new Error('Not enough seats available');
         }
 
+        // check if the user has already booked this carpooling
+        const alreadyBooked = await db.query(`
+            SELECT
+                *
+            FROM
+                booking
+            WHERE
+                carpooling_id = $1
+                AND booker_id = $2
+        `, [carpooling_id, booker_id]);
+
+        if (alreadyBooked.rows.length > 0) {
+            throw new Error('You have already booked this carpooling');
+        }
 
 
         const booking = await db.query(`
             INSERT INTO
-                booking (user_id, booker_id, carpooling_id, number_of_seats, status)
+                booking (publisher_id, booker_id, carpooling_id, number_of_seats, status)
             VALUES
                 ($1, $2, $3, $4, $5)
             RETURNING
                 *
-        `, [user_id, booker_id, carpooling_id, numberOfSeats, 'pending']);
+        `, [publisher_id, booker_id, carpooling_id, numberOfSeats, 'pending']);
 
         const newBooking = booking.rows[0];
 

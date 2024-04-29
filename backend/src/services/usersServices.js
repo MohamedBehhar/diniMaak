@@ -13,6 +13,17 @@ const getUsers = async () => {
 	}
 }
 
+const getUsersById = async (id) => {
+	try {
+		const user = await db.query('SELECT * FROM users WHERE id = $1', [id]);
+		return user.rows[0].username;
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+}
+
 module.exports = {
 	getUsers,
+	getUsersById,
 }

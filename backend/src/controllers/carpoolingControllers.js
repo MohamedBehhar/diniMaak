@@ -1,4 +1,5 @@
 const carpoolingServices = require('../services/carpoolingServices');
+const usersServices = require('../services/usersServices');
 
 const getCarpooling = async (req, res) => {
 	try {
@@ -10,22 +11,24 @@ const getCarpooling = async (req, res) => {
 	}
 }
 
+const getCarpoolingById = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const carpooling = await carpoolingServices.getCarpoolingById(id);
+		res.status(200).json(carpooling);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+}
+
 const searchCarpooling = async (req, res) => {
 	try {
-		const { departure, destination, user_id } = req.params;
-		console.log("searchCarpooling", departure, destination, user_id);
-		const departure_day = req.params.departure_day || '';
-		if (!departure || !destination) {
-			return res.status(400).json({ error: 'Missing required fields: departure, destination' });
-		}
-		let carpooling = [];
-		if (!departure_day) {
-			carpooling = await carpoolingServices.searchCarpoolingWithoutDepartureDay({ departure, destination, user_id });
+		const { departure, destination, user_id, departure_day, number_of_seats } = req.params;
 
-		} else {
-			carpooling = await carpoolingServices.searchCarpooling({ departure, destination, user_id, departure_day });
+		console.log("searchCarpooling ccccccc", departure, destination, user_id, departure_day, number_of_seats);
 
-		}
+		const carpooling = await carpoolingServices.searchCarpooling({ departure, destination, requester_id: user_id, departure_day, number_of_seats });
 		res.status(200).json(carpooling);
 	} catch (error) {
 		console.error(error);
@@ -36,7 +39,11 @@ const searchCarpooling = async (req, res) => {
 
 const createCarpooling = async (req, res) => {
 	try {
-		const { user_id, departure, destination, departure_time, departure_day, number_of_seats } = req.body;
+		const { user_id, departure, destination, departure_time, departure_day, number_of_seats, price } = req.body;
+		const driver_name = await usersServices.getUsersById(user_id);
+
+		console.log("createCarpooling", user_id, departure, destination, departure_time, departure_day, number_of_seats, price, driver_name);
+		console.log("-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -");
 		const duplicateCarpooling = await carpoolingServices.checkCarpooling(user_id, departure_day);
 		console.log("duplicateCarpooling", duplicateCarpooling);
 		if (!user_id || !departure || !destination || !departure_time || !number_of_seats || !departure_day) {
@@ -63,8 +70,14 @@ const createCarpooling = async (req, res) => {
 				}
 			});
 		} else {
-			const carpooling = await carpoolingServices.createCarpooling({ user_id, departure, destination, departure_time, number_of_seats, departure_day });
-			res.status(201).json('Carpooling created successfully');
+			await carpoolingServices.createCarpooling({ user_id, departure, destination, departure_time, number_of_seats, departure_day, price, driver_name }).then((carpooling) => {
+				res.status(201).json(carpooling);
+			}
+			).catch((error) => {
+				console.error(error);
+				res.status(500).json({ error: 'Internal Server Error' });
+			}
+			);
 		}
 	} catch (error) {
 		console.error(error);
@@ -72,9 +85,37 @@ const createCarpooling = async (req, res) => {
 	}
 }
 
+const getCarpoolingRequests = async (req, res) => {
+	try {
+		const { user_id } = req.params;
+		console.log("getCarpoolingRequests", user_id);
+		const carpoolingRequests = await carpoolingServices.getCarpoolingRequests(user_id);
+		res.status(200).json(carpoolingRequests);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+}
+
+const getBookedCarpooling = async (req, res) => {
+	try {
+		const { user_id } = req.params;
+		console.log("getBookedCarpooling", user_id);
+		const bookedCarpooling = await carpoolingServices.getBookedCarpooling(user_id);
+		res.status(200).json(bookedCarpooling);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+}
+
+
 
 module.exports = {
 	getCarpooling,
+	getCarpoolingById,
 	createCarpooling,
-	searchCarpooling
+	searchCarpooling,
+	getCarpoolingRequests,
+	getBookedCarpooling,
 }

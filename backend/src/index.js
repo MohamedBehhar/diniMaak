@@ -20,6 +20,7 @@ const port = 3000;
 
 global.io = io; // Make io global
 
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 

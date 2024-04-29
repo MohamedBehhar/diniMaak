@@ -23,7 +23,14 @@ interface City {
 }
 
 const SearchForCarPooling = () => {
-  const { register, handleSubmit } = useForm<Inputs>();
+  const { register, handleSubmit } = useForm<Inputs>({
+    defaultValues: {
+      departure: "",
+      destination: "",
+      departure_day: new Date().toISOString().split("T")[0],
+      number_of_seats: 1,
+    },
+  });
   const [departure, setDeparture] = useState("");
   const [destination, setDestination] = useState("");
   const [departureCities, setDepartureCities] = useState([]);
@@ -31,7 +38,7 @@ const SearchForCarPooling = () => {
   const [availableCarpooling, setAvailableCarpooling] = useState([]);
 
   const onsubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log(data);
+    console.log("0-0-0-0-0-0-0-0-0-", data);
     const user_id = localStorage.getItem("id");
     await searchCarpooling({ ...data, user_id })
       .then((response: any) => {

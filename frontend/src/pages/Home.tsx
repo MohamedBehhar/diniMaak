@@ -8,26 +8,6 @@ import { Link } from "react-router-dom";
 import { socket } from "../socket/socket";
 
 function Home() {
-  useEffect(() => {
-    socket.on("connection", () => {
-      console.log("connected");
-    });
-
-    socket.on("newBooking", (data: any) => {
-      const user_id = localStorage.getItem("id");
-      console.log("data : ", data);
-      console.log("hh 3 h : ", data.user_id);
-      console.log("hh 3 h : ", user_id);
-      if (data.user_id == user_id) {
-        alert("You have a new booking");
-      }
-    });
-
-    return () => {
-      socket.off("connect");
-    };
-  }, []);
-
   const signOut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");

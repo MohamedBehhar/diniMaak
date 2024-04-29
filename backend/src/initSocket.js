@@ -9,6 +9,7 @@ function initializeSocket(server) {
         }
     });
 
+
     io.on('connection', (socket) => {
         console.log('**************** a user connected ****************');
         socket.emit('new', 'hello from server');
