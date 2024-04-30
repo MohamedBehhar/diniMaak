@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS carpooling
     departure_day TIMESTAMP ,
     departure_time TIME NOT NULL,
     number_of_seats INT NOT NULL,
-    available_seats INT ,
+    available_seats INT NOT NULL,
     price INT NOT NULL,
     driver_name VARCHAR(50) NOT NULL,
     FOREIGN KEY (publisher_id) REFERENCES users(id)
@@ -67,12 +67,12 @@ CREATE TABLE IF NOT EXISTS booking
 (
     id SERIAL PRIMARY KEY,
     publisher_id INT NOT NULL,
-    booker_id INT NOT NULL,
+    requester_id INT NOT NULL,
     carpooling_id INT NOT NULL,
     number_of_seats INT NOT NULL,
     status status DEFAULT 'pending',
     FOREIGN KEY (publisher_id) REFERENCES users(id),
-    FOREIGN KEY (booker_id) REFERENCES users(id),
+    FOREIGN KEY (requester_id) REFERENCES users(id),
     FOREIGN KEY (carpooling_id) REFERENCES carpooling(id)
 );
 

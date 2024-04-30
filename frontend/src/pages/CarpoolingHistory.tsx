@@ -23,13 +23,13 @@ const CarpoolingHistory = () => {
                 {carpooling.departure} to {carpooling.destination}
               </h1>
               <div
-                className={
-                  carpooling.status === "pending"
-                    ? "bg-yellow-500 px-2 rounded-md"
-                    : carpooling.status === "approved"
-                    ? "bg-green-500 px-2 rounded-md"
-                    : "bg-red-500 px-2 rounded-md"
-                }
+                className={`${
+                  carpooling.status === "accepted"
+                    ? "bg-green-600"
+                    : carpooling.status === "pending"
+                    ? "bg-yellow-600"
+                    : "bg-red-600"
+                } text-white rounded-md p-2 capitalize`}
               >
                 {carpooling.status}
               </div>

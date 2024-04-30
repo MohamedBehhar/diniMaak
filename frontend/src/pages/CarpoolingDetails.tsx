@@ -15,7 +15,7 @@ const CarpoolingDetails = () => {
 
   const handleBook = async () => {
     const data = {
-      booker_id: localStorage.getItem("id"),
+      requester_id: localStorage.getItem("id"),
       carpooling_id: carpooling_id,
       numberOfSeats: carpooling.number_of_seats,
     };
@@ -25,7 +25,7 @@ const CarpoolingDetails = () => {
     } catch (error) {
       alert("error booking carpooling");
     }
-  }
+  };
 
   return (
     <>

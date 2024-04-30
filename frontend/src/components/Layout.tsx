@@ -39,13 +39,15 @@ const Layout = ({ children }: any) => {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-  const [booker_id, setBookerId] = useState(0);
+  const [requester_id, setBookerId] = useState(0);
   const [carpooling_id, setCarpoolingId] = useState(0);
 
   return (
     <div className="">
       <MyDialog open={openDialog} handleClose={handleCloseDialog} title="title">
-        <RequesterCard requester_id={booker_id} carpooling_id={carpooling_id}
+        <RequesterCard
+          requester_id={requester_id}
+          carpooling_id={carpooling_id}
           handleClose={handleCloseDialog}
         />
       </MyDialog>
@@ -93,7 +95,7 @@ const Layout = ({ children }: any) => {
                       className="bg-green-700 text-white p-1 rounded-md cursor-pointer"
                       type="button"
                       onClick={() => {
-                        setBookerId(notification.booker_id);
+                        setBookerId(notification.requester_id);
                         setCarpoolingId(notification.carpooling_id);
                         setOpenDialog(true);
                       }}

@@ -1,9 +1,9 @@
 // bookCarpoolingServices.js
 const db = require('../db/db');
 
-const bookCarpooling = async ({ booker_id, carpooling_id, numberOfSeats }) => {
+const bookCarpooling = async ({ requester_id, carpooling_id, numberOfSeats }) => {
     try {
-        console.log('booker_id', booker_id);
+        console.log('requester_id', requester_id);
         console.log('carpooling_id', carpooling_id);
         console.log('numberOfSeats', numberOfSeats);
 
@@ -24,7 +24,7 @@ const bookCarpooling = async ({ booker_id, carpooling_id, numberOfSeats }) => {
         const carpoolingData = carpooling.rows[0];
         const publisher_id = carpoolingData.publisher_id;
 
-        if (publisher_id === booker_id) {
+        if (publisher_id === requester_id) {
             throw new Error('You cannot book your own carpooling');
         }
 
@@ -40,8 +40,8 @@ const bookCarpooling = async ({ booker_id, carpooling_id, numberOfSeats }) => {
                 booking
             WHERE
                 carpooling_id = $1
-                AND booker_id = $2
-        `, [carpooling_id, booker_id]);
+                AND requester_id = $2
+        `, [carpooling_id, requester_id]);
 
         if (alreadyBooked.rows.length > 0) {
             throw new Error('You have already booked this carpooling');
@@ -50,12 +50,12 @@ const bookCarpooling = async ({ booker_id, carpooling_id, numberOfSeats }) => {
 
         const booking = await db.query(`
             INSERT INTO
-                booking (publisher_id, booker_id, carpooling_id, number_of_seats, status)
+                booking (publisher_id, requester_id, carpooling_id, number_of_seats, status)
             VALUES
                 ($1, $2, $3, $4, $5)
             RETURNING
                 *
-        `, [publisher_id, booker_id, carpooling_id, numberOfSeats, 'pending']);
+        `, [publisher_id, requester_id, carpooling_id, numberOfSeats, 'pending']);
 
         const newBooking = booking.rows[0];
 

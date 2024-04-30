@@ -31,7 +31,8 @@ function Login() {
         window.location.href = "/";
       })
       .catch((error: any) => {
-        setErrorMessage(error.response.data.message);
+        setErrorMessage(error.response.data.error);
+        console.log(error.response.data.error);
       });
   };
 
@@ -41,6 +42,20 @@ function Login() {
         onSubmit={handleLogin}
         className="flex flex-col gap-5 justify-center items-center"
       >
+        {
+          // Show an error message if the login fails
+          errorMessage && (
+            <div
+              className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4
+                absolute top-0 left-0 right-0 z-10 mx-auto w-1/2 mt-4 rounded-md
+                shadow-lg text-center animate-bounce
+              " 
+              role="alert"
+            >
+              <p>{errorMessage}</p>
+            </div>
+          )
+        }
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <img

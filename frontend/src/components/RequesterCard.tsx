@@ -26,6 +26,7 @@ function RequesterCard({ requester_id, carpooling_id, handleClose }: Props) {
   }, []);
 
   const acceptRequest = async () => {
+    console.log("accepting request data: ", requestData);
     await acceptCarpoolingRequest(requestData)
       .then((response: any) => {
         alert(response.message);

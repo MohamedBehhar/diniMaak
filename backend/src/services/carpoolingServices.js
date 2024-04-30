@@ -42,14 +42,14 @@ const searchCarpooling = async ({ departure, destination, departure_day, request
 			AND carpooling.destination = $2
 			AND carpooling.departure_day >= $3
 			AND carpooling.publisher_id != $4
-			AND carpooling.number_of_seats >= $5
+			AND carpooling.available_seats >= $5
 			AND carpooling.id NOT IN (
 				SELECT
 					carpooling_id
 				FROM
 					booking
 				WHERE
-					booker_id = $4
+					requester_id = $4
 			)
 		ORDER BY
 			carpooling.departure_day
@@ -79,7 +79,7 @@ const checkCarpooling = async (user_id, departure_day) => {
 const createCarpooling = async ({ user_id, departure, destination, departure_time, departure_day, number_of_seats, price, driver_name }) => {
 
 	try {
-		const carpooling = await db.query('INSERT INTO carpooling (publisher_id, departure, destination, departure_day, departure_time, number_of_seats, price, driver_name) VALUES ( $1, $2, $3, $4, $5 , $6, $7, $8) RETURNING *', [user_id, departure, destination, departure_day, departure_time, number_of_seats, price, driver_name]);
+		const carpooling = await db.query('INSERT INTO carpooling (publisher_id, departure, destination, departure_day, departure_time, number_of_seats, available_seats,  price, driver_name) VALUES ( $1, $2, $3, $4, $5 , $6, $7, $8, $9) RETURNING *', [user_id, departure, destination, departure_day, departure_time, number_of_seats, number_of_seats, price, driver_name]);
 		return carpooling.rows[0];
 	} catch (err) {
 		console.error(err);
@@ -89,7 +89,7 @@ const createCarpooling = async ({ user_id, departure, destination, departure_tim
 
 const getCarpoolingRequests = async (user_id) => {
 	try {
-		// get users where the booker_id is the user_id
+		// get users where the requester_id is the user_id
 
 		const carpoolingRequests = await db.query(`
 		SELECT
@@ -103,7 +103,7 @@ const getCarpoolingRequests = async (user_id) => {
 	INNER JOIN
 		users
 	ON
-		booking.booker_id = users.id
+		booking.requester_id = users.id
 	INNER JOIN
 		carpooling
 	ON
@@ -137,7 +137,7 @@ const getBookedCarpooling = async (user_id) => {
 			ON
 				booking.carpooling_id = carpooling.id
 			WHERE
-				booking.booker_id = $1
+				booking.requester_id = $1
 		`, [user_id]);
 
 		console.log("----------------------------------------------------bookedCarpooling--------------------------", bookedCarpooling.rows);
@@ -168,13 +168,13 @@ const getSingleRequestInfo = async (requester_id, carpooling_id) => {
 		INNER JOIN
 			users
 		ON
-			booking.booker_id = users.id
+			booking.requester_id = users.id
 		INNER JOIN
 			carpooling
 		ON
 			booking.carpooling_id = carpooling.id
 		WHERE
-			booking.booker_id = $1
+			booking.requester_id = $1
 			AND booking.carpooling_id = $2
 	`, [requester_id, carpooling_id]);
 
@@ -189,29 +189,32 @@ const getAvailableSeats = async (carpooling_id, number_of_seats) => {
 	try {
 		const availableSeats = await db.query(`
 		SELECT
-			number_of_seats
+			available_seats
 		FROM
 			carpooling
 		WHERE
 			id = $1
 	`, [carpooling_id]);
 
-		return availableSeats.rows[0].number_of_seats
+		return availableSeats.rows[0].available_seats 
 	} catch (err) {
 		console.error(err);
 		throw err;
 	}
 }
 
-const acceptCarpoolingRequest = async (requester_id, carpooling_id, number_of_seats) => {
+const acceptCarpoolingRequest = async ({ requester_id, carpooling_id, number_of_seats }) => {
 	// update the booking status to accepted and decrease the number of seats in the carpooling
 	try {
-		console.log("acceptCarpoolingRequest", requester_id, carpooling_id, number_of_seats);
+		console.log("requester_id", requester_id);
+		console.log("carpooling_id", carpooling_id);
+		console.log("number_of_seats", number_of_seats);
+
 		const carpooling = await db.query(`
 		UPDATE
 			carpooling
 		SET
-			number_of_seats = number_of_seats - $1
+			available_seats = available_seats - $1
 		WHERE
 			id = $2
 		RETURNING *
@@ -227,11 +230,15 @@ const acceptCarpoolingRequest = async (requester_id, carpooling_id, number_of_se
 		SET
 			status = 'accepted'
 		WHERE
-			booker_id = $1
+			requester_id = $1
 			AND carpooling_id = $2
 		RETURNING *
 	`, [requester_id, carpooling_id]);
 
+		console.log("requestInfo", requestInfo.rows[0]);
+
+		// send notification to the user that his request has been accepted
+		io.emit('request accepted', { requester_id, carpooling_id });
 		return requestInfo.rows[0];
 	} catch (err) {
 		console.error(err);
@@ -249,7 +256,7 @@ const rejectCarpoolingRequest = async (requester_id, carpooling_id, number_of_se
 		SET
 			status = 'rejected'
 		WHERE
-			booker_id = $1
+			requester_id = $1
 			AND carpooling_id = $2
 		RETURNING *
 	`, [requester_id, carpooling_id]);

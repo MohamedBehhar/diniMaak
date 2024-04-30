@@ -3,9 +3,9 @@ const bookCarpoolingService = require('../services/bookCarpoolingServices');
 
 
 const bookCarpooling = async (req, res) => {
-    const { booker_id, carpooling_id, numberOfSeats } = req.body;
+    const { requester_id, carpooling_id, numberOfSeats } = req.body;
     try {
-        const booking = await bookCarpoolingService.bookCarpooling({ booker_id, carpooling_id, numberOfSeats });
+        const booking = await bookCarpoolingService.bookCarpooling({ requester_id, carpooling_id, numberOfSeats });
 
 
 

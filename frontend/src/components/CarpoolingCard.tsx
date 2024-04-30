@@ -8,6 +8,7 @@ interface CarpoolingCardProps {
   destination: string;
   departureTime: string;
   departureDay: string;
+  numberOfSeats: number;
   availableSeats: number;
   driverName: string;
   departure: string;
@@ -19,39 +20,31 @@ const CarpoolingCard = ({
   destination,
   departureDay,
   departureTime,
+  numberOfSeats,
   availableSeats,
   driverName,
   carpooling_id,
 }: CarpoolingCardProps) => {
   const [searchParams] = useSearchParams();
-  const bookCarpooling = async () => {
-    const numberOfSeats = searchParams.get("number_of_seats");
-    const booker_id = localStorage.getItem("id");
-
-    await bookCarpoolingMethod({
-      booker_id,
-      carpooling_id,
-      numberOfSeats,
-    }).then((response: any) => {
-      alert(response.data.message);
-    });
-  };
-
-  const style = {
-    position: "absolute" as "absolute",
-    top: "50%",
-    borderRadius: "10px",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    bgcolor: "background.paper",
-    boxShadow: 24,
-    p: 4,
-  };
-
   const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
   };
+  const bookCarpooling = async () => {
+    const numberOfSeats = searchParams.get("number_of_seats");
+    const requester_id = localStorage.getItem("id");
+
+    await bookCarpoolingMethod({
+      requester_id,
+      carpooling_id,
+      numberOfSeats,
+    }).then((response: any) => {
+      console.log(response);
+      alert(response.data.message);
+    });
+    handleClose();
+  };
+
 
   return (
     <>
@@ -82,7 +75,9 @@ const CarpoolingCard = ({
           {format(departureDay, "MMMM/dd/yyyy")}
         </h6>
         <h6 className="mb-2 text-muted">{departureTime}</h6>
-        <p className="t">Available seats: {availableSeats}</p>
+        <p className="t">
+          Available seats: {numberOfSeats} / {availableSeats}{" "}
+        </p>
         <p className="">Driver: {driverName}</p>
         <button
           onClick={() => {

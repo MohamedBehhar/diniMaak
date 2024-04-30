@@ -188,7 +188,8 @@ const SearchForCarPooling = () => {
               destination={carpooling.destination}
               departureDay={carpooling.departure_day}
               departureTime={carpooling.departure_time}
-              availableSeats={carpooling.number_of_seats}
+              availableSeats={carpooling.available_seats}
+              numberOfSeats={carpooling.number_of_seats}
               driverName={carpooling.driver_name}
               carpooling_id={carpooling.id}
             />

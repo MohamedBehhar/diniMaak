@@ -108,7 +108,7 @@ const getSingleRequestInfo = async (req, res) => {
 		const { requester_id, carpooling_id } = req.params;
 		const requestInfo = await carpoolingServices.getSingleRequestInfo(requester_id, carpooling_id);
 		res.status(200).json(requestInfo);
-	}catch(error){
+	} catch (error) {
 		console.error(error);
 		res.status(500).json({ error: 'Internal Server Error' });
 	}
@@ -116,17 +116,23 @@ const getSingleRequestInfo = async (req, res) => {
 
 const acceptCarpoolingRequest = async (req, res) => {
 	try {
-		const { carpooling_id, booker_id: requester_id, number_of_seats } = req.body;
+		const { carpooling_id, requester_id, number_of_seats } = req.body;
+		console.log("+ + + + + + + + + + + + + + + ");
+		console.log("carpooling_id", carpooling_id);
+		console.log("requester_id", requester_id);
+		console.log("number_of_seats", number_of_seats);
+		console.log("+ + + + + + + + + + + + + + + ");
 
 		const availableSeats = await carpoolingServices.getAvailableSeats(carpooling_id);
-		console.log("availableSeats", availableSeats);
-		console.log("number_of_seats", number_of_seats);
-		if (availableSeats < number_of_seats) {
+
+		if (availableSeats === 0) {
 			res.status(400).json({ error: 'Not enough available seats' });
 			return;
 		}
 
-		await carpoolingServices.acceptCarpoolingRequest(carpooling_id, requester_id, number_of_seats);
+		await carpoolingServices.acceptCarpoolingRequest(
+			req.body
+		);
 		res.status(200).json({ message: 'Request accepted' });
 	} catch (error) {
 		console.error(error);
