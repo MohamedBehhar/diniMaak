@@ -1,6 +1,7 @@
 import { getBookedCarpooling } from "../api/methods";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
+import { cancelBookingRequest, confirmBookingRequest } from "../api/methods";
 
 const CarpoolingHistory = () => {
   const [bookedCarpooling, setBookedCarpooling] = useState([]);
@@ -9,6 +10,22 @@ const CarpoolingHistory = () => {
       setBookedCarpooling(response);
     });
   }, []);
+
+  const cancelBooking = async (carpooling: any) => {
+    try {
+      await cancelBookingRequest(carpooling);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const confirmBooking = async (carpooling: any) => {
+    try {
+      await confirmBookingRequest(carpooling);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
@@ -27,9 +44,9 @@ const CarpoolingHistory = () => {
                   carpooling.status === "accepted"
                     ? "border border-green-600 text-green-600"
                     : carpooling.status === "pending"
-                    ? "border border-yellow-600 text-yellow-600"
+                    ? "border border-yellow-600 text-yellow-600 "
                     : "border border-red-600 text-red-600"
-                } text-white rounded-md p-2 capitalize`}
+                }  rounded-md p-2 capitalize`}
               >
                 {carpooling.status}
               </div>
@@ -41,11 +58,17 @@ const CarpoolingHistory = () => {
             <h6>driver : {carpooling.driver_name}</h6>
             <div className="grid  ">
               <div className="justify-self-end flex gap-10">
-                <button className="bg-red-700 text-white rounded-md p-2">
-                  Cancel
+                <button
+                  className="bg-red-700 text-white rounded-md p-2"
+                  onClick={() => cancelBooking(carpooling)}
+                >
+                  Cancel Booking
                 </button>
-                <button className="bg-green-700 text-white rounded-md p-2">
-                  confirm
+                <button
+                  className="bg-green-700 text-white rounded-md p-2"
+                  onClick={() => confirmBooking(carpooling)}
+                >
+                  confirm Booking
                 </button>
               </div>
             </div>

@@ -164,3 +164,21 @@ export const getSingleRequestInfo = async (requester_id, carpooling_id) => {
 		throw error;
 	}
 }
+
+export const confirmBookingRequest = async (data) => {
+	try {
+		const response = await instance.post("/carpooling/confirm-booking", data);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export const cancelBookingRequest = async (data) => {
+	try {
+		const response = await instance.post("/carpooling/cancel-booking", data);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}

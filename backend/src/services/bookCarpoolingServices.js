@@ -1,5 +1,6 @@
 // bookCarpoolingServices.js
 const db = require('../db/db');
+const { sendNotification } = require('../initSocket');
 
 const bookCarpooling = async ({ requester_id, carpooling_id, numberOfSeats }) => {
     try {
@@ -71,10 +72,15 @@ const bookCarpooling = async ({ requester_id, carpooling_id, numberOfSeats }) =>
 };
 
 
-const bookerConfirmRequest = async (
-    { carpooling_id, requester_id, booking_id }
+const confirmBookingRequest = async (
+    { carpooling_id, requester_id, booking_id, requested_seats }
 ) => {
     try {
+        console.log('carpooling_id---------------------------------------\n', carpooling_id,
+            'requester_id', requester_id,
+            'booking_id', booking_id,
+            'requested_seats', requested_seats
+        );
         const booking = await db.query(`
             UPDATE
                 booking
@@ -85,24 +91,24 @@ const bookerConfirmRequest = async (
             RETURNING
                 *
         `, [booking_id]);
-    
+
         const carpooling = await db.query(`
             UPDATE
                 carpooling
             SET
-                available_seats -= $1
+                requested_seats -= $1
             WHERE
                 id = $2
             RETURNING
                 *
-        `, [booking.rows[0].requested_seats, carpooling_id]);
+        `, [requested_seats, carpooling_id]);
 
 
 
 
 
         // Emit a socket event to notify the client about the confirmation
-        io.emit('bookingConfirmed', booking.rows[0]);
+        sendNotification(requester_id, 'carpooling_request_accepted', booking.rows[0]);
 
         return booking.rows[0];
     } catch (error) {
@@ -111,7 +117,7 @@ const bookerConfirmRequest = async (
     }
 }
 
-const bookerCancelRequest = async (booking_id) => {
+const cancelBookingRequest = async (booking_id) => {
     try {
         const booking = await db.query(`
             UPDATE
@@ -138,6 +144,6 @@ const bookerCancelRequest = async (booking_id) => {
 
 module.exports = {
     bookCarpooling,
-    bookerConfirmRequest,
-    bookerCancelRequest
+    confirmBookingRequest,
+    cancelBookingRequest,
 };

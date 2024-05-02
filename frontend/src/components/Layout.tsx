@@ -15,7 +15,10 @@ const Layout = ({ children }: any) => {
       socket.emit("join", user_id);
     });
 
-    // socket.emit("join", user_id);
+    socket.on("carpooling_request_accepted", (data: any) => {
+      alert("carpooling request accepted");
+      console.log("socket ==d==00: ", data);
+    });
 
     getBookingRequest(user_id)
       .then((response: any) => {

@@ -16,10 +16,24 @@ const bookCarpooling = async (req, res) => {
     }
 }
 
-const bookerConfirmRequest = async (req, res) => {
+const confirmBookingRequest = async (req, res) => {
+    const { carpooling_id, requester_id, booking_id } = req.body;
+    console.log('carpooling_id---------------------------------------\n',);
+    try {
+        const booking = await bookCarpoolingService.confirmBookingRequest(
+            req.body
+        );
+        res.status(200).json(booking);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const cancelBookingRequest = async (req, res) => {
     const { carpooling_id, requester_id, booking_id } = req.body;
     try {
-        const booking = await bookCarpoolingService.bookerConfirmRequest(
+        const booking = await bookCarpoolingService.cancelBookingRequest(
             carpooling_id,
             requester_id,
             booking_id
@@ -31,19 +45,8 @@ const bookerConfirmRequest = async (req, res) => {
     }
 }
 
-const bookerCancelRequest = async (req, res) => {
-    const { booking_id } = req.body;
-    try {
-        const booking = await bookCarpoolingService.bookerCancelRequest(booking_id);
-        res.status(200).json(booking);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: error.message });
-    }
-}
-
 module.exports = {
     bookCarpooling,
-    bookerConfirmRequest,
-    bookerCancelRequest
+    confirmBookingRequest,
+    cancelBookingRequest
 }

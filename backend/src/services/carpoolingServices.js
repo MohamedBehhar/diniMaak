@@ -211,18 +211,6 @@ const acceptCarpoolingRequest = async ({ requester_id, publisher_id, carpooling_
 		console.log("carpooling_id", carpooling_id);
 		console.log("requested_seats", requested_seats);
 
-		const carpooling = await db.query(`
-		UPDATE
-			carpooling
-		SET
-			available_seats = available_seats - $1
-		WHERE
-			id = $2
-		RETURNING *
-	`, [requested_seats, carpooling_id]);
-
-		console.log("carpooling updated",
-			carpooling.rows[0]);
 
 
 		const requestInfo = await db.query(`
