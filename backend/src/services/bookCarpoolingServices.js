@@ -50,7 +50,7 @@ const bookCarpooling = async ({ requester_id, carpooling_id, numberOfSeats }) =>
 
         const booking = await db.query(`
             INSERT INTO
-                booking (publisher_id, requester_id, carpooling_id, number_of_seats, status)
+                booking (publisher_id, requester_id, carpooling_id, requested_seats, status)
             VALUES
                 ($1, $2, $3, $4, $5)
             RETURNING
@@ -71,7 +71,9 @@ const bookCarpooling = async ({ requester_id, carpooling_id, numberOfSeats }) =>
 };
 
 
-const bookerConfirmRequest = async (booking_id) => {
+const bookerConfirmRequest = async (
+    { carpooling_id, requester_id, booking_id }
+) => {
     try {
         const booking = await db.query(`
             UPDATE
@@ -83,6 +85,21 @@ const bookerConfirmRequest = async (booking_id) => {
             RETURNING
                 *
         `, [booking_id]);
+    
+        const carpooling = await db.query(`
+            UPDATE
+                carpooling
+            SET
+                available_seats -= $1
+            WHERE
+                id = $2
+            RETURNING
+                *
+        `, [booking.rows[0].requested_seats, carpooling_id]);
+
+
+
+
 
         // Emit a socket event to notify the client about the confirmation
         io.emit('bookingConfirmed', booking.rows[0]);

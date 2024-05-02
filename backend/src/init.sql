@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS carpooling
     available_seats INT NOT NULL,
     price INT NOT NULL,
     driver_name VARCHAR(50) NOT NULL,
+    confirmed_passengers INTEGER [],
     FOREIGN KEY (publisher_id) REFERENCES users(id)
 );
 
@@ -62,26 +63,44 @@ CREATE TABLE IF NOT EXISTS requesters
 );
 
 -- create a table for booking when each user can book many carpooling
-CREATE TYPE status AS ENUM ('pending', 'accepted', 'rejected');
+CREATE TYPE status AS ENUM ('pending', 'accepted', 'rejected', 'canceled', 'confirmed', 'completed');
 CREATE TABLE IF NOT EXISTS booking
 (
     id SERIAL PRIMARY KEY,
     publisher_id INT NOT NULL,
     requester_id INT NOT NULL,
     carpooling_id INT NOT NULL,
-    number_of_seats INT NOT NULL,
+    requested_seats INT NOT NULL,
     status status DEFAULT 'pending',
     FOREIGN KEY (publisher_id) REFERENCES users(id),
     FOREIGN KEY (requester_id) REFERENCES users(id),
     FOREIGN KEY (carpooling_id) REFERENCES carpooling(id)
 );
 
+-- create a table for notifications when each user can have many notifications
+CREATE TYPE type AS ENUM ('rating', 'comment', 'booking', 'request');
+CREATE TYPE notification_status AS ENUM ('unread', 'read');
 CREATE TABLE notifications
 (
     id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    type type NOT NULL,
+    status notification_status DEFAULT 'unread',
+    FOREIGN KEY (sender_id) REFERENCES users(id),
+    FOREIGN KEY (receiver_id) REFERENCES users(id)
+);
+
+-- create a table for chat when each user can chat with another user
+CREATE TABLE IF NOT EXISTS chat
+(
+    id SERIAL PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
     message VARCHAR(250) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    status notification_status DEFAULT 'unread',
+    FOREIGN KEY (sender_id) REFERENCES users(id),
+    FOREIGN KEY (receiver_id) REFERENCES users(id)
 );
 
 -- create a table for rating when each user can rate many carpooling
@@ -106,25 +125,6 @@ CREATE TABLE IF NOT EXISTS comment
     FOREIGN KEY (carpooling_id) REFERENCES carpooling(id)
 );
 
--- create a table for notification when each user can have many notifications
-CREATE TABLE IF NOT EXISTS notification
-(
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
-    message VARCHAR(250) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
--- create a table for chat when each user can chat with another user
-CREATE TABLE IF NOT EXISTS chat
-(
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
-    receiver_id INT NOT NULL,
-    message VARCHAR(250) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (receiver_id) REFERENCES users(id)
-);
 
 -- create a moroccan cities table
 CREATE TABLE IF NOT EXISTS cities

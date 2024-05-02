@@ -9,6 +9,14 @@ const Layout = ({ children }: any) => {
   const user_id = localStorage.getItem("id");
   const [notifications, setNotifications] = useState([]);
   useEffect(() => {
+    socket.on("connection", () => {
+      console.log("connected");
+      // emit user id
+      socket.emit("join", user_id);
+    });
+
+    // socket.emit("join", user_id);
+
     getBookingRequest(user_id)
       .then((response: any) => {
         setNotifications(response);
@@ -45,10 +53,7 @@ const Layout = ({ children }: any) => {
           console.log(error);
         });
     });
-    socket.on("connection", () => {
-      console.log("connected");
-    });
-    socket.emit("join", user_id);
+
     getBookingRequest(user_id)
       .then((response: any) => {
         setNotifications(response);

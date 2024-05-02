@@ -15,15 +15,19 @@ function initializeSocket(server) {
 
     io.on('connection', (socket) => {
         console.log('**************** a user connected ****************');
+        socket.emit('connection', null);
         socket.on('join', (user_id) => {
-            usersMap.set(user_id, socket.id);
-            console.log('**************** user joined ****************' + user_id);
-            console.log('**************** usersMap ****************', usersMap);
-        }
-        );
+            usersMap.set(user_id + '', socket.id);
+        });
         socket.on('disconnect', () => {
             console.log('**************** user disconnected ****************');
+            for (let [key, value] of usersMap) {
+                if (value === socket.id) {
+                    usersMap.delete(key);
+                }
+            }
         });
+
     });
 
     return io;

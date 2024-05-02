@@ -204,12 +204,12 @@ const getAvailableSeats = async (carpooling_id, number_of_seats) => {
 	}
 }
 
-const acceptCarpoolingRequest = async ({ requester_id, carpooling_id, number_of_seats }) => {
+const acceptCarpoolingRequest = async ({ requester_id, publisher_id, carpooling_id, requested_seats }) => {
 	// update the booking status to accepted and decrease the number of seats in the carpooling
 	try {
 		console.log("requester_id", requester_id);
 		console.log("carpooling_id", carpooling_id);
-		console.log("number_of_seats", number_of_seats);
+		console.log("requested_seats", requested_seats);
 
 		const carpooling = await db.query(`
 		UPDATE
@@ -219,7 +219,7 @@ const acceptCarpoolingRequest = async ({ requester_id, carpooling_id, number_of_
 		WHERE
 			id = $2
 		RETURNING *
-	`, [number_of_seats, carpooling_id]);
+	`, [requested_seats, carpooling_id]);
 
 		console.log("carpooling updated",
 			carpooling.rows[0]);
@@ -236,11 +236,19 @@ const acceptCarpoolingRequest = async ({ requester_id, carpooling_id, number_of_
 		RETURNING *
 	`, [requester_id, carpooling_id]);
 
-		console.log("requestInfo", requestInfo.rows[0]);
-		console.log("requestInfo", usersMap)
-
 		sendNotification(requestInfo.rows[0].publisher_id, 'updateNotifications', requestInfo.rows[0]);
 		sendNotification(requester_id, 'carpooling_request_accepted', requestInfo.rows[0]);
+
+		// insert the booking info into the notifications table
+		await db.query(`
+		INSERT INTO
+			notifications (sender_id, receiver_id, message, type, carpooling_id)
+		VALUES
+			($1, $2, $3, $4, $5)
+	`, [requester_id, publisher_id, `Your request has been accepted`, 'carpooling_request_accepted', carpooling_id]);
+
+
+
 		return requestInfo.rows[0];
 	} catch (err) {
 		console.error(err);
@@ -254,14 +262,14 @@ const rejectCarpoolingRequest = async (requester_id, carpooling_id, number_of_se
 	try {
 		const requestInfo = await db.query(`
 		UPDATE
-			booking
+		booking
 		SET
-			status = 'rejected'
+		status = 'rejected'
 		WHERE
-			requester_id = $1
+		requester_id = $1
 			AND carpooling_id = $2
 		RETURNING *
-	`, [requester_id, carpooling_id]);
+			`, [requester_id, carpooling_id]);
 
 		return requestInfo.rows[0];
 	} catch (err) {

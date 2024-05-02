@@ -19,7 +19,11 @@ const bookCarpooling = async (req, res) => {
 const bookerConfirmRequest = async (req, res) => {
     const { carpooling_id, requester_id, booking_id } = req.body;
     try {
-        const booking = await bookCarpoolingService.bookerConfirmRequest(booking_id);
+        const booking = await bookCarpoolingService.bookerConfirmRequest(
+            carpooling_id,
+            requester_id,
+            booking_id
+        );
         res.status(200).json(booking);
     } catch (error) {
         console.error(error);

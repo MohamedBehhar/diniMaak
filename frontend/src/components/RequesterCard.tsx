@@ -52,7 +52,7 @@ function RequesterCard({ requester_id, carpooling_id, handleClose }: Props) {
       requestData.departure_day &&
       requestData.departure_time &&
       requestData.booker_name &&
-      requestData.number_of_seats ? (
+      requestData.requested_seats ? (
         <div className=" flex flex-col gap-5">
           <h1
             className="text-center text-2xl font-bold"
@@ -74,7 +74,7 @@ function RequesterCard({ requester_id, carpooling_id, handleClose }: Props) {
           </div>
           <div>Time: {requestData.departure_time}</div>
           <div>Booker Name: {requestData.booker_name}</div>
-          <div>Number of seats: {requestData.number_of_seats}</div>
+          <div>Requested seats: {requestData.requested_seats}</div>
           <div className="flex justify-between items-center ">
             <button
               className="bg-green-700 text-white p-1 rounded-md cursor-pointer"
