@@ -9,7 +9,7 @@ const carpoolingBookingRouter = require("./v1/routes/bookCarpoolingRoutes");
 const carpoolingRouter = require("./v1/routes/carpoolingRoutes");
 const verifyJWT = require("./middlewares/verifyJWT");
 const cors = require('cors');
-const initializeSocket = require('./initSocket'); // Import the initializeSocket function
+const {initializeSocket} = require('./initSocket'); // Import the initializeSocket function
 
 const app = express();
 const server = http.createServer(app);

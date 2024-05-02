@@ -1,5 +1,8 @@
 
 const { Server } = require("socket.io");
+const usersMap = new Map();
+
+
 
 function initializeSocket(server) {
     const io = new Server(server, {
@@ -12,13 +15,36 @@ function initializeSocket(server) {
 
     io.on('connection', (socket) => {
         console.log('**************** a user connected ****************');
-        socket.emit('new', 'hello from server');
-        socket.on('test', (msg) => {
-            console.log('**************** user disconnected ****************' + msg);
+        socket.on('join', (user_id) => {
+            usersMap.set(user_id, socket.id);
+            console.log('**************** user joined ****************' + user_id);
+            console.log('**************** usersMap ****************', usersMap);
+        }
+        );
+        socket.on('disconnect', () => {
+            console.log('**************** user disconnected ****************');
         });
     });
 
     return io;
 }
 
-module.exports = initializeSocket;
+function sendNotification(user_id, event, paylod) {
+    console.log('**************** usersMap ****************', usersMap);
+    console.log('**************** user_id ****************', user_id);
+    console.log('**************** event ****************', event);
+    console.log('**************** paylod ****************', paylod);
+    const socket_id = usersMap.get(user_id + '');
+    if (socket_id) {
+        io.to(socket_id).emit(event, paylod);
+    }
+    else {
+        console.log('**************** user not found ****************');
+    }
+}
+
+module.exports = {
+    initializeSocket,
+    sendNotification,
+    usersMap
+}

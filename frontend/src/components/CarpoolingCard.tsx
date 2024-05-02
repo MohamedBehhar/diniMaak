@@ -40,9 +40,8 @@ const CarpoolingCard = ({
       numberOfSeats,
     }).then((response: any) => {
       console.log(response);
-      alert(response.data.message);
+      alert(response.data);
     });
-    handleClose();
   };
 
 
@@ -61,7 +60,10 @@ const CarpoolingCard = ({
           <p className="">Driver: {driverName}</p>
         </div>
         <button
-          onClick={bookCarpooling}
+          onClick={() => {
+            bookCarpooling();
+            setOpen(false);
+          }}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           Confirm

@@ -1,4 +1,5 @@
 const db = require('../db/db');
+const { usersMap, sendNotification } = require('../initSocket');
 
 const getCarpooling = async () => {
 	try {
@@ -24,7 +25,7 @@ const getCarpoolingById = async (id) => {
 
 
 const searchCarpooling = async ({ departure, destination, departure_day, requester_id, number_of_seats }) => {
-	console.log("searchCarpooling9999 99 9 9 9 9 ", typeof departure_day);
+	console.log("searchCarpooling9999 99 9 9 9 9 ", departure, destination, departure_day, requester_id, number_of_seats);
 	console.log("searchCarpooling9999 99 9 9 9 9 ", departure_day)
 	try {
 		const carpooling = await db.query(`
@@ -196,7 +197,7 @@ const getAvailableSeats = async (carpooling_id, number_of_seats) => {
 			id = $1
 	`, [carpooling_id]);
 
-		return availableSeats.rows[0].available_seats 
+		return availableSeats.rows[0].available_seats
 	} catch (err) {
 		console.error(err);
 		throw err;
@@ -236,9 +237,10 @@ const acceptCarpoolingRequest = async ({ requester_id, carpooling_id, number_of_
 	`, [requester_id, carpooling_id]);
 
 		console.log("requestInfo", requestInfo.rows[0]);
+		console.log("requestInfo", usersMap)
 
-		// send notification to the user that his request has been accepted
-		io.emit('request accepted', { requester_id, carpooling_id });
+		sendNotification(requestInfo.rows[0].publisher_id, 'updateNotifications', requestInfo.rows[0]);
+		sendNotification(requester_id, 'carpooling_request_accepted', requestInfo.rows[0]);
 		return requestInfo.rows[0];
 	} catch (err) {
 		console.error(err);

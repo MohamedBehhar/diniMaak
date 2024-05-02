@@ -9,6 +9,14 @@ const Layout = ({ children }: any) => {
   const user_id = localStorage.getItem("id");
   const [notifications, setNotifications] = useState([]);
   useEffect(() => {
+    getBookingRequest(user_id)
+      .then((response: any) => {
+        setNotifications(response);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+
     socket.on("newBooking", (data: any) => {
       console.log("socket ==== ", data);
       if (data.publisher_id == user_id) {
@@ -21,6 +29,26 @@ const Layout = ({ children }: any) => {
           });
       }
     });
+    socket.on("carpooling_request_accepted", (data: any) => {
+      alert("carpooling request accepted");
+      console.log("socket ==d== ", data);
+    });
+
+    socket.on("updateNotifications", (data: any) => {
+      alert("updateNotifications");
+      console.log("socket ==== ", data);
+      getBookingRequest(user_id)
+        .then((response: any) => {
+          setNotifications(response);
+        })
+        .catch((error: any) => {
+          console.log(error);
+        });
+    });
+    socket.on("connection", () => {
+      console.log("connected");
+    });
+    socket.emit("join", user_id);
     getBookingRequest(user_id)
       .then((response: any) => {
         setNotifications(response);

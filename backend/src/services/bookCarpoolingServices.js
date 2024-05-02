@@ -70,6 +70,57 @@ const bookCarpooling = async ({ requester_id, carpooling_id, numberOfSeats }) =>
     }
 };
 
+
+const bookerConfirmRequest = async (booking_id) => {
+    try {
+        const booking = await db.query(`
+            UPDATE
+                booking
+            SET
+                status = 'confirmed'
+            WHERE
+                id = $1
+            RETURNING
+                *
+        `, [booking_id]);
+
+        // Emit a socket event to notify the client about the confirmation
+        io.emit('bookingConfirmed', booking.rows[0]);
+
+        return booking.rows[0];
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+const bookerCancelRequest = async (booking_id) => {
+    try {
+        const booking = await db.query(`
+            UPDATE
+                booking
+            SET
+                status = 'cancelled'
+            WHERE
+                id = $1
+            RETURNING
+                *
+        `, [booking_id]);
+
+        // Emit a socket event to notify the client about the cancellation
+        io.emit('bookingCancelled', booking.rows[0]);
+
+        return booking.rows[0];
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+
+
 module.exports = {
     bookCarpooling,
+    bookerConfirmRequest,
+    bookerCancelRequest
 };

@@ -25,10 +25,10 @@ const CarpoolingHistory = () => {
               <div
                 className={`${
                   carpooling.status === "accepted"
-                    ? "bg-green-600"
+                    ? "border border-green-600 text-green-600"
                     : carpooling.status === "pending"
-                    ? "bg-yellow-600"
-                    : "bg-red-600"
+                    ? "border border-yellow-600 text-yellow-600"
+                    : "border border-red-600 text-red-600"
                 } text-white rounded-md p-2 capitalize`}
               >
                 {carpooling.status}
@@ -39,6 +39,16 @@ const CarpoolingHistory = () => {
             <h4>{carpooling.seats}</h4>
             <h5>{carpooling.car}</h5>
             <h6>driver : {carpooling.driver_name}</h6>
+            <div className="grid  ">
+              <div className="justify-self-end flex gap-10">
+                <button className="bg-red-700 text-white rounded-md p-2">
+                  Cancel
+                </button>
+                <button className="bg-green-700 text-white rounded-md p-2">
+                  confirm
+                </button>
+              </div>
+            </div>
           </div>
         );
       })}
