@@ -30,14 +30,14 @@ const CarpoolingCard = ({
   const handleClose = () => {
     setOpen(false);
   };
+  const requested_seats = searchParams.get("number_of_seats");
   const bookCarpooling = async () => {
-    const numberOfSeats = searchParams.get("number_of_seats");
     const requester_id = localStorage.getItem("id");
 
     await bookCarpoolingMethod({
       requester_id,
       carpooling_id,
-      numberOfSeats,
+      requested_seats,
     }).then((response: any) => {
       console.log(response);
       alert(response.data);
@@ -57,6 +57,7 @@ const CarpoolingCard = ({
           </h6>
           <h6 className="mb-2 text-muted">{departureTime}</h6>
           <p className="t">Available seats: {availableSeats}</p>
+          <p>Requested seats: {requested_seats}</p>
           <p className="">Driver: {driverName}</p>
         </div>
         <button

@@ -2,11 +2,11 @@
 const db = require('../db/db');
 const { sendNotification } = require('../initSocket');
 
-const bookCarpooling = async ({ requester_id, carpooling_id, numberOfSeats }) => {
+const bookCarpooling = async ({ requester_id, carpooling_id, requested_seats }) => {
     try {
         console.log('requester_id', requester_id);
         console.log('carpooling_id', carpooling_id);
-        console.log('numberOfSeats', numberOfSeats);
+        console.log('requested_seats', requested_seats);
 
 
         const carpooling = await db.query(`
@@ -29,7 +29,7 @@ const bookCarpooling = async ({ requester_id, carpooling_id, numberOfSeats }) =>
             throw new Error('You cannot book your own carpooling');
         }
 
-        if (carpoolingData.number_of_seats < numberOfSeats) {
+        if (carpoolingData.number_of_seats < requested_seats) {
             throw new Error('Not enough seats available');
         }
 
@@ -56,12 +56,23 @@ const bookCarpooling = async ({ requester_id, carpooling_id, numberOfSeats }) =>
                 ($1, $2, $3, $4, $5)
             RETURNING
                 *
-        `, [publisher_id, requester_id, carpooling_id, numberOfSeats, 'pending']);
+        `, [publisher_id, requester_id, carpooling_id, requested_seats, 'pending']);
 
         const newBooking = booking.rows[0];
 
         // Emit a socket event to notify the client about the new booking
-        io.emit('newBooking', booking.rows[0]);
+        const requesterName = await db.query(`
+            SELECT
+                username
+            FROM
+                users
+            WHERE
+                id = $1
+        `, [requester_id]);
+
+        console.log('requesterName', requesterName.rows[0].username);
+
+        sendNotification(requester_id, publisher_id, `You have a new booking request from ${requesterName.rows[0].username}`, 'newBookingRequest');
 
 
         return newBooking;
@@ -87,16 +98,17 @@ const confirmBookingRequest = async (
             SET
                 status = 'confirmed'
             WHERE
-                id = $1
+                booking_id = $1
             RETURNING
                 *
         `, [booking_id]);
+
 
         const carpooling = await db.query(`
             UPDATE
                 carpooling
             SET
-                requested_seats -= $1
+                available_seats = available_seats - $1
             WHERE
                 id = $2
             RETURNING
@@ -108,7 +120,7 @@ const confirmBookingRequest = async (
 
 
         // Emit a socket event to notify the client about the confirmation
-        sendNotification(requester_id, 'carpooling_request_accepted', booking.rows[0]);
+        sendNotification(requester_id, booking.rows[0].publisher_id, 'Your booking has been confirmed', 'bookingConfirmed');
 
         return booking.rows[0];
     } catch (error) {

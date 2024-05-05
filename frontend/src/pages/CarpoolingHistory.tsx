@@ -2,14 +2,22 @@ import { getBookedCarpooling } from "../api/methods";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { cancelBookingRequest, confirmBookingRequest } from "../api/methods";
+import { socket } from "../socket/socket";
 
 const CarpoolingHistory = () => {
   const [bookedCarpooling, setBookedCarpooling] = useState([]);
   useEffect(() => {
     getBookedCarpooling(localStorage.getItem("id")).then((response: any) => {
+      console.log("0 - - - ", response);
       setBookedCarpooling(response);
     });
   }, []);
+
+  socket.on("carpooling_request_accepted", (data: any) => {
+    alert("carpooling request accepted");
+    console.log("socket ==d==00: ", data);
+    
+  });
 
   const cancelBooking = async (carpooling: any) => {
     try {
@@ -56,22 +64,24 @@ const CarpoolingHistory = () => {
             <h4>{carpooling.seats}</h4>
             <h5>{carpooling.car}</h5>
             <h6>driver : {carpooling.driver_name}</h6>
-            <div className="grid  ">
-              <div className="justify-self-end flex gap-10">
-                <button
-                  className="bg-red-700 text-white rounded-md p-2"
-                  onClick={() => cancelBooking(carpooling)}
-                >
-                  Cancel Booking
-                </button>
-                <button
-                  className="bg-green-700 text-white rounded-md p-2"
-                  onClick={() => confirmBooking(carpooling)}
-                >
-                  confirm Booking
-                </button>
+            {carpooling.status === "accepted" && (
+              <div className="grid  ">
+                <div className="justify-self-end flex gap-10">
+                  <button
+                    className="bg-red-700 text-white rounded-md p-2"
+                    onClick={() => cancelBooking(carpooling)}
+                  >
+                    Cancel Booking
+                  </button>
+                  <button
+                    className="bg-green-700 text-white rounded-md p-2"
+                    onClick={() => confirmBooking(carpooling)}
+                  >
+                    confirm Booking
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         );
       })}

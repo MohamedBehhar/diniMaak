@@ -37,16 +37,9 @@ const SearchForCarPooling = () => {
   const [departureCities, setDepartureCities] = useState([]);
   const [destinationCities, setDestinationCities] = useState([]);
   const [availableCarpooling, setAvailableCarpooling] = useState([]);
-  const [open, setOpen] = useState(false);
-  const handelClose = () => {
-    setOpen(false);
-  };
-
   const [searchParams, setSearchParams] = useSearchParams();
-  console.log("searchParams---- ", searchParams.values());
 
   const onsubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log("0-0-0-0-0-0-0-0-0-", data);
     const user_id = localStorage.getItem("id");
     setSearchParams(
       `?departure=${data.departure}&destination=${data.destination}&departure_day=${data.departure_day}&number_of_seats=${data.number_of_seats}`
@@ -62,28 +55,6 @@ const SearchForCarPooling = () => {
       });
   };
 
-  useEffect(() => {
-    const { departure, destination } = searchParams;
-    console.log("searchParams", searchParams);
-
-    if (departure && destination) {
-      setDeparture(departure);
-      setDestination(destination);
-
-      searchCarpooling({
-        departure,
-        destination,
-        departure_day: new Date().toISOString().split("T")[0],
-        number_of_seats: 1,
-      })
-        .then((response: any) => {
-          setAvailableCarpooling(response);
-        })
-        .catch((error: any) => {
-          console.log(error);
-        });
-    }
-  }, [searchParams]);
 
   useEffect(() => {
     if (departure.length == 0 || departure == "") {

@@ -3,9 +3,9 @@ const bookCarpoolingService = require('../services/bookCarpoolingServices');
 
 
 const bookCarpooling = async (req, res) => {
-    const { requester_id, carpooling_id, numberOfSeats } = req.body;
+    const { requester_id, carpooling_id, requested_seats } = req.body;
     try {
-        const booking = await bookCarpoolingService.bookCarpooling({ requester_id, carpooling_id, numberOfSeats });
+        const booking = await bookCarpoolingService.bookCarpooling({ requester_id, carpooling_id, requested_seats });
 
 
 
@@ -18,7 +18,7 @@ const bookCarpooling = async (req, res) => {
 
 const confirmBookingRequest = async (req, res) => {
     const { carpooling_id, requester_id, booking_id } = req.body;
-    console.log('carpooling_id---------------------------------------\n',);
+    console.log(req.body);
     try {
         const booking = await bookCarpoolingService.confirmBookingRequest(
             req.body

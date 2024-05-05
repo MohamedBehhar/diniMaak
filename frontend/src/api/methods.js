@@ -105,12 +105,12 @@ export const getCarpoolingById = async (id) => {
 	}
 }
 
-export const bookCarpooling = async ({ requester_id, carpooling_id, numberOfSeats }) => {
+export const bookCarpooling = async ({ requester_id, carpooling_id, requested_seats }) => {
 	try {
 		console.log('requester_id', requester_id);
 		console.log('carpooling_id', carpooling_id);
-		console.log('numberOfSeats', numberOfSeats);
-		const response = await instance.post("/carpooling/book", { requester_id, carpooling_id, numberOfSeats });
+		console.log('requested_seats', requested_seats);
+		const response = await instance.post("/carpooling/book", { requester_id, carpooling_id, requested_seats });
 		return response.data;
 	} catch (error) {
 		throw error;
@@ -177,6 +177,15 @@ export const confirmBookingRequest = async (data) => {
 export const cancelBookingRequest = async (data) => {
 	try {
 		const response = await instance.post("/carpooling/cancel-booking", data);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export const getNotifications = async (user_id) => {
+	try {
+		const response = await instance.get(`/notifications/${user_id}`);
 		return response.data;
 	} catch (error) {
 		throw error;

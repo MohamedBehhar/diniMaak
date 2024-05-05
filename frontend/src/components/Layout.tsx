@@ -1,6 +1,6 @@
 import { socket } from "../socket/socket";
 import { useEffect, useState } from "react";
-import { getBookingRequest } from "../api/methods";
+import { getNotifications } from "../api/methods";
 import { Link } from "react-router-dom";
 import MyDialog from "./MyDialog";
 import RequesterCard from "./RequesterCard";
@@ -20,7 +20,7 @@ const Layout = ({ children }: any) => {
       console.log("socket ==d==00: ", data);
     });
 
-    getBookingRequest(user_id)
+    getNotifications(user_id)
       .then((response: any) => {
         setNotifications(response);
       })
@@ -31,7 +31,7 @@ const Layout = ({ children }: any) => {
     socket.on("newBooking", (data: any) => {
       console.log("socket ==== ", data);
       if (data.publisher_id == user_id) {
-        getBookingRequest(user_id)
+        getNotifications(user_id)
           .then((response: any) => {
             setNotifications(response);
           })
@@ -48,7 +48,7 @@ const Layout = ({ children }: any) => {
     socket.on("updateNotifications", (data: any) => {
       alert("updateNotifications");
       console.log("socket ==== ", data);
-      getBookingRequest(user_id)
+      getNotifications(user_id)
         .then((response: any) => {
           setNotifications(response);
         })
@@ -57,7 +57,7 @@ const Layout = ({ children }: any) => {
         });
     });
 
-    getBookingRequest(user_id)
+    getNotifications(user_id)
       .then((response: any) => {
         setNotifications(response);
         console.log("notifs === ", response);
@@ -121,12 +121,7 @@ const Layout = ({ children }: any) => {
                     key={index}
                     className="flex gap-2 border border-gray-300 rounded-md p-1 my-2 items-center justify-between"
                   >
-                    <span className="flex flex-col">
-                      <span>{notification.departure} to</span>
-                      {notification.destination}
-                    </span>
-                    <span>seats: {notification.number_of_seats}</span>
-                    <span>name : {notification.booker_name}</span>
+                    <span>{notification.message}</span>
                     <button
                       className="bg-green-700 text-white p-1 rounded-md cursor-pointer"
                       type="button"

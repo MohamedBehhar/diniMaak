@@ -1,7 +1,7 @@
 
 const { Server } = require("socket.io");
 const usersMap = new Map();
-
+const db = require('./db/db');
 
 
 function initializeSocket(server) {
@@ -20,7 +20,8 @@ function initializeSocket(server) {
             usersMap.set(user_id + '', socket.id);
         });
         socket.on('disconnect', () => {
-            console.log('**************** user disconnected ****************');
+            console.log('**************** user disconnected ****************',
+                socket.id,);
             for (let [key, value] of usersMap) {
                 if (value === socket.id) {
                     usersMap.delete(key);
@@ -33,18 +34,24 @@ function initializeSocket(server) {
     return io;
 }
 
-function sendNotification(user_id, event, paylod) {
-    console.log('**************** usersMap ****************', usersMap);
-    console.log('**************** user_id ****************', user_id);
-    console.log('**************** event ****************', event);
-    console.log('**************** paylod ****************', paylod);
-    const socket_id = usersMap.get(user_id + '');
-    if (socket_id) {
-        io.to(socket_id).emit(event, paylod);
+function sendNotification(sender_id, receiver_id, message, type) {
+    const receiverSocketId = usersMap.get(receiver_id + '');
+    console.log('receiverSocketId', receiverSocketId);
+    console.log('sender_idtype ; ; ', type);
+
+    if (receiverSocketId) {
+        io.to(receiverSocketId).emit('notification', { sender_id, message, type });
+
+        db.query(`
+            INSERT INTO
+                notifications (sender_id, receiver_id, message, notifications_type)
+            VALUES
+                ($1, $2, $3, $4)
+        `, [sender_id, receiver_id, message, type]);
+    } else {
+        console.log('receiver is offline');
     }
-    else {
-        console.log('**************** user not found ****************');
-    }
+
 }
 
 module.exports = {

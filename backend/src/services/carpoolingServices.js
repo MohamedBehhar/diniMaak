@@ -224,16 +224,23 @@ const acceptCarpoolingRequest = async ({ requester_id, publisher_id, carpooling_
 		RETURNING *
 	`, [requester_id, carpooling_id]);
 
-		sendNotification(requestInfo.rows[0].publisher_id, 'updateNotifications', requestInfo.rows[0]);
-		sendNotification(requester_id, 'carpooling_request_accepted', requestInfo.rows[0]);
+
+		const receiver_id = requestInfo.rows[0].requester_id;
+		const sender_id = requestInfo.rows[0].publisher_id;
+		const sender_name = requestInfo.rows[0].driver_name;
+
+		sendNotification(sender_id, receiver_id,
+			`${sender_name} has accepted your request`, 'bookingAccepted');
 
 		// insert the booking info into the notifications table
 		await db.query(`
 		INSERT INTO
-			notifications (sender_id, receiver_id, message, type, carpooling_id)
+			notifications (sender_id, receiver_id, message, type)
 		VALUES
-			($1, $2, $3, $4, $5)
-	`, [requester_id, publisher_id, `Your request has been accepted`, 'carpooling_request_accepted', carpooling_id]);
+			($1, $2, $3, $4)
+	`, [
+			sender_id, receiver_id, `${sender_name} has accepted your request`, 'bookingAccepted'
+		]);
 
 
 
