@@ -6,6 +6,8 @@ import { RootState } from "../store/store";
 import SearchForCarPooling from "../components/SearchForCarPooling";
 import { Link } from "react-router-dom";
 import { socket } from "../socket/socket";
+import Steper from "../components/Steper";
+import Test from "../components/Test";
 
 function Home() {
   const signOut = () => {
@@ -61,6 +63,7 @@ function Home() {
 
         <SearchForCarPooling />
       </div>
+      <Test />
     </>
   );
 }

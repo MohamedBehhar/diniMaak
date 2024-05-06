@@ -4,6 +4,6 @@ const router = express.Router();
 
 const citiesControllers = require('../../controllers/citiesControllers');
 
-router.get('/:letter', citiesControllers.searchCitieByInitialLetter);
+router.get('/', citiesControllers.searchCitieByInitialLetter);
 
 module.exports = router;

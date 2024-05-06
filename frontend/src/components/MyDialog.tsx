@@ -7,11 +7,15 @@ import React from "react";
 interface Props {
   open: boolean;
   handleClose: () => void;
-  title: string;
+  title?: string;
   children: React.ReactNode;
+  width: {
+    type: string;
+    default: 'sm'
+  }
 }
 
-const MyDialog = ({ open, handleClose, title, children }: Props) => {
+const MyDialog = ({ open, handleClose, title, children, width }: Props) => {
   return (
     <React.Fragment>
       <Dialog
@@ -20,9 +24,10 @@ const MyDialog = ({ open, handleClose, title, children }: Props) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         fullWidth
-        maxWidth="sm"
+        maxWidth='sm'
+      
       >
-        <div className="text-xl flex flex-col gap-5 p-2">
+        <div className="text-xl flex flex-col gap-5 p-2 h-full">
           <h1>{title}</h1>
           <div>{children}</div>
         </div>

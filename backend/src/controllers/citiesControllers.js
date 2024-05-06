@@ -2,8 +2,7 @@ const citiesServices = require('../services/citiesServices');
 
 const searchCitieByInitialLetter = async (req, res) => {
 	try {
-		const { letter } = req.params;
-		const cities = await citiesServices.searchCitieByInitialLetter(letter);
+		const cities = await citiesServices.searchCitieByInitialLetter();
 		res.send(cities);
 	} catch (err) {
 		console.error(err);
