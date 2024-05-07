@@ -2,11 +2,18 @@ import { socket } from "../socket/socket";
 import { useEffect, useState } from "react";
 import { getNotifications } from "../api/methods";
 import { Link } from "react-router-dom";
-import MyDialog from "./MyDialog";
-import RequesterCard from "./RequesterCard";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import { FaCarSide } from "react-icons/fa";
+import type { MenuProps } from "antd";
+import { Button, Dropdown, Space } from "antd";
+import { FaRegUserCircle } from "react-icons/fa";
+import { signOut } from "../utils/helperFunctions";
 
 const Layout = ({ children }: any) => {
   const user_id = localStorage.getItem("id");
+  const userInfo = useSelector((state: RootState) => state.user.test);
+  console.log("userInfo === ", userInfo);
   const [notifications, setNotifications] = useState([]);
   useEffect(() => {
     socket.on("connection", () => {
@@ -78,71 +85,44 @@ const Layout = ({ children }: any) => {
   const [requester_id, setBookerId] = useState(0);
   const [carpooling_id, setCarpoolingId] = useState(0);
 
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: "Profile",
+    },
+    {
+      key: "3",
+      label: "Settings",
+    },
+    {
+      key: "4",
+      label: "Sign Out",
+      onClick: () => {
+        signOut();
+      },
+    },
+  ];
+
   return (
-    <div className="">
-      <MyDialog open={openDialog} handleClose={handleCloseDialog} title="title">
-        <RequesterCard
-          requester_id={requester_id}
-          carpooling_id={carpooling_id}
-          handleClose={handleCloseDialog}
-        />
-      </MyDialog>
-      <header className="flex justify-between items-center p-3 bg-blue-500 text-white ">
-        <div>
+    <div className="h-full  ">
+      <header className="border-b border-b-gray-200 h-[5%]   ">
+        <div className="container flex justify-between items-center p-3  text-gray-600 ">
           <Link to="/">
-            <div>Home</div>
-          </Link>
-        </div>
-        <div className="text-white font-semibold text-lg text-center">
-          {localStorage.getItem("username")}
-        </div>
-        <div
-          className="flex gap-10
-		items-center  "
-        >
-          <Link to={`/carpooling/history/${user_id}`}>
-            <div>Gerer vos Reservations</div>
-          </Link>
-          <div
-            className="relative border p-2 rounded-md cursor-pointer peer hover:bg-gray-200 hover:text-black
-              
-            "
-            onMouseEnter={() => setShowNotifications(true)}
-            onMouseLeave={() => setShowNotifications(false)}
-          >
-            <p>demande de reservation</p>
-            <div className="absolute top-0 right-0 bg-red-500 text-white rounded-full flex justify-center items-center  text-[12px] w-[15px] h-[15px]">
-              {notifications.length}
+            <div className="bg-red-300  flex flex-col items-center  justify-center rounded-full p-2">
+              <FaCarSide className="text-cyan-700 size-9" />
+              {/* <p className="text-xs">Dini-Maak</p> */}
             </div>
-            {showNotifications && (
-              <div className="absolute r top-10 right-0 bg-white text-black rounded-md p-2 z-40 w-[400px] h-[350px] overflow-y-scroll text-sm ">
-                {notifications.map((notification: any, index: any) => (
-                  <div
-                    key={index}
-                    className="flex gap-2 border border-gray-300 rounded-md p-1 my-2 items-center justify-between"
-                  >
-                    <span>{notification.message}</span>
-                    <button
-                      className="bg-green-700 text-white p-1 rounded-md cursor-pointer"
-                      type="button"
-                      onClick={() => {
-                        setBookerId(notification.requester_id);
-                        setCarpoolingId(notification.carpooling_id);
-                        setOpenDialog(true);
-                      }}
-                    >
-                      View details
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <div>menu</div>
+          </Link>
+          <div className="text-xl ">{localStorage.getItem("username")}</div>
+          <Dropdown menu={{ items }} placement="bottomRight">
+            <div className="bg-red-300 p-2 rounded-full ">
+              <FaRegUserCircle className="size-8 text-cyan-700" />
+            </div>
+          </Dropdown>
         </div>
       </header>
-      <div className="p-2 ">{children}</div>
-      <footer className="p-3 bg-blue-500 text-white">footer</footer>
+      <div className="  h-[80%] ">{children}</div>
+      <footer className="p-3 bg-blue-500 text-white h-[15%] ">footer</footer>
     </div>
   );
 };

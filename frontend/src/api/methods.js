@@ -59,9 +59,9 @@ export const getUsers = async () => {
 	}
 }
 
-export const getCities = async () => {
+export const getCities = async (letters) => {
 	try {
-		const response = await instance.get(`/cities`);
+		const response = await instance.get(`/cities/${letters}`);
 		return response.data;
 	} catch (error) {
 		throw error;

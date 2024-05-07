@@ -1,17 +1,17 @@
 import { signUp } from "../api/methods";
 import { useForm, SubmitHandler } from "react-hook-form";
-import TextField from "@mui/material/TextField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { setUserInfo } from "../store/user/userSlice";
+import { useDispatch } from "react-redux";
 
 function CreateAccount() {
   const schema = z.object({
-    username: z.string(),
+    username: z.string().min(2),
     email: z.string().email(),
     password: z.string().min(6),
   });
   type Inputs = z.infer<typeof schema>;
-
   const {
     register,
     handleSubmit,
@@ -20,6 +20,7 @@ function CreateAccount() {
   } = useForm<Inputs>({
     resolver: zodResolver(schema),
   });
+  const dispatch = useDispatch();
 
   const onsubmit: SubmitHandler<Inputs> = async (data) => {
     console.log(data);
@@ -31,9 +32,10 @@ function CreateAccount() {
         localStorage.setItem("username", response.username);
         localStorage.setItem("id", response.id);
         window.location.href = "/";
+        dispatch(setUserInfo(response));
       })
       .catch((error: any) => {
-        console.log(error.response.data);
+        console.log(error.response);
         if (error.response) {
           const key = error.response.data.error.key;
           const message = error.response.data.error.message;
@@ -63,34 +65,31 @@ function CreateAccount() {
 
         <div className="mt-10 flex flex-col gap-4 sm:mx-auto sm:w-full ">
           <div>
-            <TextField
+            <input
               id="username"
-              label="Username"
               {...register("username")}
-              className="w-full"
+              className="w-full border border-gray-400 rounded p-2"
             />
             {errors.username && (
               <p className={errorClass}>{errors.username.message}</p>
             )}
           </div>
           <div>
-            <TextField
+            <input
               id="email"
-              label="email"
               {...register("email")}
-              className="w-full"
+              className="w-full border border-gray-400 rounded p-2"
             />
             {errors.email && (
               <p className={errorClass}>{errors.email.message}</p>
             )}
           </div>
           <div>
-            <TextField
+            <input
               id="password"
               type="password"
-              label="password"
               {...register("password")}
-              className="w-full"
+              className="w-full border border-gray-400 rounded p-2"
             />
             {errors.password && (
               <p className={errorClass}>{errors.password.message}</p>

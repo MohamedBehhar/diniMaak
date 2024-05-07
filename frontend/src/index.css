@@ -26,20 +26,31 @@
 body {
   width: 100vw;
   height: 100vh;
-  background: whitesmoke;
+  background: rgb(255, 255, 255);
   color: #242424;
   
+}
+
+#root {
+  width: 100%;
+  height: 100%;
 }
 
 
 
 .container {
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
+  margin-inline: auto;
 }
 
 input{
   background: transparent;
+}
+
+/* // remove input :focus  */
+input:focus {
+  outline: none;
 }
 
 input[type=number] {

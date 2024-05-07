@@ -18,7 +18,7 @@ function App() {
   }, []);
 
   return (
-    <div className="">
+    <div className="h-full bg-blue-700">
       <h1 class="text-3xl font-bold underline text-center">Hello world!</h1>
       <Login />
       {token && <p class="text-bold break-words">{token}</p>}
