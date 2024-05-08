@@ -13,6 +13,7 @@ import CarpoolingDetails from "./pages/CarpoolingDetails.tsx";
 import Layout from "./components/Layout.tsx";
 import CarpoolingHistory from "./pages/CarpoolingHistory.tsx";
 import CarpoolingRequests from "./pages/CarpoolingRequests.tsx";
+import AvailableCarpooling from "./pages/AvailableCarpooling.tsx";
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -49,7 +50,15 @@ const router = createBrowserRouter([
       {
         path: "/carpooling/requests/:user_id",
         element: <CarpoolingRequests />,
-      }
+      },
+      {
+        path: "/carpooling/",
+        element: <CarpoolingRequests />,
+      },
+      {
+        path: "/carpooling/search",
+        element: <AvailableCarpooling />,
+      },
     ],
   },
 

@@ -185,14 +185,14 @@ CREATE TABLE
 IF NOT EXISTS cities
 (
     id SERIAL PRIMARY KEY,
-    name VARCHAR
+    label VARCHAR
 (50) NOT NULL
 );
 
 -- insert some moroccan cities into the cities table only once
 INSERT INTO cities
-    (name)
-SELECT name
+    (label)
+SELECT label
 FROM (VALUES
         ('Casablanca'),
         ('Rabat'),
@@ -218,6 +218,6 @@ FROM (VALUES
         ('Settat'),
         ('Ksar El Kebir'),
         ('Guelmim'),
-        ('Tiznit')) AS cities(name)
+        ('Tiznit')) AS cities(label)
 WHERE NOT EXISTS (SELECT 1
 FROM cities);

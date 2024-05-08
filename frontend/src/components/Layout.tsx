@@ -108,15 +108,15 @@ const Layout = ({ children }: any) => {
       <header className="border-b border-b-gray-200 h-[5%]   ">
         <div className="container flex justify-between items-center p-3  text-gray-600 ">
           <Link to="/">
-            <div className="bg-red-300  flex flex-col items-center  justify-center rounded-full p-2">
-              <FaCarSide className="text-cyan-700 size-9" />
+            <div className="bg-[#F3D0D7]  flex flex-col items-center  justify-center rounded-full p-2">
+              <FaCarSide className="text-cyan-600 size-9" />
               {/* <p className="text-xs">Dini-Maak</p> */}
             </div>
           </Link>
           <div className="text-xl ">{localStorage.getItem("username")}</div>
           <Dropdown menu={{ items }} placement="bottomRight">
-            <div className="bg-red-300 p-2 rounded-full ">
-              <FaRegUserCircle className="size-8 text-cyan-700" />
+            <div className="bg-[#F3D0D7] p-2 rounded-full ">
+              <FaRegUserCircle className="size-8 text-cyan-600" />
             </div>
           </Dropdown>
         </div>

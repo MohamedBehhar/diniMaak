@@ -1,28 +1,30 @@
-import { InputNumber, Select } from "antd";
+import { InputNumber, Select, Button } from "antd";
 import { getCities, searchCarpooling } from "../api/methods";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineDepartureBoard } from "react-icons/md";
 import type { DatePickerProps } from "antd";
 import { DatePicker, Space } from "antd";
 import dayjs from "dayjs";
 import { GiPositionMarker } from "react-icons/gi";
 import { PiSeatbeltFill } from "react-icons/pi";
-import type { FormProps } from "antd";
-import { Button, Checkbox, Form, Input } from "antd";
+import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { set } from "date-fns";
 
 type FieldType = {
-  departure: string;
-  destination: string;
+  departure: string | null;
+  destination: string | null;
   departure_day: string;
   number_of_seats: number | null;
-  user_id: string;
+  user_id: string | null;
 };
 
-const SearchCarpooling = () => {
+interface SearchCarpoolingProps {
+  setCarpoolings: () => void;
+}
+
+const SearchCarpooling = ({ setCarpoolings }: SearchCarpoolingProps) => {
   const [cities, setCities] = useState([]);
-  const onSearchChange = (value: any) => {
-    console.log(`selected ${value}`);
-  };
   const onSearch = async (val: any) => {
     await getCities(val)
       .then((response: any) => {
@@ -41,9 +43,7 @@ const SearchCarpooling = () => {
     option?: { label: string; value: string }
   ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
 
-  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
-    console.log(date, dateString);
-  };
+  const [params, setSearchParams] = useSearchParams();
 
   const [data, setData] = useState<FieldType>({
     departure: "",
@@ -52,13 +52,28 @@ const SearchCarpooling = () => {
     number_of_seats: 1,
     user_id: "",
   });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (params.get("departure") && params.get("destination")) {
+      setData({
+        ...data,
+        departure: params.get("departure"),
+        destination: params.get("destination"),
+      });
+    }
+  }, []);
 
   const user_id = localStorage.getItem("id");
   const searchForCarpooling = async () => {
     data.user_id = user_id;
+    navigate({
+      pathname: "/carpooling/search",
+      search: `?departure=${data.departure}&destination=${data.destination}&departure_day=${data.departure_day}&number_of_seats=${data.number_of_seats}&user_id=${data.user_id}`,
+    });
     await searchCarpooling(data)
       .then((response: any) => {
-        console.log(response);
+        setCarpoolings(response);
       })
       .catch((error: any) => {
         console.log(error);
@@ -83,6 +98,7 @@ const SearchCarpooling = () => {
         filterOption={filterOption}
         style={{ width: 200, color: "black", border: "none" }}
         className="border-none"
+        value={data.departure}
       />
       <Select
         suffixIcon={<GiPositionMarker className="text-cyan-500" size={20} />}
@@ -97,12 +113,17 @@ const SearchCarpooling = () => {
         options={cities}
         filterOption={filterOption}
         style={{ width: 200, color: "black" }}
+        value={data.destination}
       />
       <DatePicker
         size="large"
         onChange={(date) => {
           setData({
             ...data,
+            departure_day: date.endOf("day").format("YYYY-MM-DD"),
+          });
+          setSearchParams({
+            ...params,
             departure_day: date.endOf("day").format("YYYY-MM-DD"),
           });
         }}
@@ -121,7 +142,12 @@ const SearchCarpooling = () => {
           setData({ ...data, number_of_seats: value });
         }}
       />
-      <Button type="primary" size="large" onClick={() => searchForCarpooling()}>
+      <Button
+        type="primary"
+        size="large"
+        onClick={() => searchForCarpooling()}
+        disabled={!data.departure || !data.destination}
+      >
         Search
       </Button>
     </div>
