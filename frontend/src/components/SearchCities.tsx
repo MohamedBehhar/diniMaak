@@ -34,6 +34,7 @@ const SearchCities = ({ setChoosedCity, placeholder, icon, defaultValue }: Props
     <Select
       suffixIcon={icon}
       size="large"
+      
       showSearch
       placeholder={placeholder}
       optionFilterProp="children"
@@ -45,7 +46,7 @@ const SearchCities = ({ setChoosedCity, placeholder, icon, defaultValue }: Props
       options={cities}
       defaultValue={defaultValue}
       filterOption={filterOption}
-      style={{ width: 200, color: "black", border: "none" }}
+      style={{ width: '100%', color: "black", border: "none" }}
       className="border-none"
     />
   );

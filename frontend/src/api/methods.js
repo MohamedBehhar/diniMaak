@@ -191,3 +191,22 @@ export const getNotifications = async (user_id) => {
 		throw error;
 	}
 }
+
+
+export const getCarBrand = async (brand) => {
+	try {
+		const response = await instance.get(`/car/${brand}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export const addCar = async (car) => {
+	try {
+		const response = await instance.post("/car", car);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}

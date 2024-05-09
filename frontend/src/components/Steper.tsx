@@ -20,7 +20,7 @@ const Steper = ({
 }: Props) => {
   return (
     <div className="w-[90%] mx-auto">
-      <header className="flex justify-between gap-1  p-2  mx-auto mb-4 ">
+      <header className="flex justify-center items-center gap-1  p-2   mb-4 ">
         <div></div>
         {steps &&
           steps.map((step, index) => {
@@ -28,7 +28,7 @@ const Steper = ({
               <div
                 key={index}
                 className={`${
-                  index == steps.length ? "" : "flex-1"
+                  index == steps.length - 1 ? "" : "flex-1"
                 } flex items-center text-sm   gap-1 `}
               >
                 <div className="flex flex-col relative">
@@ -43,9 +43,6 @@ const Steper = ({
                   >
                     {step.icon}
                   </div>
-                  <h1 className="text-center text-sm absolute top-14 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 text-gray-700 hidden md:block">
-                    {step.title}
-                  </h1>
                 </div>
                 {index < steps.length - 1 && (
                   <div
@@ -62,7 +59,21 @@ const Steper = ({
             );
           })}
       </header>
-      <main className="mt-10 border">{children}</main>
+      <main
+        // transition ease-in duration-500 opacity-0
+
+        className="p-4 bg-white shadow-md rounded-md container"
+      >
+        {steps[stepNumber] && (
+          <h1
+            className="text-2xl font-bold text-center mb-4"
+            style={{ color: "#333" }}
+          >
+            {steps[stepNumber].title}
+          </h1>
+        )}
+        {children}
+      </main>
       <footer className="flex justify-between">
         {stepNumber > 0 && stepNumber < steps.length && (
           <button

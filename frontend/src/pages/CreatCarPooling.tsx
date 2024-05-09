@@ -13,6 +13,7 @@ import SearchCities from "../components/SearchCities";
 import dayjs from "dayjs";
 import { creatCarpooling } from "../api/methods";
 import { format } from "date-fns";
+import AddCar from "../components/AddCar";
 
 const CreatCarPooling = () => {
   const [stepNumber, setStepNumber] = useState(0);
@@ -48,18 +49,17 @@ const CreatCarPooling = () => {
     departure: "",
     destination: "",
     departure_day: dayjs().endOf("day").format("YYYY-MM-DD"),
-    departure_time: "",
+    departure_time: dayjs().format("HH:mm"),
     number_of_seats: 1,
     price: 0,
-    user_id: localStorage.getItem("id")
-,
+    user_id: localStorage.getItem("id"),
   });
 
-  useEffect(() => {
-    if (data.departure && data.destination) {
-      setStepNumber(2);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data.departure && data.destination) {
+  //     setStepNumber(2);
+  //   }
+  // }, [data]);
 
   const handleCreatCarpooling = async () => {
     await creatCarpooling(data)
@@ -69,52 +69,51 @@ const CreatCarPooling = () => {
       .catch((error) => {
         console.log(error);
       });
-  }
-
+  };
 
   return (
     <div className=" ">
       <h1 className="text-3xl text-center font-bold p-10">
         Create a Carpooling
       </h1>
-      {Object.keys(data).map((key) => {
-        return (
-          <div key={key}>
-            <p>
-              {key}: {data[key]}
-            </p>
-          </div>
-        );
-      })}
       <Steper
         steps={steps}
         stepNumber={stepNumber}
         increament={increament}
         decreament={decreament}
       >
+        {stepNumber}
         {stepNumber == 0 && (
-          <div className="w-full min-h-[300px]">car information</div>
+          <div className="w-full h-[300px]">
+            <AddCar />
+          </div>
         )}
         {stepNumber == 1 && (
           <div>
             <div className="flex flex-col sm:flex-row gap-5">
               <div className="search flex flex-col flex-1 gap-10 sm:gap-0 justify-evenly items-center">
-                <SearchCities
-                  setChoosedCity={(city: string) => {
-                    setData({ ...data, departure: city });
-                  }}
-                  placeholder="Departure"
-                  icon={<MdDepartureBoard className="text-cyan-700 text-xl" />}
-                  defaultValue={data.departure}
-                />
-                <SearchCities
-                  setChoosedCity={(city: string) => {
-                    setData({ ...data, destination: city });
-                  }}
-                  placeholder="Destination"
-                  icon={<MdOutlinePlace className="text-cyan-700 text-xl" />}
-                  defaultValue={data.destination}
-                />
+                <div className="w-[300px] ">
+                  <SearchCities
+                    setChoosedCity={(city: string) => {
+                      setData({ ...data, departure: city });
+                    }}
+                    placeholder="Departure"
+                    icon={
+                      <MdDepartureBoard className="text-cyan-700 text-xl" />
+                    }
+                    defaultValue={data.departure}
+                  />
+                </div>
+                <div className="w-[300px]">
+                  <SearchCities
+                    setChoosedCity={(city: string) => {
+                      setData({ ...data, destination: city });
+                    }}
+                    placeholder="Destination"
+                    icon={<MdOutlinePlace className="text-cyan-700 text-xl" />}
+                    defaultValue={data.destination}
+                  />
+                </div>
               </div>
               <div className="svg flex-1">
                 <img
@@ -160,6 +159,7 @@ const CreatCarPooling = () => {
                     });
                   }}
                   defaultOpenValue={dayjs("00:00", "HH:mm")}
+                  value={dayjs(data.departure_time, "HH:mm")}
                   minuteStep={5}
                   format={"HH:mm"}
                 />
@@ -178,11 +178,12 @@ const CreatCarPooling = () => {
         {stepNumber == 3 && (
           <div className="flex flex-col sm:flex-row gap-5">
             <div className="search flex flex-col flex-1 gap-10 sm:gap-0 justify-evenly items-center">
-              <div>
+              <div className="w-[300px]  flex justify-between items-center">
                 {
                   // creat an array of length 4 and map over it to create 4 buttons
                   Array.from({ length: 4 }).map((_, index) => (
                     <button
+                      type="button"
                       key={index}
                       onClick={() => {
                         setData({ ...data, number_of_seats: index + 1 });
@@ -209,6 +210,7 @@ const CreatCarPooling = () => {
                   }}
                   value={data.price}
                 />
+
                 <div className="text-center">{data.price} MAD</div>
               </div>
             </div>
@@ -227,7 +229,7 @@ const CreatCarPooling = () => {
             <h1>Confirmation</h1>
             <div className=" flex flex-col gap-5 items-center">
               <div className="flex  gap-5">
-                <h1 className="text-2xl font-bold text-cyan-700">
+                <h1 className="text-2xl font-bold text-cyan-700 w-[200px]">
                   Departure:{" "}
                 </h1>
                 <p className="text-2xl font-bold text-gray-800">
@@ -267,8 +269,9 @@ const CreatCarPooling = () => {
                 <p className="text-2xl font-bold text-gray-800">{data.price}</p>
               </div>
             </div>
-            <button className="btn mt-5 bg-cyan-700 py-2  px-4 rounded-md  text-xl text-white mx-auto"
-            onClick={handleCreatCarpooling}
+            <button
+              className="btn mt-5 bg-cyan-700 py-2  px-4 rounded-md  text-xl text-white mx-auto"
+              onClick={handleCreatCarpooling}
             >
               Confirm
             </button>

@@ -3,13 +3,14 @@ import { getCities, searchCarpooling } from "../api/methods";
 import { useEffect, useState } from "react";
 import { MdOutlineDepartureBoard } from "react-icons/md";
 import type { DatePickerProps } from "antd";
-import { DatePicker, Space } from "antd";
+import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import { GiPositionMarker } from "react-icons/gi";
 import { PiSeatbeltFill } from "react-icons/pi";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { set } from "date-fns";
+import SearchCities from "./SearchCities";
 
 type FieldType = {
   departure: string | null;
@@ -20,7 +21,7 @@ type FieldType = {
 };
 
 interface SearchCarpoolingProps {
-  setCarpoolings: () => void;
+  setCarpoolings?: () => void;
 }
 
 const SearchCarpooling = ({ setCarpoolings }: SearchCarpoolingProps) => {
@@ -71,6 +72,7 @@ const SearchCarpooling = ({ setCarpoolings }: SearchCarpoolingProps) => {
       pathname: "/carpooling/search",
       search: `?departure=${data.departure}&destination=${data.destination}&departure_day=${data.departure_day}&number_of_seats=${data.number_of_seats}&user_id=${data.user_id}`,
     });
+    if (!setCarpoolings) return;
     await searchCarpooling(data)
       .then((response: any) => {
         setCarpoolings(response);
@@ -81,67 +83,60 @@ const SearchCarpooling = ({ setCarpoolings }: SearchCarpoolingProps) => {
   };
 
   return (
-    <div className="m-auto shadow-md p-2 flex flex-wrap justify-between items-center  container bg-white border-[2px] rounded-md">
-      <Select
-        suffixIcon={
-          <MdOutlineDepartureBoard className="text-cyan-500" size={20} />
-        }
-        size="large"
-        showSearch
-        placeholder="Choose departure city"
-        optionFilterProp="children"
-        onChange={(value) => {
-          setData({ ...data, departure: value });
-        }}
-        onSearch={onSearch}
-        options={cities}
-        filterOption={filterOption}
-        style={{ width: 200, color: "black", border: "none" }}
-        className="border-none"
-        value={data.departure}
-      />
-      <Select
-        suffixIcon={<GiPositionMarker className="text-cyan-500" size={20} />}
-        size="large"
-        showSearch
-        placeholder="Choose departure city"
-        optionFilterProp="children"
-        onChange={(value) => {
-          setData({ ...data, destination: value });
-        }}
-        onSearch={onSearch}
-        options={cities}
-        filterOption={filterOption}
-        style={{ width: 200, color: "black" }}
-        value={data.destination}
-      />
-      <DatePicker
-        size="large"
-        onChange={(date) => {
-          setData({
-            ...data,
-            departure_day: date.endOf("day").format("YYYY-MM-DD"),
-          });
-          setSearchParams({
-            ...params,
-            departure_day: date.endOf("day").format("YYYY-MM-DD"),
-          });
-        }}
-        defaultValue={dayjs().endOf("day")}
-        disabledDate={(current) => {
-          return current && current <= dayjs().endOf("day");
-        }}
-      />
-      <InputNumber
-        size="large"
-        min={1}
-        max={4}
-        defaultValue={1}
-        suffix={<PiSeatbeltFill className="text-cyan-500 ml-8" size={20} />}
-        onChange={(value) => {
-          setData({ ...data, number_of_seats: value });
-        }}
-      />
+    <div className="m-auto shadow-md p-2 flex flex-wrap gap-5 justify-between items-center  container bg-white border-[2px] rounded-md">
+      <div className="flex-1">
+        <SearchCities
+          setChoosedCity={(city: string) =>
+            setData({ ...data, departure: city })
+          }
+          placeholder="Choose departure city"
+          icon={<MdOutlineDepartureBoard className="text-cyan-500" size={20} />}
+          defaultValue={data.departure}
+        />
+      </div>
+      <div className="flex-1">
+        <SearchCities
+          setChoosedCity={(city: string) =>
+            setData({ ...data, destination: city })
+          }
+          placeholder="Choose destination city"
+          icon={<GiPositionMarker className="text-cyan-500" size={20} />}
+          defaultValue={data.destination}
+        />
+      </div>
+      <div className="flex-1">
+        <DatePicker
+          width={"100%"}
+          size="large"
+          onChange={(date) => {
+            setData({
+              ...data,
+              departure_day: date.endOf("day").format("YYYY-MM-DD"),
+            });
+            setSearchParams({
+              ...params,
+              departure_day: date.endOf("day").format("YYYY-MM-DD"),
+            });
+          }}
+          defaultValue={dayjs().endOf("day")}
+          disabledDate={(current) => {
+            return current && current <= dayjs().endOf("day");
+          }}
+        />
+      </div>
+      <div className="flex-1">
+        <InputNumber
+          width={"100%"}
+          size="large"
+          min={1}
+          max={4}
+          defaultValue={1}
+          suffix={<PiSeatbeltFill className="text-cyan-500 ml-8" size={20} />}
+          onChange={(value) => {
+            setData({ ...data, number_of_seats: value });
+          }}
+        />
+      </div>
       <Button
         type="primary"
         size="large"

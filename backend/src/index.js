@@ -8,6 +8,8 @@ const bodyParser = require("body-parser");
 const carpoolingBookingRouter = require("./v1/routes/bookCarpoolingRoutes");
 const carpoolingRouter = require("./v1/routes/carpoolingRoutes");
 const notificationsRouter = require("./v1/routes/notificationsRouter");
+const carRouter = require("./v1/routes/carRoutes");
+
 const verifyJWT = require("./middlewares/verifyJWT");
 const cors = require('cors');
 const {initializeSocket} = require('./initSocket'); // Import the initializeSocket function
@@ -36,6 +38,7 @@ app.use("/api/v1/cities", citiesRouter);
 app.use("/api/v1/carpooling", carpoolingRouter);
 app.use("/api/v1/carpooling", carpoolingBookingRouter);
 app.use('/api/v1/notifications', notificationsRouter);
+app.use('/api/v1/car', carRouter);
 
 server.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
