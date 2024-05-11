@@ -2,14 +2,12 @@ import { InputNumber, Select, Button } from "antd";
 import { getCities, searchCarpooling } from "../api/methods";
 import { useEffect, useState } from "react";
 import { MdOutlineDepartureBoard } from "react-icons/md";
-import type { DatePickerProps } from "antd";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import { GiPositionMarker } from "react-icons/gi";
 import { PiSeatbeltFill } from "react-icons/pi";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { set } from "date-fns";
 import SearchCities from "./SearchCities";
 
 type FieldType = {
@@ -21,66 +19,45 @@ type FieldType = {
 };
 
 interface SearchCarpoolingProps {
-  setCarpoolings?: () => void;
+  redirect: boolean;
+  setCarpoolings?: any;
 }
 
-const SearchCarpooling = ({ setCarpoolings }: SearchCarpoolingProps) => {
-  const [cities, setCities] = useState([]);
-  const onSearch = async (val: any) => {
-    await getCities(val)
-      .then((response: any) => {
-        setCities(
-          response.map((city: any) => {
-            return { value: city.label, label: city.label };
-          })
-        );
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-  };
-  const filterOption = (
-    input: string,
-    option?: { label: string; value: string }
-  ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
-
+const SearchCarpooling = ({
+  redirect,
+  setCarpoolings,
+}: SearchCarpoolingProps ) => {
   const [params, setSearchParams] = useSearchParams();
 
   const [data, setData] = useState<FieldType>({
-    departure: "",
-    destination: "",
+    departure: params.get("departure") || "",
+    destination: params.get("destination") || "",
     departure_day: dayjs().endOf("day").format("YYYY-MM-DD"),
     number_of_seats: 1,
     user_id: "",
   });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (params.get("departure") && params.get("destination")) {
-      setData({
-        ...data,
-        departure: params.get("departure"),
-        destination: params.get("destination"),
-      });
-    }
-  }, []);
-
   const user_id = localStorage.getItem("id");
   const searchForCarpooling = async () => {
     data.user_id = user_id;
-    navigate({
-      pathname: "/carpooling/search",
-      search: `?departure=${data.departure}&destination=${data.destination}&departure_day=${data.departure_day}&number_of_seats=${data.number_of_seats}&user_id=${data.user_id}`,
-    });
-    if (!setCarpoolings) return;
-    await searchCarpooling(data)
-      .then((response: any) => {
-        setCarpoolings(response);
-      })
-      .catch((error: any) => {
-        console.log(error);
+    if (redirect) {
+      alert("here55ßß")
+      navigate({
+        pathname: "/carpooling/search",
+        search: `?departure=${data.departure}&destination=${data.destination}&departure_day=${data.departure_day}&number_of_seats=${data.number_of_seats}&user_id=${data.user_id}`,
       });
-  };
+    } else
+    {
+      await searchCarpooling(data)
+        .then((response: any) => {
+          setCarpoolings(response);
+        })
+        .catch((error: any) => {
+          console.log(error);
+        });
+    }
+  }
 
   return (
     <div className="m-auto shadow-md p-2 flex flex-wrap gap-5 justify-between items-center  container bg-white border-[2px] rounded-md">

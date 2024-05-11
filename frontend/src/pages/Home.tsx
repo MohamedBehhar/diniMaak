@@ -23,7 +23,7 @@ function Home() {
           Let's Go Somewhere
         </h1>
         <div className="search w-full h-[100px]  absolute bottom-[-50px] flex items-center px-2">
-          <SearchCarpooling />
+          <SearchCarpooling redirect={true} />
         </div>
       </head>
       <main className=" w-full h-fit mt-20 container">

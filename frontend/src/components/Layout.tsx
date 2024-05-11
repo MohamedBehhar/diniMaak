@@ -1,7 +1,7 @@
 import { socket } from "../socket/socket";
 import { useEffect, useState } from "react";
 import { getNotifications } from "../api/methods";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { FaCarSide } from "react-icons/fa";
@@ -84,11 +84,25 @@ const Layout = ({ children }: any) => {
   };
   const [requester_id, setBookerId] = useState(0);
   const [carpooling_id, setCarpoolingId] = useState(0);
-
+  const Navigate = useNavigate();
   const items: MenuProps["items"] = [
     {
       key: "1",
       label: "Profile",
+    },
+    {
+      key: "2",
+      label: "Carpooling Requests",
+      onClick: () => {
+        Navigate('/carpooling/requests/' + localStorage.getItem('id'))
+      },
+    },
+    {
+      key: 'reservations',
+      label: 'Reservations',
+      onClick: () => {
+        Navigate('/carpooling/history/' + localStorage.getItem('id'))
+      }
     },
     {
       key: "3",

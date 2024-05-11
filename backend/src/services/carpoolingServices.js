@@ -96,9 +96,7 @@ const getCarpoolingRequests = async (user_id) => {
 		SELECT
 		booking.*,
 		users.username as booker_name ,
-		carpooling.departure,
-		carpooling.destination,
-		carpooling.id as carpooling_id
+		carpooling.*
 	FROM
 		booking
 	INNER JOIN
@@ -111,7 +109,6 @@ const getCarpoolingRequests = async (user_id) => {
 		booking.carpooling_id = carpooling.id
 	WHERE
 		carpooling.publisher_id = $1
-		AND booking.status = 'pending'
 		`, [user_id]);
 
 
@@ -230,16 +227,16 @@ const acceptCarpoolingRequest = async ({ requester_id, publisher_id, carpooling_
 		const sender_name = requestInfo.rows[0].driver_name;
 
 		sendNotification(sender_id, receiver_id,
-			`${sender_name} has accepted your request`, 'bookingAccepted');
+			`${sender_name} has accepted your request`, 'requestAccepted');
 
 		// insert the booking info into the notifications table
 		await db.query(`
 		INSERT INTO
-			notifications (sender_id, receiver_id, message, type)
+			notifications (sender_id, receiver_id, message, notifications_type)
 		VALUES
 			($1, $2, $3, $4)
 	`, [
-			sender_id, receiver_id, `${sender_name} has accepted your request`, 'bookingAccepted'
+			sender_id, receiver_id, `${sender_name} has accepted your request`, 'requestAccepted'
 		]);
 
 

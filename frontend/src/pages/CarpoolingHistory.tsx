@@ -16,7 +16,6 @@ const CarpoolingHistory = () => {
   socket.on("carpooling_request_accepted", (data: any) => {
     alert("carpooling request accepted");
     console.log("socket ==d==00: ", data);
-    
   });
 
   const cancelBooking = async (carpooling: any) => {
@@ -36,11 +35,11 @@ const CarpoolingHistory = () => {
   };
 
   return (
-    <div>
+    <div className="container p-3">
       {bookedCarpooling.map((carpooling: any) => {
         return (
           <div
-            className="border border-gray-400 rounded-md p-2 my-4"
+            className=" border border-gray-400 rounded-md p-2 "
             key={carpooling.id}
           >
             <div className="flex justify-between items-center">
@@ -60,8 +59,8 @@ const CarpoolingHistory = () => {
               </div>
             </div>
             <h2>{format(carpooling.departure_day, "EEEE, MM-yyyy")}</h2>
-            <h3>{carpooling.price}</h3>
-            <h4>{carpooling.seats}</h4>
+            <h3>price: {carpooling.price}</h3>
+            <h4>Number of Seats: {carpooling.number_of_seats}</h4>
             <h5>{carpooling.car}</h5>
             <h6>driver : {carpooling.driver_name}</h6>
             {carpooling.status === "accepted" && (

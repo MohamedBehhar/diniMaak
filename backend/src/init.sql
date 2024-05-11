@@ -2,9 +2,9 @@
 CREATE DATABASE IF NOT EXISTS TODO_DB;
 
 -- Connect to the newly created database
-\ c TODO_DB;
+\c TODO_DB;
 
--- car table
+-- Car table
 CREATE TABLE IF NOT EXISTS cars (
     car_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
@@ -12,18 +12,19 @@ CREATE TABLE IF NOT EXISTS cars (
     year INT NOT NULL,
     plate VARCHAR (50),
     image VARCHAR (250),
-    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
---  create a table for most known car brands
+-- Create a table for most known car brands
 CREATE TABLE IF NOT EXISTS cars_brands (
     id SERIAL PRIMARY KEY,
     label VARCHAR (50) NOT NULL
 );
 
--- Create tables
+-- Create user roles enum
 CREATE TYPE role AS ENUM ('driver', 'passenger');
 
+-- Create users table
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR (50) NOT NULL UNIQUE,
@@ -33,37 +34,10 @@ CREATE TABLE IF NOT EXISTS users (
     refresh_token VARCHAR (250),
     rating INT,
     role role DEFAULT 'passenger',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP FOREIGN KEY (car_id) REFERENCES cars (car_id)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
---  create a table for carpooling when each user can create many carpooling
-CREATE TABLE IF NOT EXISTS carpooling (
-    id SERIAL PRIMARY KEY,
-    publisher_id INT NOT NULL,
-    departure VARCHAR (50) NOT NULL,
-    destination VARCHAR (50) NOT NULL,
-    departure_day TIMESTAMP,
-    departure_time TIME NOT NULL,
-    number_of_seats INT NOT NULL,
-    available_seats INT NOT NULL,
-    price INT NOT NULL,
-    driver_name VARCHAR (50) NOT NULL,
-    confirmed_passengers INTEGER [],
-    FOREIGN KEY (publisher_id) REFERENCES users (id)
-);
-
--- create requesters table for each carpooling when each carpooling can have many requesters
-CREATE TABLE IF NOT EXISTS requesters (
-    id SERIAL PRIMARY KEY,
-    carpooling_id INT NOT NULL,
-    requester_id INT NOT NULL,
-    number_of_seats INT NOT NULL,
-    status status DEFAULT 'pending',
-    FOREIGN KEY (carpooling_id) REFERENCES carpooling (id),
-    FOREIGN KEY (requester_id) REFERENCES users (id)
-);
-
--- create a table for booking when each user can book many carpooling
+-- Create carpooling status enum
 CREATE TYPE bookingStatus AS ENUM (
     'pending',
     'accepted',
@@ -83,9 +57,36 @@ CREATE TABLE IF NOT EXISTS booking (
     FOREIGN KEY (publisher_id) REFERENCES users (id),
     FOREIGN KEY (requester_id) REFERENCES users (id),
     FOREIGN KEY (carpooling_id) REFERENCES carpooling (id)
+);ßß
+
+-- Create tables for carpooling
+CREATE TABLE IF NOT EXISTS carpooling (
+    id SERIAL PRIMARY KEY,
+    publisher_id INT NOT NULL,
+    departure VARCHAR (50) NOT NULL,
+    destination VARCHAR (50) NOT NULL,
+    departure_day TIMESTAMP,
+    departure_time TIME NOT NULL,
+    number_of_seats INT NOT NULL,
+    available_seats INT NOT NULL,
+    price INT NOT NULL,
+    driver_name VARCHAR (50) NOT NULL,
+    confirmed_passengers INTEGER [],
+    FOREIGN KEY (publisher_id) REFERENCES users (id)
 );
 
--- create a table for notifications when each user can have many notifications
+-- Create requesters table
+CREATE TABLE IF NOT EXISTS requesters (
+    id SERIAL PRIMARY KEY,
+    carpooling_id INT NOT NULL,
+    requester_id INT NOT NULL,
+    number_of_seats INT NOT NULL,
+    status bookingStatus DEFAULT 'pending',
+    FOREIGN KEY (carpooling_id) REFERENCES carpooling (id),
+    FOREIGN KEY (requester_id) REFERENCES users (id)
+);
+
+-- Create a table for notifications
 CREATE TYPE notifications_type AS ENUM (
     'rating',
     'comment',
@@ -112,7 +113,7 @@ CREATE TABLE notifications (
     FOREIGN KEY (receiver_id) REFERENCES users(id)
 );
 
--- create a table for chat when each user can chat with another user
+-- Create a table for chat
 CREATE TABLE IF NOT EXISTS chat (
     id SERIAL PRIMARY KEY,
     sender_id INT NOT NULL,
@@ -123,7 +124,7 @@ CREATE TABLE IF NOT EXISTS chat (
     FOREIGN KEY (receiver_id) REFERENCES users (id)
 );
 
--- create a table for rating when each user can rate many carpooling
+-- Create a table for rating
 CREATE TABLE IF NOT EXISTS rating (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
@@ -133,7 +134,7 @@ CREATE TABLE IF NOT EXISTS rating (
     FOREIGN KEY (carpooling_id) REFERENCES carpooling (id)
 );
 
--- create a table for comment when each user can comment many carpooling
+-- Create a table for comment
 CREATE TABLE IF NOT EXISTS comment (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
@@ -143,13 +144,13 @@ CREATE TABLE IF NOT EXISTS comment (
     FOREIGN KEY (carpooling_id) REFERENCES carpooling (id)
 );
 
--- create a moroccan cities table
+-- Create a Moroccan cities table
 CREATE TABLE IF NOT EXISTS cities (
     id SERIAL PRIMARY KEY,
     label VARCHAR (50) NOT NULL
 );
 
--- insert some moroccan cities into the cities table only once
+-- Insert some Moroccan cities into the cities table only once
 INSERT INTO
     cities (label)
 SELECT
@@ -191,7 +192,7 @@ WHERE
             cities
     );
 
--- insert some car brands into the cars_brands table only once
+-- Insert some car brands into the cars_brands table only once
 INSERT INTO
     cars_brands (label)
 SELECT

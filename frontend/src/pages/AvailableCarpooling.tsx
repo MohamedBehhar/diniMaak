@@ -1,48 +1,82 @@
 import React, { useEffect } from "react";
 import SearchCarpooling from "../components/SearchCarpooling";
-import { searchCarpooling } from "../api/methods";
+import { searchCarpooling, bookCarpooling } from "../api/methods";
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { format } from "date-fns";
 
 const AvailableCarpooling = () => {
   const [carpoolings, setCarpoolings] = useState([]);
   const [params] = useSearchParams();
+
+  const fetchCarpoolings = async () => {
+    const data = {
+      departure: params.get("departure"),
+      destination: params.get("destination"),
+      departure_day: params.get("departure_day"),
+      number_of_seats: params.get("number_of_seats"),
+      user_id: params.get("user_id"),
+    };
+
+    await searchCarpooling(data)
+      .then((response: any) => {
+        setCarpoolings(response);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
-    // alert("jjjj");
-    // searchCarpooling(params.toString())
-    //   .then((response) => {
-    //     console.log("odododododoood ", response);
-    //     setCarpoolings(response);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    fetchCarpoolings();
   }, []);
 
+  const navigate = useNavigate();
+
+  const handelBookCarpooling = async (carpooling_id: string) => {
+    const requester_id = localStorage.getItem("id");
+    const requested_seats = params.get("number_of_seats");
+    await bookCarpooling({ requester_id, carpooling_id, requested_seats })
+      .then((response: any) => {
+        navigate("/carpooling/history/" + requester_id);
+      })
+      .catch((error: any) => {
+        alert("error booking carpooling");
+      });
+  };
+
   return (
-    <div>
+    <div className="container p-3">
       <div className="p-5 w-full bg-cover bg-center">
         <h1 className=" text-5xl text-center p-10">Available Carpooling</h1>
       </div>
-      <SearchCarpooling setCarpoolings={setCarpoolings} />
+      <SearchCarpooling redirect={false} setCarpoolings={setCarpoolings} />
+
       {carpoolings && carpoolings.length > 0 ? (
         <div>
           {carpoolings.map((carpooling: any) => {
             return (
-              <div
-                key={carpooling.id}
-                className="container flex justify-between items-center p-5 border-b"
-              >
-                <div>
-                  <h2 className="text-xl">
+              <div key={carpooling.id} className="container  p-5 border rounded-md shadow-md my-2">
+                <div className="text-xl flex justify-between">
+                  <h2>
                     {carpooling.departure} - {carpooling.destination}
                   </h2>
                   <p>
-                    {carpooling.departure_day} - {carpooling.departure_time}
+                    {format(carpooling.departure_day, "EEEE, dd-MM-yyyy")} -{" "}
+                    {carpooling.departure_time}
                   </p>
                 </div>
+                <div className="flex items-end justify-between mt-2">
                 <div>
-                  <button className="bg-blue-500 text-white px-3 py-1 rounded-md">
+                  <p>Price: {carpooling.price}MAD</p>
+                  <p>Available Seats: {carpooling.available_seats}</p>
+                </div>
+                  <button
+                    className="bg-blue-500 text-white px-3 py-1 rounded-md"
+                    onClick={() => {
+                      handelBookCarpooling(carpooling.id);
+                    }}
+                  >
                     Book
                   </button>
                 </div>

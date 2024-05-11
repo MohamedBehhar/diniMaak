@@ -79,12 +79,7 @@ export const creatCarpooling = async (data) => {
 
 export const searchCarpooling = async (data) => {
 	const { departure, destination, user_id, departure_day, number_of_seats } = data;
-	if (!departure_day) {
-		departure_day = new Date().toISOString().split('T')[0];
-	}
-	if (!number_of_seats) {
-		number_of_seats = 1;
-	}
+
 
 	let url = `/carpooling/search/${user_id}/${departure}/${destination}/${departure_day}/${number_of_seats}`;
 
