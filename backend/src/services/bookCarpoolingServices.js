@@ -1,7 +1,7 @@
 // bookCarpoolingServices.js
 const db = require('../db/db');
 const { sendNotification } = require('../initSocket');
-
+io = require('../initSocket');
 const bookCarpooling = async ({ requester_id, carpooling_id, requested_seats }) => {
     try {
         console.log('requester_id', requester_id);
@@ -135,15 +135,15 @@ const cancelBookingRequest = async (booking_id) => {
             UPDATE
                 booking
             SET
-                status = 'cancelled'
+                status = 'canceled'
             WHERE
-                id = $1
+                booking_id = $1
             RETURNING
                 *
         `, [booking_id]);
 
         // Emit a socket event to notify the client about the cancellation
-        io.emit('bookingCancelled', booking.rows[0]);
+        io.emit('bookingCanceled', booking.rows[0]);
 
         return booking.rows[0];
     } catch (error) {

@@ -11,7 +11,7 @@ function Home() {
   const user_id = localStorage.getItem("id");
   return (
     <div className="h-full w-full">
-      <head
+      <header
         className="relative flex justify-center items-center h-[300px] w-full"
         style={{
           backgroundImage: `url(${homeBanner})`,
@@ -25,7 +25,7 @@ function Home() {
         <div className="search w-full h-[100px]  absolute bottom-[-50px] flex items-center px-2">
           <SearchCarpooling redirect={true} />
         </div>
-      </head>
+      </header>
       <main className=" w-full h-fit mt-20 container">
         <div className="post-carpooling flex justify-center items-center">
           <img src={TravelingSvg} alt="" width={400} />

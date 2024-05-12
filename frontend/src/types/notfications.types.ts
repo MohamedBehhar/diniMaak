@@ -3,8 +3,10 @@
 // create types for frontend same as backend
 
 // Path: frontend/src/types/notifications.types.ts
-export type NotificationType = "rating" | "comment" | "bookingConfirmed" | "bookingCanceled" | "requestAccepted" | "requestRejected" | "requestCanceled" | "chat" | "carpoolingPublished";
+ type NotificationType = "rating" | "comment" | "bookingConfirmed" | "bookingCanceled" | "requestAccepted" | "requestRejected" | "requestCanceled" | "chat" | "carpoolingPublished";
 
+
+ 
 export interface Notification {
   id: number;
   type: NotificationType;

@@ -6,25 +6,30 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { FaCarSide } from "react-icons/fa";
 import type { MenuProps } from "antd";
-import { Button, Dropdown, Space } from "antd";
+import { Dropdown } from "antd";
 import { FaRegUserCircle } from "react-icons/fa";
 import { signOut } from "../utils/helperFunctions";
-
+import { message } from "antd";
 const Layout = ({ children }: any) => {
-  const user_id = localStorage.getItem("id");
   const userInfo = useSelector((state: RootState) => state.user.test);
   console.log("userInfo === ", userInfo);
   const [notifications, setNotifications] = useState([]);
+
+  const user_id = localStorage.getItem("id");
   useEffect(() => {
     socket.on("connection", () => {
-      console.log("connected");
-      // emit user id
+      console.log("connected-----------------socket");
       socket.emit("join", user_id);
     });
+    socket.on("newBookingRequest", (data: any) => {
+      console.log("new booking request === ", data);
+      message.info(data.message);
+      getNotifications(user_id);
+    });
 
-    socket.on("carpooling_request_accepted", (data: any) => {
-      alert("carpooling request accepted");
-      console.log("socket ==d==00: ", data);
+    socket.on("requestAccepted", (data: any) => {
+      message.info(data.message);
+      getNotifications(user_id);
     });
 
     getNotifications(user_id)
@@ -35,55 +40,12 @@ const Layout = ({ children }: any) => {
         console.log(error);
       });
 
-    socket.on("newBooking", (data: any) => {
-      console.log("socket ==== ", data);
-      if (data.publisher_id == user_id) {
-        getNotifications(user_id)
-          .then((response: any) => {
-            setNotifications(response);
-          })
-          .catch((error: any) => {
-            console.log(error);
-          });
-      }
-    });
-    socket.on("carpooling_request_accepted", (data: any) => {
-      alert("carpooling request accepted");
-      console.log("socket ==d== ", data);
-    });
-
-    socket.on("updateNotifications", (data: any) => {
-      alert("updateNotifications");
-      console.log("socket ==== ", data);
-      getNotifications(user_id)
-        .then((response: any) => {
-          setNotifications(response);
-        })
-        .catch((error: any) => {
-          console.log(error);
-        });
-    });
-
-    getNotifications(user_id)
-      .then((response: any) => {
-        setNotifications(response);
-        console.log("notifs === ", response);
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
     return () => {
-      socket.off("connect");
+      socket.off("connection");
+      socket.off("newBookingRequest");
     };
   }, []);
 
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-  const [requester_id, setBookerId] = useState(0);
-  const [carpooling_id, setCarpoolingId] = useState(0);
   const Navigate = useNavigate();
   const items: MenuProps["items"] = [
     {
@@ -92,17 +54,26 @@ const Layout = ({ children }: any) => {
     },
     {
       key: "2",
-      label: "Carpooling Requests",
+      label: (
+        <div className="flex items-center justify-between cursor-pointer gap-5">
+          Requests
+          {notifications.length > 0 && (
+            <span className=" w-6 h-6 flex justify-center items-center bg-red-500 text-white rounded-full p-1">
+              {notifications.length}
+            </span>
+          )}
+        </div>
+      ),
       onClick: () => {
-        Navigate('/carpooling/requests/' + localStorage.getItem('id'))
+        Navigate("/carpooling/requests/" + localStorage.getItem("id"));
       },
     },
     {
-      key: 'reservations',
-      label: 'Reservations',
+      key: "reservations",
+      label: "Reservations",
       onClick: () => {
-        Navigate('/carpooling/history/' + localStorage.getItem('id'))
-      }
+        Navigate("/carpooling/history/" + localStorage.getItem("id"));
+      },
     },
     {
       key: "3",
@@ -118,25 +89,28 @@ const Layout = ({ children }: any) => {
   ];
 
   return (
-    <div className="h-full  ">
-      <header className="border-b border-b-gray-200 h-[5%]   ">
+    <div className="h-full flex flex-col ">
+      <header className="border-b border-b-gray-200 h-[3.5rem]   ">
         <div className="container flex justify-between items-center p-3  text-gray-600 ">
           <Link to="/">
             <div className="bg-[#F3D0D7]  flex flex-col items-center  justify-center rounded-full p-2">
-              <FaCarSide className="text-cyan-600 size-9" />
+              <FaCarSide className="text-cyan-600 " />
               {/* <p className="text-xs">Dini-Maak</p> */}
             </div>
           </Link>
           <div className="text-xl ">{localStorage.getItem("username")}</div>
           <Dropdown menu={{ items }} placement="bottomRight">
-            <div className="bg-[#F3D0D7] p-2 rounded-full ">
-              <FaRegUserCircle className="size-8 text-cyan-600" />
+            <div className="bg-[#F3D0D7] p-2 rounded-full relative">
+              {notifications.length > 0 && (
+                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+              )}
+              <FaRegUserCircle className=" text-cyan-600" />
             </div>
           </Dropdown>
         </div>
       </header>
-      <div className="  h-[80%] ">{children}</div>
-      <footer className="p-3 bg-blue-500 text-white h-[15%] ">footer</footer>
+      <div className="  flex-1">{children}</div>
+      <footer className="p-3 bg-blue-500 text-white h-[4rem] ">footer</footer>
     </div>
   );
 };

@@ -34,13 +34,30 @@ function initializeSocket(server) {
     return io;
 }
 
-function sendNotification(sender_id, receiver_id, message, type) {
+async function sendNotification(sender_id, receiver_id, message, type) {
     const receiverSocketId = usersMap.get(receiver_id + '');
     console.log('receiverSocketId', receiverSocketId);
     console.log('sender_idtype ; ; ', type);
 
     if (receiverSocketId) {
-        io.to(receiverSocketId).emit('notification', { sender_id, message, type });
+        io.to(receiverSocketId).emit(
+            type, { message, sender_id }
+        );
+
+        const notification = await db.query(`
+            SELECT
+                *
+            FROM
+                notifications
+            WHERE
+                sender_id = $1 AND receiver_id = $2 AND message = $3 AND notifications_type = $4
+        `, [sender_id, receiver_id, message, type]);
+
+        console.log('notification', notification);
+
+        if (notification.rows.length > 0) {
+            return;
+        }
 
         db.query(`
             INSERT INTO

@@ -45,6 +45,8 @@ const CreatCarPooling = () => {
   const decreament = () => {
     if (stepNumber > 0) setStepNumber(stepNumber - 1);
   };
+
+  const [modify, setModify] = useState(false);
   const [data, setData] = useState({
     departure: "",
     destination: "",
@@ -227,46 +229,152 @@ const CreatCarPooling = () => {
         {stepNumber == 4 && (
           <div>
             <h1>Confirmation</h1>
-            <div className=" flex flex-col gap-5 items-center">
-              <div className="flex  gap-5">
-                <h1 className="text-2xl font-bold text-cyan-700 w-[200px]">
+            <div className=" flex  gap-5 items-center justify-center relative">
+              <button
+                className="btn bg-gray-800 text-white absolute top-0 right-0"
+                onClick={() => setModify(!modify)}
+              >
+                Modify
+              </button>
+              <div className="left flex flex-col  gap-5  text-balance ">
+                <h1 className="text-2xl font-bold text-cyan-700 ">
                   Departure:{" "}
                 </h1>
-                <p className="text-2xl font-bold text-gray-800">
-                  {data.departure}
-                </p>
-              </div>
-              <div className="flex  gap-5">
                 <h1 className="text-2xl font-bold text-cyan-700">
                   Destination:{" "}
                 </h1>
-                <p className="text-2xl font-bold text-gray-800">
-                  {data.destination}
-                </p>
-              </div>
-              <div className="flex  gap-5">
                 <h1 className="text-2xl font-bold text-cyan-700">Date : </h1>
-                <p className="text-2xl font-bold text-gray-800">
-                  {format(new Date(data.departure_day), "EEEE, dd-MM-yyyy")}
-                </p>
-              </div>
-              <div className="flex  gap-5">
                 <h1 className="text-2xl font-bold text-cyan-700">Time: </h1>
-                <p className="text-2xl font-bold text-gray-800">
-                  {data.departure_time}
-                </p>
-              </div>
-              <div className="flex  gap-5">
                 <h1 className="text-2xl font-bold text-cyan-700">
                   Number of Places:{" "}
                 </h1>
-                <p className="text-2xl font-bold text-gray-800">
-                  {data.number_of_seats}
-                </p>
-              </div>
-              <div className="flex  gap-5">
                 <h1 className="text-2xl font-bold text-cyan-700">Price: </h1>
-                <p className="text-2xl font-bold text-gray-800">{data.price}</p>
+              </div>
+              <div className="right  flex flex-col gap-5">
+                <p className="text-2xl font-bold text-gray-800">
+                  {modify ? (
+                    <SearchCities
+                      setChoosedCity={(city: string) => {
+                        setData({ ...data, departure: city });
+                      }}
+                      placeholder="Departure"
+                      icon={
+                        <MdDepartureBoard className="text-cyan-700 text-xl" />
+                      }
+                      defaultValue={data.departure}
+                    />
+                  ) : (
+                    data.departure
+                  )}
+                </p>
+
+                <p className="text-2xl font-bold text-gray-800">
+                  {modify ? (
+                    <SearchCities
+                      setChoosedCity={(city: string) => {
+                        setData({ ...data, destination: city });
+                      }}
+                      placeholder="Destination"
+                      icon={
+                        <MdOutlinePlace className="text-cyan-700 text-xl" />
+                      }
+                      defaultValue={data.destination}
+                    />
+                  ) : (
+                    data.destination
+                  )}
+                </p>
+
+                <p className="text-2xl font-bold text-gray-800">
+                  {modify ? (
+                    <DatePicker
+                      className="w-full"
+                      size="large"
+                      onChange={(date) => {
+                        setData({
+                          ...data,
+                          departure_day: date.endOf("day").format("YYYY-MM-DD"),
+                        });
+                      }}
+                      defaultValue={dayjs().endOf("day")}
+                      disabledDate={
+                        // disable past dates starting from before today
+                        (current) => {
+                          return current && current <= dayjs().endOf("day");
+                        }
+                      }
+                    />
+                  ) : (
+                    data.departure_day
+                  )}
+                </p>
+
+                <p className="text-2xl font-bold text-gray-800">
+                  {modify ? (
+                    <TimePicker
+                      size="large"
+                      className="w-full"
+                      onChange={(time) => {
+                        setData({
+                          ...data,
+                          departure_time: time.format("HH:mm"),
+                        });
+                      }}
+                      defaultOpenValue={dayjs("00:00", "HH:mm")}
+                      value={dayjs(data.departure_time, "HH:mm")}
+                      minuteStep={5}
+                      format={"HH:mm"}
+                    />
+                  ) : (
+                    data.departure_time
+                  )}
+                </p>
+
+                <p className="text-2xl font-bold text-gray-800">
+                  {modify ? (
+                    <div className="w-[300px]  flex justify-between items-center">
+                      {
+                        // creat an array of length 4 and map over it to create 4 buttons
+                        Array.from({ length: 4 }).map((_, index) => (
+                          <button
+                            type="button"
+                            key={index}
+                            onClick={() => {
+                              setData({ ...data, number_of_seats: index + 1 });
+                            }}
+                            className={`${
+                              data.number_of_seats >= index + 1
+                                ? "bg-cyan-700 text-white"
+                                : "bg-gray-300"
+                            } border-none p-2 mx-[2px] text-xl rounded-md`}
+                          >
+                            <PiSeatbeltFill />
+                          </button>
+                        ))
+                      }
+                      <div className="text-center">
+                        {data.number_of_seats} Places
+                      </div>
+                    </div>
+                  ) : (
+                    data.number_of_seats
+                  )}
+                </p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {modify ? (
+                    <Slider
+                      defaultValue={0}
+                      max={100}
+                      min={0}
+                      onChange={(value) => {
+                        setData({ ...data, price: value });
+                      }}
+                      value={data.price}
+                    />
+                  ) : (
+                    data.price
+                  )}
+                </p>
               </div>
             </div>
             <button

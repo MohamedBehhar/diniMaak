@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS booking (
     FOREIGN KEY (publisher_id) REFERENCES users (id),
     FOREIGN KEY (requester_id) REFERENCES users (id),
     FOREIGN KEY (carpooling_id) REFERENCES carpooling (id)
-);ßß
+);
 
 -- Create tables for carpooling
 CREATE TABLE IF NOT EXISTS carpooling (
