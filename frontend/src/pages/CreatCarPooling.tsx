@@ -8,12 +8,13 @@ import { FaCar } from "react-icons/fa6";
 import { GiConfirmed } from "react-icons/gi";
 import postCarpooling from "../assets/postCarpooling.svg";
 import { PiSeatbeltFill } from "react-icons/pi";
-import { InputNumber, DatePicker, TimePicker, Slider } from "antd";
+import { InputNumber, DatePicker, TimePicker, Slider, message } from "antd";
 import SearchCities from "../components/SearchCities";
 import dayjs from "dayjs";
 import { creatCarpooling } from "../api/methods";
 import { format } from "date-fns";
 import AddCar from "../components/AddCar";
+import { useNavigate } from "react-router-dom";
 
 const CreatCarPooling = () => {
   const [stepNumber, setStepNumber] = useState(0);
@@ -40,7 +41,7 @@ const CreatCarPooling = () => {
     },
   ];
   const increament = () => {
-    if (stepNumber < steps.length) setStepNumber(stepNumber + 1);
+    if (stepNumber < steps.length - 1) setStepNumber(stepNumber + 1);
   };
   const decreament = () => {
     if (stepNumber > 0) setStepNumber(stepNumber - 1);
@@ -63,13 +64,17 @@ const CreatCarPooling = () => {
   //   }
   // }, [data]);
 
+  const Navigate = useNavigate();
   const handleCreatCarpooling = async () => {
     await creatCarpooling(data)
       .then((response) => {
-        console.log(response);
+        message.success("Carpooling created successfully");
+        Navigate(
+          "/carpooling/published-carpooling/" + localStorage.getItem("id")
+        );
       })
       .catch((error) => {
-        console.log(error);
+        message.error("Error creating carpooling");
       });
   };
 

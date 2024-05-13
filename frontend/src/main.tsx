@@ -10,10 +10,10 @@ import { Provider } from "react-redux";
 import { store } from "./store/store.ts";
 import CreatCarPooling from "./pages/CreatCarPooling.tsx";
 import CarpoolingDetails from "./pages/CarpoolingDetails.tsx";
-import Layout from "./components/Layout.tsx";
 import CarpoolingHistory from "./pages/CarpoolingHistory.tsx";
 import CarpoolingRequests from "./pages/CarpoolingRequests.tsx";
 import AvailableCarpooling from "./pages/AvailableCarpooling.tsx";
+import ManageYourCarpooling from "./pages/ManageYourCarpooling.tsx";
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -46,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: "/carpooling/history/:user_id",
         element: <CarpoolingHistory />,
+      },
+      {
+        path: "/carpooling/published-carpooling/:user_id",
+        element: <ManageYourCarpooling />,
       },
       {
         path: "/carpooling/requests/:user_id",

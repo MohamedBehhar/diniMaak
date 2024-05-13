@@ -53,6 +53,13 @@ const Layout = ({ children }: any) => {
       label: "Profile",
     },
     {
+      key: "5",
+      label: "Manage your carpooling",
+      onClick: () => {
+        Navigate('/carpooling/published-carpooling/' + localStorage.getItem("id"));
+      },
+    },
+    {
       key: "2",
       label: (
         <div className="flex items-center justify-between cursor-pointer gap-5">

@@ -26,8 +26,8 @@ function Home() {
           <SearchCarpooling redirect={true} />
         </div>
       </header>
-      <main className=" w-full h-fit mt-20 container">
-        <div className="post-carpooling flex justify-center items-center">
+      <main className=" w-full h-fit mt-64 sm:mt-20 container">
+        <div className="post-carpooling flex sm:flex-row flex-col justify-center items-center">
           <img src={TravelingSvg} alt="" width={400} />
           <div>
             <h1 className="text-3xl font-bold">Going Somewhere?</h1>

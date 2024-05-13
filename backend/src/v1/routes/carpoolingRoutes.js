@@ -14,6 +14,7 @@ router.get('/request/:requester_id/:carpooling_id', carpoolingControllers.getSin
 router.get('/bookings/:user_id', carpoolingControllers.getBookedCarpooling);
 router.post('/requests/accept', carpoolingControllers.acceptCarpoolingRequest);
 router.post('/requests/reject', carpoolingControllers.rejectCarpoolingRequest);
+router.get('/published/:user_id', carpoolingControllers.getCarpoolingByPublisherId);
 
 
 

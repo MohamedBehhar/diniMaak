@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR (250) NOT NULL,
     email VARCHAR (100) NOT NULL UNIQUE,
     refresh_token VARCHAR (250),
+    profile_picture VARCHAR (250),
     rating INT,
     role role DEFAULT 'passenger',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -72,6 +73,7 @@ CREATE TABLE IF NOT EXISTS carpooling (
     price INT NOT NULL,
     driver_name VARCHAR (50) NOT NULL,
     confirmed_passengers INTEGER [],
+    booking_requests_ids INTEGER [],
     FOREIGN KEY (publisher_id) REFERENCES users (id)
 );
 

@@ -48,7 +48,7 @@ const AddCar = () => {
 
   return (
     <div className=" h-full">
-      <div className="flex  h-[80%] gap-5">
+      <div className="flex sm:flex-row flex-col h-[80%] gap-5">
         <div className="flex-1  h-full  flex flex-col justify-evenly">
           <Select
             size="large"

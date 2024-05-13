@@ -60,8 +60,8 @@ const SearchCarpooling = ({
   }
 
   return (
-    <div className="m-auto shadow-md p-2 flex flex-wrap gap-5 justify-between items-center  container bg-white border-[2px] rounded-md">
-      <div className="flex-1">
+    <div className="m-auto shadow-md p-2 flex flex-col sm:flex-row gap-5 justify-between items-center  container bg-white border-[2px] rounded-md">
+      <div className="flex-1 w-full">
         <SearchCities
           setChoosedCity={(city: string) =>
             setData({ ...data, departure: city })
@@ -71,7 +71,7 @@ const SearchCarpooling = ({
           defaultValue={data.departure}
         />
       </div>
-      <div className="flex-1">
+      <div className="flex-1 w-full">
         <SearchCities
           setChoosedCity={(city: string) =>
             setData({ ...data, destination: city })
@@ -81,10 +81,11 @@ const SearchCarpooling = ({
           defaultValue={data.destination}
         />
       </div>
-      <div className="flex-1">
+      <div className="flex-1  w-full">
         <DatePicker
           width={"100%"}
           size="large"
+          className="w-full"
           onChange={(date) => {
             setData({
               ...data,
@@ -101,8 +102,9 @@ const SearchCarpooling = ({
           }}
         />
       </div>
-      <div className="flex-1">
+      <div className="flex-1 w-full">
         <InputNumber
+          className="w-full"
           width={"100%"}
           size="large"
           min={1}

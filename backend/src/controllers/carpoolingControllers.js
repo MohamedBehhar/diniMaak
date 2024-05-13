@@ -152,6 +152,17 @@ const rejectCarpoolingRequest = async (req, res) => {
 	}
 }
 
+const getCarpoolingByPublisherId = async (req, res) => {
+	try {
+		const { user_id } = req.params;
+		const carpooling = await carpoolingServices.getCarpoolingByPublisherId(user_id);
+		res.status(200).json(carpooling);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+}
+
 
 
 
@@ -165,5 +176,6 @@ module.exports = {
 	getBookedCarpooling,
 	getSingleRequestInfo,
 	acceptCarpoolingRequest,
-	rejectCarpoolingRequest
+	rejectCarpoolingRequest,
+	getCarpoolingByPublisherId
 }

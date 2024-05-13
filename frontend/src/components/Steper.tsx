@@ -73,27 +73,46 @@ const Steper = ({
           </h1>
         )}
         {children}
-      </main>
-      <footer className="flex justify-between">
-        {stepNumber > 0 && stepNumber < steps.length && (
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              decreament();
-            }}
-          >
-            Back
-          </button>
-        )}
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            increament();
-          }}
+        <footer className={`${
+          stepNumber == steps.length - 1 ? "hidden" : "grid grid-cols-2 gap-2 mt-1"
+        }`}
         >
-          Next
-        </button>
-      </footer>
+          {stepNumber > 0 && stepNumber < steps.length && (
+            <button
+              className={
+                `${
+                  stepNumber == 0 ?
+                  "hidden" :
+                    "bg-gray-300 text-gray-500 justify-self-start"
+              
+                } p-2 rounded-md`
+                
+              }
+              onClick={() => {
+                decreament();
+              }}
+            >
+              Back
+            </button>
+          )}
+          {
+
+            stepNumber <= steps.length - 1 ? (
+              <button
+                className="bg-cyan-600 text-white p-2 rounded-md col-start-2 justify-self-end"
+                onClick={() => {
+                  increament();
+                }}
+              >
+                next
+              </button>
+            ) : (
+              ""
+            )
+          }
+         
+        </footer>
+      </main>
     </div>
   );
 };

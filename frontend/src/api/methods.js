@@ -205,3 +205,12 @@ export const addCar = async (car) => {
 		throw error;
 	}
 }
+
+export const getCarpoolingByPublisherId = async (user_id) => {
+	try {
+		const response = await instance.get(`/carpooling/published/${user_id}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}

@@ -270,6 +270,73 @@ const rejectCarpoolingRequest = async (requester_id, carpooling_id, number_of_se
 	}
 }
 
+const getCarpoolingByPublisherId = async (user_id) => {
+	try {
+		// check if the carpooling has any booking requests
+
+		const carpooling = await db.query(`
+		SELECT
+			*
+		FROM
+			carpooling
+		WHERE
+			publisher_id = $1
+		`, [user_id]);
+		
+
+		for (let i = 0; i < carpooling.rows.length; i++) {
+			const carpooling_id = carpooling.rows[i].id;
+			const bookingRequests = await db.query(`
+			SELECT
+				booking.*,
+				users.username,
+				users.rating,
+				users.profile_picture,
+				users.phone_number
+			FROM
+				booking
+			INNER JOIN
+				users
+			ON
+				booking.requester_id = users.id
+			WHERE
+				carpooling_id = $1
+				AND status = 'pending'
+			`, [carpooling_id]);
+
+			const confirmedRequests = await db.query(`
+			SELECT
+				booking.*,
+				users.username,
+				users.rating,
+				users.profile_picture,
+				users.phone_number
+			FROM
+				booking
+			INNER JOIN
+				users
+			ON
+				booking.requester_id = users.id
+			WHERE
+				carpooling_id = $1
+				AND status = 'confirmed'
+			`, [carpooling_id]);
+
+
+			carpooling.rows[i].confirmed_requests = confirmedRequests.rows;
+			carpooling.rows[i].requests_infos = bookingRequests.rows;
+		}
+
+		console.log("carpooling====", carpooling.rows);
+
+
+		return carpooling.rows;
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+}
+
 module.exports = {
 	getCarpooling,
 	getCarpoolingById,
@@ -281,5 +348,6 @@ module.exports = {
 	getSingleRequestInfo,
 	acceptCarpoolingRequest,
 	rejectCarpoolingRequest,
-	getAvailableSeats
+	getAvailableSeats,
+	getCarpoolingByPublisherId
 }

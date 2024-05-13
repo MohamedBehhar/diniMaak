@@ -3,20 +3,29 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { cancelBookingRequest, confirmBookingRequest } from "../api/methods";
 import { socket } from "../socket/socket";
+import { message } from "antd";
 
 const CarpoolingHistory = () => {
+  const user_id = localStorage.getItem("id");
   const [bookedCarpooling, setBookedCarpooling] = useState([]);
   useEffect(() => {
-    getBookedCarpooling(localStorage.getItem("id")).then((response: any) => {
-      console.log("0 - - - ", response);
-      setBookedCarpooling(response);
+    fetchBookedCarpooling();
+    socket.on("requestAccepted", () => {
+      alert("new booking");
+      fetchBookedCarpooling();
     });
   }, []);
 
-  socket.on("carpooling_request_accepted", (data: any) => {
-    alert("carpooling request accepted");
-    console.log("socket ==d==00: ", data);
-  });
+  const fetchBookedCarpooling = async () => {
+    await getBookedCarpooling(user_id)
+      .then((response: any) => {
+        setBookedCarpooling(response);
+      })
+      .catch((error: any) => {
+        message.error("error fetching booked carpooling");
+      });
+  };
+
 
   const cancelBooking = async (carpooling: any) => {
     try {
@@ -27,11 +36,15 @@ const CarpoolingHistory = () => {
   };
 
   const confirmBooking = async (carpooling: any) => {
-    try {
-      await confirmBookingRequest(carpooling);
-    } catch (error) {
-      console.log(error);
-    }
+    await confirmBookingRequest(carpooling)
+      .then((response: any) => {
+        console.log("response: ", response);
+        message.success("booking confirmed");
+        fetchBookedCarpooling();
+      })
+      .catch((error: any) => {
+        message.error("error confirming booking");
+      });
   };
 
   return (

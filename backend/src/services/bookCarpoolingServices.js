@@ -58,6 +58,18 @@ const bookCarpooling = async ({ requester_id, carpooling_id, requested_seats }) 
                 *
         `, [publisher_id, requester_id, carpooling_id, requested_seats, 'pending']);
 
+        const carpoolingUpdate = await db.query(`
+            UPDATE
+                carpooling
+            SET
+            booking_requests_ids = array_append(booking_requests_ids, $1)
+            WHERE
+                id = $2
+            RETURNING
+                *
+        `, [booking.rows[0].booking_id, carpooling_id]);
+
+
         const newBooking = booking.rows[0];
 
         // Emit a socket event to notify the client about the new booking
@@ -108,12 +120,13 @@ const confirmBookingRequest = async (
             UPDATE
                 carpooling
             SET
-                available_seats = available_seats - $1
+                available_seats = available_seats - $1,
+                confirmed_passengers = array_append(confirmed_passengers, $3)
             WHERE
                 id = $2
             RETURNING
                 *
-        `, [requested_seats, carpooling_id]);
+        `, [requested_seats, carpooling_id, requester_id]);
 
 
 
