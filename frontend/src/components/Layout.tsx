@@ -56,7 +56,9 @@ const Layout = ({ children }: any) => {
       key: "5",
       label: "Manage your carpooling",
       onClick: () => {
-        Navigate('/carpooling/published-carpooling/' + localStorage.getItem("id"));
+        Navigate(
+          "/carpooling/published-carpooling/" + localStorage.getItem("id")
+        );
       },
     },
     {
@@ -96,7 +98,7 @@ const Layout = ({ children }: any) => {
   ];
 
   return (
-    <div className="h-full flex flex-col ">
+    <div className="h-full  ">
       <header className="border-b border-b-gray-200 h-[3.5rem]   ">
         <div className="container flex justify-between items-center p-3  text-gray-600 ">
           <Link to="/">
@@ -116,7 +118,7 @@ const Layout = ({ children }: any) => {
           </Dropdown>
         </div>
       </header>
-      <div className="  flex-1">{children}</div>
+      <div className=" h-full   ">{children}</div>
       <footer className="p-3 bg-blue-500 text-white h-[4rem] ">footer</footer>
     </div>
   );

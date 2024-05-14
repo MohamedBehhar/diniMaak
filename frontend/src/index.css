@@ -10,6 +10,7 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
+  
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -25,16 +26,13 @@
 
 body {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   background: rgb(255, 255, 255);
   color: #242424;
   
 }
 
-#root {
-  width: 100%;
-  height: 100%;
-}
+
 
 
 
@@ -42,6 +40,7 @@ body {
   width: 100%;
   max-width: 1200px;
   margin-inline: auto;
+  padding: 1rem;
 }
 
 input{
@@ -52,6 +51,8 @@ input{
 input:focus {
   outline: none;
 }
+
+
 
 input[type=number] {
   -moz-appearance: textfield;

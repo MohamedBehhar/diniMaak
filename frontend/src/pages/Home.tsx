@@ -19,14 +19,14 @@ function Home() {
           backgroundPosition: "center",
         }}
       >
-        <h1 className="absolute  max-w-[1400px] text-white size-11 text-5xl text-nowrap  border text-center w-fit">
+        <h1 className="absolute   text-white  rounded-md p-1 sm:text-5xl text-xl text-nowrap  border text-center w-fit">
           Let's Go Somewhere
         </h1>
         <div className="search w-full h-[100px]  absolute bottom-[-50px] flex items-center px-2">
           <SearchCarpooling redirect={true} />
         </div>
       </header>
-      <main className=" w-full h-fit mt-64 sm:mt-20 container">
+      <main className=" w-full h-full  mt-64 sm:mt-20 container">
         <div className="post-carpooling flex sm:flex-row flex-col justify-center items-center">
           <img src={TravelingSvg} alt="" width={400} />
           <div>
@@ -35,7 +35,10 @@ function Home() {
               Share your ride with other people and make money
             </p>
             <Link to="/post-carpooling" className="btn mt-2">
-              Post a Carpooling
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                type="button"
+              >Post a Carpooling</button>
             </Link>
           </div>
         </div>
