@@ -34,7 +34,38 @@ const getUsers = async (req, res, next) => {
 	}
 }
 
+const getUserInfo = async (req, res, next) => {
+	try {
+		const user_id = req.params.user_id;
+		const user = await usersServices.getUserInfo(user_id);
+		res.send(user);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+}
+
+const updateUserInfo = async (req, res, next) => {
+	console.log('pppppp ',req.file.path);
+	try {
+		const user = {
+			id: req.body.id,
+			username: req.body.username,
+			phone_number: req.body.phone_number,
+			email: req.body.email,
+			profile_picture: req.file.path,
+		}
+		const updatedUser = await usersServices.updateUserInfo(user);
+		res.send(updatedUser);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+}
+
 module.exports = {
 	getUsers,
 	isAuthorized,
+	getUserInfo,
+	updateUserInfo,
 }

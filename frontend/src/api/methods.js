@@ -59,6 +59,25 @@ export const getUsers = async () => {
 	}
 }
 
+export const getUserInfo = async (user_id) => {
+	try {
+		const response = await instance.get(`/users/${user_id}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export const updateUserInfo = async (user) => {
+	try {
+		const response = await instance.put("/users", user);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+
+}
+
 export const getCities = async (letters) => {
 	try {
 		const response = await instance.get(`/cities/${letters}`);
@@ -199,7 +218,13 @@ export const getCarBrand = async (brand) => {
 
 export const addCar = async (car) => {
 	try {
-		const response = await instance.post("/car", car);
+		const response = await instance.post("/car", car
+			, {
+				headers: {
+					'Content-Type': 'multipart/form-data'
+				}
+			}
+		);
 		return response.data;
 	} catch (error) {
 		throw error;

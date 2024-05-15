@@ -4,12 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { setUserInfo } from "../store/user/userSlice";
 import { useDispatch } from "react-redux";
+import { Input } from "antd";
 
 function CreateAccount() {
   const schema = z.object({
     username: z.string().min(2),
     email: z.string().email(),
     password: z.string().min(6),
+    phone_number: z.string().optional(),
   });
   type Inputs = z.infer<typeof schema>;
   const {
@@ -24,8 +26,8 @@ function CreateAccount() {
 
   const onsubmit: SubmitHandler<Inputs> = async (data) => {
     console.log(data);
-    const { username, email, password } = data;
-    await signUp({ username, email, password })
+    const { username, email, password, phone_number } = data;
+    await signUp({ username, email, password, phone_number })
       .then((response: any) => {
         localStorage.setItem("token", response.token);
         localStorage.setItem("refreshToken", response.refreshToken);
@@ -65,6 +67,7 @@ function CreateAccount() {
 
         <div className="mt-10 flex flex-col gap-4 sm:mx-auto sm:w-full ">
           <div>
+            <label htmlFor="username">Username</label>
             <input
               id="username"
               {...register("username")}
@@ -75,6 +78,7 @@ function CreateAccount() {
             )}
           </div>
           <div>
+            <label htmlFor="email">Email</label>
             <input
               id="email"
               {...register("email")}
@@ -85,6 +89,18 @@ function CreateAccount() {
             )}
           </div>
           <div>
+            <label htmlFor="phone_number">Phone number</label>
+            <input
+              id="phone_number"
+              {...register("phone_number")}
+              className="w-full border border-gray-400 rounded p-2"
+            />
+            {errors.phone_number && (
+              <p className={errorClass}>{errors.phone_number.message}</p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="password">Password</label>
             <input
               id="password"
               type="password"

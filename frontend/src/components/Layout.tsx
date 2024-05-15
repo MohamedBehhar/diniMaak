@@ -47,17 +47,21 @@ const Layout = ({ children }: any) => {
   }, []);
 
   const Navigate = useNavigate();
+
   const items: MenuProps["items"] = [
     {
       key: "1",
       label: "Profile",
+      onClick: () => {
+        Navigate("/profile/" + user_id);
+      },
     },
     {
       key: "5",
       label: "Manage your carpooling",
       onClick: () => {
         Navigate(
-          "/carpooling/published-carpooling/" + localStorage.getItem("id")
+          "/carpooling/published-carpooling/" + user_id
         );
       },
     },
@@ -74,14 +78,14 @@ const Layout = ({ children }: any) => {
         </div>
       ),
       onClick: () => {
-        Navigate("/carpooling/requests/" + localStorage.getItem("id"));
+        Navigate("/carpooling/requests/" + user_id);
       },
     },
     {
       key: "reservations",
       label: "Reservations",
       onClick: () => {
-        Navigate("/carpooling/history/" + localStorage.getItem("id"));
+        Navigate("/carpooling/history/" + user_id);
       },
     },
     {

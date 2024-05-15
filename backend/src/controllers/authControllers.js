@@ -4,7 +4,7 @@ const authServices = require('../services/authServices');
 const signUp = async (req, res) => {
 
 	try {
-		const { username, password, email } = req.body;
+		const { username, password, email, phone_number } = req.body;
 		if (await authServices.checkUsernames(username)) {
 			return res.status(409).json({ error: { key: 'username', message: 'Username already exists' }});
 		}
@@ -14,7 +14,7 @@ const signUp = async (req, res) => {
 		if (!username || !password) {
 			return res.status(400).json({ error: 'Missing required fields: username and password' });
 		}
-		const createdUser = await authServices.signUp({ username, password, email });
+		const createdUser = await authServices.signUp({ username, password, email, phone_number });
 		res.status(201).json(createdUser);
 	} catch (error) {
 		console.error(error);

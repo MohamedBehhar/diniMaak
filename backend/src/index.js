@@ -9,17 +9,18 @@ const carpoolingBookingRouter = require("./v1/routes/bookCarpoolingRoutes");
 const carpoolingRouter = require("./v1/routes/carpoolingRoutes");
 const notificationsRouter = require("./v1/routes/notificationsRouter");
 const carRouter = require("./v1/routes/carRoutes");
+const path = require('path');
 
 const verifyJWT = require("./middlewares/verifyJWT");
 const cors = require('cors');
-const {initializeSocket} = require('./initSocket'); // Import the initializeSocket function
+const { initializeSocket } = require('./initSocket'); // Import the initializeSocket function
 
 const app = express();
 const server = http.createServer(app);
 const io = initializeSocket(server); // Use initializeSocket function to initialize io
 const port = 3000;
 
-
+const uploadDir = path.join(__dirname, '../../images');
 
 global.io = io; // Make io global
 
@@ -29,6 +30,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use(bodyParser.json());
+app.use('/images', express.static(path.join(__dirname, '../../images')));
 app.use(cors());
 app.use("/api/v1/tasks", tasksRouter);
 app.use("/api/v1/auth", authRouter);

@@ -42,6 +42,7 @@ function Home() {
             </Link>
           </div>
         </div>
+
       </main>
     </div>
   );

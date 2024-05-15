@@ -92,7 +92,7 @@ const CreatCarPooling = () => {
         {stepNumber}
         {stepNumber == 0 && (
           <div className="w-full h-[300px]">
-            <AddCar />
+            <AddCar increment={increament} />
           </div>
         )}
         {stepNumber == 1 && (

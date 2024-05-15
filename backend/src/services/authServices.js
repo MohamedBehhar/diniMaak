@@ -48,14 +48,14 @@ const checkEmail = async (email) => {
 	}
 }
 
-const signUp = async ({ username, password, email }, res) => {
+const signUp = async ({ username, password, email, phone_number }, res) => {
 
 	try {
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(password, salt);
 		const newUser = await db.query(
-			'INSERT INTO users (username, password, email) VALUES ($1, $2, $3) RETURNING *',
-			[username, hashedPassword, email]
+			'INSERT INTO users (username, password, email, phone_number) VALUES ($1, $2, $3, $4) RETURNING *',
+			[username, hashedPassword, email, phone_number]
 		).then((result) => {
 
 			console.log(process.env.JWT_SECRET);
