@@ -75,6 +75,7 @@ const ManageYourCarpooling = () => {
                     </h2>
                   </header>
                   <div className="request-avaialable-seats">
+
                     <h1 className="text-xl">Confirmed Passengers : </h1>
                     <div className="flex gap-2 wrap ">
                       {carpooling.confirmed_requests.map((request: any) => {

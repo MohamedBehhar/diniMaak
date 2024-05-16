@@ -16,6 +16,7 @@ import AvailableCarpooling from "./pages/AvailableCarpooling.tsx";
 import ManageYourCarpooling from "./pages/ManageYourCarpooling.tsx";
 import Profile from "./pages/Profile.tsx";
 import User from "./pages/User.tsx";
+import Notifications from "./pages/Notifications.tsx";
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: '/user/:user_id',
         element: <User />
+      },
+      {
+        path: "/notifications/:user_id",
+        element: <Notifications />,
       }
     ],
   },

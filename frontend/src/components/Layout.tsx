@@ -66,6 +66,13 @@ const Layout = ({ children }: any) => {
       },
     },
     {
+      key: 'notifications',
+      label: 'Notifications',
+      onClick: () => {
+        Navigate("/notifications/" + user_id);
+      }
+    },
+    {
       key: "2",
       label: (
         <div className="flex items-center justify-between cursor-pointer gap-5">
