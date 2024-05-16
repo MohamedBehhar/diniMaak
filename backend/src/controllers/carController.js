@@ -10,6 +10,18 @@ const getCarBrand = async (req, res) => {
   }
 }
 
+const getCarByUserId = async (req, res) => {
+  console.log('hahahahahahahahahahahah 99999 ')
+  try {
+    const {user_id} = req.params;
+    console.log('user_id90909090: ', user_id);
+    const result = await carServices.getCarByUserId(user_id);
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+}
+
 const addCar = async (req, res) => {
   try {
     const car = {
@@ -28,7 +40,18 @@ const addCar = async (req, res) => {
   }
 }
 
+const test = async (req, res) => {
+  try {
+    console.log('test');
+    res.status(200).send('test');
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+}
+
 module.exports = {
   getCarBrand,
   addCar,
+  getCarByUserId,
+  test
 }

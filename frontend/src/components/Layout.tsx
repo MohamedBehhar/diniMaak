@@ -1,6 +1,6 @@
 import { socket } from "../socket/socket";
 import { useEffect, useState } from "react";
-import { getNotifications } from "../api/methods";
+import { getNotifications, getNotificationsCount } from "../api/methods";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
@@ -10,6 +10,8 @@ import { Dropdown } from "antd";
 import { FaRegUserCircle } from "react-icons/fa";
 import { signOut } from "../utils/helperFunctions";
 import { message } from "antd";
+
+
 const Layout = ({ children }: any) => {
   const userInfo = useSelector((state: RootState) => state.user.test);
   console.log("userInfo === ", userInfo);
@@ -32,7 +34,7 @@ const Layout = ({ children }: any) => {
       getNotifications(user_id);
     });
 
-    getNotifications(user_id)
+    getNotificationsCount(user_id)
       .then((response: any) => {
         setNotifications(response);
       })
@@ -77,9 +79,9 @@ const Layout = ({ children }: any) => {
       label: (
         <div className="flex items-center justify-between cursor-pointer gap-5">
           Requests
-          {notifications.length > 0 && (
+          {notifications.requestsCount > 0 && (
             <span className=" w-6 h-6 flex justify-center items-center bg-red-500 text-white rounded-full p-1">
-              {notifications.length}
+              {notifications.requestsCount}
             </span>
           )}
         </div>

@@ -38,7 +38,7 @@ const searchCarpooling = async (req, res) => {
 
 const createCarpooling = async (req, res) => {
 	try {
-		const { user_id, departure, destination, departure_time, departure_day, number_of_seats, price } = req.body;
+		const { user_id, departure, destination, departure_time, departure_day, number_of_seats, price, car_id } = req.body;
 		const driver_name = await usersServices.getUsersById(user_id);
 
 		const duplicateCarpooling = await carpoolingServices.checkCarpooling(user_id, departure_day);
@@ -66,7 +66,7 @@ const createCarpooling = async (req, res) => {
 				}
 			});
 		} else {
-			await carpoolingServices.createCarpooling({ user_id, departure, destination, departure_time, number_of_seats, departure_day, price, driver_name }).then((carpooling) => {
+			await carpoolingServices.createCarpooling({ user_id, departure, destination, departure_time, number_of_seats, departure_day, price, driver_name, car_id }).then((carpooling) => {
 				res.status(201).json(carpooling);
 			}
 			).catch((error) => {

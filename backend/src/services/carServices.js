@@ -1,19 +1,6 @@
 const db = require('../db/db');
-const express = require('express');
-const router = express.Router();
-const multer = require('multer');
-const path = require('path');
 
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, path.join(__dirname, '../images'));
-	},
-	filename: function (req, file, cb) {
-		cb(null, file.originalname);
-	}
-});
 
-const upload = multer({ storage: storage });
 
 
 const getCarBrand = async (brand) => {
@@ -25,15 +12,6 @@ const getCarBrand = async (brand) => {
 	}
 }
 
-// CREATE TABLE IF NOT EXISTS cars (
-//     car_id SERIAL PRIMARY KEY,
-//     user_id INT NOT NULL,
-//     brand VARCHAR (50) NOT NULL,
-//     year INT NOT NULL,
-//     plate VARCHAR (50),
-//     image VARCHAR (250),
-//     FOREIGN KEY (user_id) REFERENCES users (id)
-// );
 
 const addCar = async (car) => {
 	try {
@@ -49,8 +27,27 @@ const addCar = async (car) => {
 }
 
 
+const getCarByUserId = async (user_id) => {
+	console.log('user_id90909090: ', user_id);
+	try {
+		const car = await db.query('SELECT * FROM cars WHERE user_id = $1', [user_id]);
+		return car.rows;
+	} catch (error) {
+		throw error;
+	}
+}
+
+const test = async (req, res) => {
+	try {
+		res.status(200).send('test');
+	} catch (error) {
+		res.status(500).send(error.message);
+	}
+}
 
 module.exports = {
 	getCarBrand,
 	addCar,
+	getCarByUserId,
+	test
 }

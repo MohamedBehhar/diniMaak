@@ -8,13 +8,14 @@ import { FaCar } from "react-icons/fa6";
 import { GiConfirmed } from "react-icons/gi";
 import postCarpooling from "../assets/postCarpooling.svg";
 import { PiSeatbeltFill } from "react-icons/pi";
-import { InputNumber, DatePicker, TimePicker, Slider, message } from "antd";
+import {  DatePicker, TimePicker, Slider, message } from "antd";
 import SearchCities from "../components/SearchCities";
 import dayjs from "dayjs";
 import { creatCarpooling } from "../api/methods";
 import { format } from "date-fns";
 import AddCar from "../components/AddCar";
 import { useNavigate } from "react-router-dom";
+import { addCar, getCarByUserId, test } from "../api/methods";
 
 const CreatCarPooling = () => {
   const [stepNumber, setStepNumber] = useState(0);
@@ -48,6 +49,7 @@ const CreatCarPooling = () => {
   };
 
   const [modify, setModify] = useState(false);
+  const [car_id, setCar_id] = useState(0);
   const [data, setData] = useState({
     departure: "",
     destination: "",
@@ -56,6 +58,7 @@ const CreatCarPooling = () => {
     number_of_seats: 1,
     price: 0,
     user_id: localStorage.getItem("id"),
+    car_id: car_id,
   });
 
   // useEffect(() => {
@@ -78,6 +81,10 @@ const CreatCarPooling = () => {
       });
   };
 
+  useEffect(() => { 
+    test();
+  }, []);
+
   return (
     <div className=" ">
       <h1 className="text-3xl text-center font-bold p-10">
@@ -92,7 +99,12 @@ const CreatCarPooling = () => {
         {stepNumber}
         {stepNumber == 0 && (
           <div className="w-full h-[300px]">
-            <AddCar increment={increament} />
+            <AddCar increment={increament}
+              setCar_id={(id: number) => {
+                setCar_id(id);
+                setData({ ...data, car_id: id });
+              }}
+            />
           </div>
         )}
         {stepNumber == 1 && (

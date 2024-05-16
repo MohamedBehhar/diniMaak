@@ -27,5 +27,7 @@ const upload = multer({ storage });
 
 routes.get('/:brand', carController.getCarBrand);
 routes.post('/', upload.single('image'), carController.addCar);
+routes.get('/:user_id', carController.getCarByUserId);
+routes.get('/test', carController.test);
 
 module.exports = routes;

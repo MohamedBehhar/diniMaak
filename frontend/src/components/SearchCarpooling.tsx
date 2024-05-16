@@ -9,6 +9,7 @@ import { PiSeatbeltFill } from "react-icons/pi";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import SearchCities from "./SearchCities";
+import { GoArrowSwitch } from "react-icons/go";
 
 type FieldType = {
   departure: string | null;
@@ -26,7 +27,7 @@ interface SearchCarpoolingProps {
 const SearchCarpooling = ({
   redirect,
   setCarpoolings,
-}: SearchCarpoolingProps ) => {
+}: SearchCarpoolingProps) => {
   const [params, setSearchParams] = useSearchParams();
 
   const [data, setData] = useState<FieldType>({
@@ -42,13 +43,12 @@ const SearchCarpooling = ({
   const searchForCarpooling = async () => {
     data.user_id = user_id;
     if (redirect) {
-      alert("here55ßß")
+      alert("here55ßß");
       navigate({
         pathname: "/carpooling/search",
         search: `?departure=${data.departure}&destination=${data.destination}&departure_day=${data.departure_day}&number_of_seats=${data.number_of_seats}&user_id=${data.user_id}`,
       });
-    } else
-    {
+    } else {
       await searchCarpooling(data)
         .then((response: any) => {
           setCarpoolings(response);
@@ -57,7 +57,7 @@ const SearchCarpooling = ({
           console.log(error);
         });
     }
-  }
+  };
 
   return (
     <div className="m-auto shadow-md p-2 flex flex-col sm:flex-row gap-5 justify-between items-center  container bg-white border-[2px] rounded-md">
@@ -70,6 +70,25 @@ const SearchCarpooling = ({
           icon={<MdOutlineDepartureBoard className="text-cyan-500" size={20} />}
           defaultValue={data.departure}
         />
+      </div>
+      <div
+        className="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-md cursor-pointer"
+        onClick={() => {
+          const temp = data.departure;
+          setData({
+            ...data,
+            destination: temp,
+            departure: data.destination,
+          });
+          setSearchParams({
+            departure: data.destination,
+            destination: temp,
+            number_of_seats: data.number_of_seats,
+            departure_day: data.departure_day,
+          });
+        }}
+      >
+        <GoArrowSwitch />
       </div>
       <div className="flex-1 w-full">
         <SearchCities

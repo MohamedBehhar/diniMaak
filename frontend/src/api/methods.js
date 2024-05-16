@@ -239,3 +239,30 @@ export const getCarpoolingByPublisherId = async (user_id) => {
 		throw error;
 	}
 }
+
+export const getNotificationsCount = async (user_id) => {
+	try {
+		const response = await instance.get(`/notifications/count/${user_id}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export const getCarByUserId = async (user_id) => {
+	try {
+		const response = await instance.get(`/car/${user_id}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export const test = async () => {
+	try {
+		const response = await instance.get("/car/test");
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}

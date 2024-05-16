@@ -12,19 +12,19 @@ const getNotifications = async (req, res) => {
 	}
 }
 
-const getNotificationsByType = async (req, res) => {
-	const { user_id, type } = req.params;
-	console.log("getNotifications user_id", user_id);
+const getNotificationsCount = async (req, res) => {
+	const { user_id } = req.params;
 	try {
-		const notifications = await notificationsServices.getNotificationsByType(user_id, type);
-		res.status(200).json(notifications);
+		const notificationsCount = await notificationsServices.getNotificationsCount(user_id);
+		res.status(200).json(notificationsCount);
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ error: error.message });
 	}
 }
 
+
 module.exports = {
 	getNotifications,
-	getNotificationsByType
+	getNotificationsCount
 };

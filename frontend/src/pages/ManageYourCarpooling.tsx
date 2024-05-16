@@ -8,6 +8,10 @@ import { socket } from "../socket/socket";
 import { format } from "date-fns";
 import { IoMdStar } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { IoHome } from "react-icons/io5";
+import { IoIosTime } from "react-icons/io";
+import { GiPositionMarker } from "react-icons/gi";
+import { PiSeatbeltBold } from "react-icons/pi";
 
 const ManageYourCarpooling = () => {
   const [carpoolings, setCarpoolings] = useState([]);
@@ -50,6 +54,8 @@ const ManageYourCarpooling = () => {
     setOpen(true);
   };
 
+  const iconStyle = "text-2xl text-cyan-600 ";
+
   return (
     <div className="p-2">
       <h1 className="text-2xl text-center p-5">Manage your carpooling</h1>
@@ -62,21 +68,35 @@ const ManageYourCarpooling = () => {
                 className="container flex w-full justify-between items-center p-5 border rounded-md shadow-md my-2"
               >
                 <div className="w-full">
-                  <header className="flex flex-col sm:flex-row justify-between items-center w-full  mb-3 text-2xl">
-                    <h2 className="  ">
-                      {carpooling.departure} - {carpooling.destination}
+                  <header className="flex flex-col sm:flex-row justify-between items-center w-full  mb-3  text-xl gap-2">
+                    <h2 className=" flex gap-2 ">
+                      <IoHome className={iconStyle} />
+                      {carpooling.departure}{" "}
+                      <GiPositionMarker className={iconStyle} />
+                      {carpooling.destination}
                     </h2>
-                    <h2>
-                      {format(carpooling.departure_day, "EEEE, dd-MM-yyyy")} -{" "}
+                    <h2 className="flex gap-2">
+                      <IoIosTime className={iconStyle} />
+                      {format(
+                        carpooling.departure_day,
+                        "EEEE, dd-MM-yyyy"
+                      )} -{" "}
                       {carpooling.departure_time
                         .split(":")
                         .slice(0, 2)
                         .join(":")}
                     </h2>
+                    <div>
+                      <h2 className="flex gap-2">
+                        <PiSeatbeltBold className={iconStyle} />
+                        Available seats : {carpooling.available_seats}
+                      </h2>
+                    </div>
                   </header>
-                  <div className="request-avaialable-seats">
-
-                    <h1 className="text-xl">Confirmed Passengers : </h1>
+                  <div className="request-avaialable-seats sm:flex  items-center gap-2">
+                    <h1 className="text-xl text-cyan-900">
+                      Confirmed Passengers :{" "}
+                    </h1>
                     <div className="flex gap-2 wrap ">
                       {carpooling.confirmed_requests.map((request: any) => {
                         return (
@@ -84,9 +104,7 @@ const ManageYourCarpooling = () => {
                             to={`/user/${request.requester_id}`}
                             key={request.id}
                           >
-                            <div
-                              className="flex items-center gap-1 border min-w-[150px] max-w-[250px] p-1 rounded-md"
-                            >
+                            <div className="flex items-center gap-1 border min-w-[150px] max-w-[250px] p-1 rounded-md">
                               <div className="w-12 h-12 bg-gray-300 rounded-full">
                                 <img src={request.profile_picture} alt="" />
                               </div>

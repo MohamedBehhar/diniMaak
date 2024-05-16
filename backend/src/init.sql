@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS booking (
 CREATE TABLE IF NOT EXISTS carpooling (
     id SERIAL PRIMARY KEY,
     publisher_id INT NOT NULL,
+    car_id INT NOT NULL,
     departure VARCHAR (50) NOT NULL,
     destination VARCHAR (50) NOT NULL,
     departure_day TIMESTAMP,
@@ -74,7 +75,8 @@ CREATE TABLE IF NOT EXISTS carpooling (
     driver_name VARCHAR (50) NOT NULL,
     confirmed_passengers INTEGER [],
     booking_requests_ids INTEGER [],
-    FOREIGN KEY (publisher_id) REFERENCES users (id)
+    FOREIGN KEY (publisher_id) REFERENCES users (id),
+    FOREIGN KEY (car_id) REFERENCES cars (car_id)
 );
 
 -- Create requesters table

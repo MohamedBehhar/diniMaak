@@ -31,6 +31,7 @@ const searchCarpooling = async ({ departure, destination, departure_day, request
 		const carpooling = await db.query(`
 		SELECT
 			carpooling.*,
+			cars.*,
 			users.username as driver_name
 		FROM
 			carpooling
@@ -38,6 +39,10 @@ const searchCarpooling = async ({ departure, destination, departure_day, request
 			users
 		ON
 			carpooling.publisher_id = users.id
+		INNER JOIN
+			cars
+		ON
+			cars.user_id = users.id
 		WHERE
 			carpooling.departure = $1
 			AND carpooling.destination = $2
@@ -77,10 +82,10 @@ const checkCarpooling = async (user_id, departure_day) => {
 
 
 // creat a carpooling with user id, departure, destination, date, time, seats, price, and description
-const createCarpooling = async ({ user_id, departure, destination, departure_time, departure_day, number_of_seats, price, driver_name }) => {
+const createCarpooling = async ({ user_id, departure, destination, departure_time, departure_day, number_of_seats, price, driver_name,car_id }) => {
 
 	try {
-		const carpooling = await db.query('INSERT INTO carpooling (publisher_id, departure, destination, departure_day, departure_time, number_of_seats, available_seats,  price, driver_name) VALUES ( $1, $2, $3, $4, $5 , $6, $7, $8, $9) RETURNING *', [user_id, departure, destination, departure_day, departure_time, number_of_seats, number_of_seats, price, driver_name]);
+		const carpooling = await db.query('INSERT INTO carpooling (publisher_id, departure, destination, departure_day, departure_time, number_of_seats, available_seats,  price, driver_name, car_id) VALUES ( $1, $2, $3, $4, $5 , $6, $7, $8, $9, $10) RETURNING *', [user_id, departure, destination, departure_day, departure_time, number_of_seats, number_of_seats, price, driver_name, car_id]);
 		return carpooling.rows[0];
 	} catch (err) {
 		console.error(err);
@@ -282,7 +287,7 @@ const getCarpoolingByPublisherId = async (user_id) => {
 		WHERE
 			publisher_id = $1
 		`, [user_id]);
-		
+
 
 		for (let i = 0; i < carpooling.rows.length; i++) {
 			const carpooling_id = carpooling.rows[i].id;
