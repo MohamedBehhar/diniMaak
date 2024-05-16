@@ -5,4 +5,5 @@ const notificationsControllers = require('../../controllers/notificationsControl
 
 router.get('/:user_id', notificationsControllers.getNotifications);
 
+
 module.exports = router;
