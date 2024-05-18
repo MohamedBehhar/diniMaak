@@ -25,8 +25,8 @@ function CreateAccount() {
   const dispatch = useDispatch();
 
   const onsubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log(data);
     const { username, email, password, phone_number } = data;
+    alert("Creating account... " + phone_number)
     await signUp({ username, email, password, phone_number })
       .then((response: any) => {
         localStorage.setItem("token", response.token);

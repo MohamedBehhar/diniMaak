@@ -5,7 +5,7 @@ import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import { PlusOutlined } from "@ant-design/icons";
 import { Image } from "antd";
-import { addCar, getCarByUserId, test } from "../api/methods";
+import { addCar, getCarByUserId } from "../api/methods";
 
 interface AddCarProps {
   increment: () => void;
@@ -13,28 +13,28 @@ interface AddCarProps {
 }
 
 const AddCar = ({ increment, setCar_id }: AddCarProps) => {
-
   const [brands, setBrands] = useState([]);
   const [image, setImage] = useState("");
   const user_id = localStorage.getItem("id") || "";
-  let alreadyHasCar = false;
+
+
+  const [alreadyHasCar, setAlreadyHasCar] = useState(false);
   const fetchCar = async () => {
     await getCarByUserId(user_id)
       .then((response: any) => {
-        console.log('carcar2 ',response);
-        if (response.length > 0) {
+        console.log("response === ", response.data);
+        if (response.data.length > 0) {
+          setAlreadyHasCar(true);
           setCar_id(response[0].car_id);
-          alreadyHasCar = true;
         }
       })
       .catch((error: any) => {
         console.log(error);
       });
-  }
+  };
 
   useEffect(() => {
     fetchCar();
-    test();
   }, []);
   const onSearch = async (val: any) => {
     await getCarBrand(val)
@@ -86,7 +86,8 @@ const AddCar = ({ increment, setCar_id }: AddCarProps) => {
 
   return (
     <div className=" h-full">
-      {!alreadyHasCar && (
+      <div>test {alreadyHasCar}</div>
+      {alreadyHasCar === false ? (
         <div>
           <div className="flex sm:flex-row flex-col h-[80%] gap-5">
             <div className="sm:w-[50%]  h-full  flex flex-col justify-evenly gap-5">
@@ -167,8 +168,10 @@ const AddCar = ({ increment, setCar_id }: AddCarProps) => {
             confirm
           </button>
         </div>
+      ) : (
+        ""
       )}
-      {alreadyHasCar && (
+      {alreadyHasCar === true ? (
         <div>
           <h1>You already have a car registered</h1>
           <div>
@@ -179,11 +182,11 @@ const AddCar = ({ increment, setCar_id }: AddCarProps) => {
               <h2>{data.year}</h2>
               <h1>Car Plate: </h1>
               <h2>{data.plate}</h2>
-
             </div>
           </div>
         </div>
-        
+      ) : (
+        ""
       )}
     </div>
   );

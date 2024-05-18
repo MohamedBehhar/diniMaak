@@ -10,7 +10,6 @@ const refreshTokenMaxAge = 2 * 24 * 60 * 60;
 const getUserByUsername = async (username) => {
 	try {
 		const user = await db.query('SELECT * FROM users WHERE username = $1', [username]);
-		console.log(user.rows[0]);
 		return user.rows[0];
 	} catch (err) {
 		console.error(err);
@@ -53,6 +52,7 @@ const signUp = async ({ username, password, email, phone_number }, res) => {
 	try {
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(password, salt);
+		console.log('hashedPassword ', username + ' ' + hashedPassword + ' ' + email + ' ' + phone_number);
 		const newUser = await db.query(
 			'INSERT INTO users (username, password, email, phone_number) VALUES ($1, $2, $3, $4) RETURNING *',
 			[username, hashedPassword, email, phone_number]
@@ -158,7 +158,6 @@ const updateToken = async ({ refreshToken }) => {
 			return null;
 		}
 
-		console.log(user.rows[0]);
 
 
 		if (refreshToken !== user.rows[0].refresh_token) {

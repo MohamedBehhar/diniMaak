@@ -15,9 +15,9 @@ export const login = async ({ username, password }) => {
 };
 
 
-export const signUp = async ({ username, password, email }) => {
+export const signUp = async ({ username, password, email, phone_number }) => {
 	try {
-		const response = await instance.post("/auth/register", { username, password, email });
+		const response = await instance.post("/auth/register", { username, password, email, phone_number });
 		return response.data;
 	} catch (error) {
 		throw error;
@@ -258,11 +258,4 @@ export const getCarByUserId = async (user_id) => {
 	}
 }
 
-export const test = async () => {
-	try {
-		const response = await instance.get("/car/test");
-		return response.data;
-	} catch (error) {
-		throw error;
-	}
-}
+

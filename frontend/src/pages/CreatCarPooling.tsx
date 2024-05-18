@@ -15,7 +15,7 @@ import { creatCarpooling } from "../api/methods";
 import { format } from "date-fns";
 import AddCar from "../components/AddCar";
 import { useNavigate } from "react-router-dom";
-import { addCar, getCarByUserId, test } from "../api/methods";
+import { addCar, getCarByUserId } from "../api/methods";
 
 const CreatCarPooling = () => {
   const [stepNumber, setStepNumber] = useState(0);
@@ -61,11 +61,7 @@ const CreatCarPooling = () => {
     car_id: car_id,
   });
 
-  // useEffect(() => {
-  //   if (data.departure && data.destination) {
-  //     setStepNumber(2);
-  //   }
-  // }, [data]);
+
 
   const Navigate = useNavigate();
   const handleCreatCarpooling = async () => {
@@ -81,9 +77,7 @@ const CreatCarPooling = () => {
       });
   };
 
-  useEffect(() => { 
-    test();
-  }, []);
+
 
   return (
     <div className=" ">

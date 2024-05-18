@@ -37,17 +37,10 @@ const getCarByUserId = async (user_id) => {
 	}
 }
 
-const test = async (req, res) => {
-	try {
-		res.status(200).send('test');
-	} catch (error) {
-		res.status(500).send(error.message);
-	}
-}
+
 
 module.exports = {
 	getCarBrand,
 	addCar,
 	getCarByUserId,
-	test
 }

@@ -117,12 +117,6 @@ const getSingleRequestInfo = async (req, res) => {
 const acceptCarpoolingRequest = async (req, res) => {
 	try {
 		const { carpooling_id, requester_id, publisher_id, requested_seats } = req.body;
-		console.log("+ + + + + + + + + + + + + + + ");
-		console.log("carpooling_id", carpooling_id);
-		console.log("requester_id", requester_id);
-		console.log("requested_seats", requested_seats);
-		console.log("publisher_id", publisher_id);
-		console.log("+ + + + + + + + + + + + + + + ");
 
 		const availableSeats = await carpoolingServices.getAvailableSeats(carpooling_id);
 

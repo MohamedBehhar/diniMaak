@@ -3,7 +3,6 @@ const db = require('../db/db');
 const getNotifications = async (
 	user_id
 ) => {
-	console.log("getNotifications user_id22", user_id);
 
 	try {
 		const notifications = await db.query(
@@ -21,7 +20,6 @@ const getNotifications = async (
 const getNotificationsCount = async (
 	user_id
 ) => {
-	console.log("getNotifications user_id22", user_id);
 
 	try {
 		let requestsCount = await db.query(
