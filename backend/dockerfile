@@ -6,14 +6,15 @@ RUN apk update \
 
 WORKDIR /app
 
-COPY . .
-
+COPY package*.json ./
 RUN npm install
+
+COPY . .
 
 RUN cd /app/src/ && chmod +x ./init.sh
 
 EXPOSE 3000
 
-ENTRYPOINT [ "sh" , "/app/src/init.sh" ]
+ENTRYPOINT ["sh", "/app/src/init.sh"]
 
 CMD ["npm", "run", "dev"]

@@ -1,14 +1,11 @@
 import { useState } from "react";
 import { login } from "../api/methods";
 import { Navigate } from "react-router-dom";
-import { UseSelector, useDispatch } from "react-redux";
-import { RootState } from "../store/store";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const dispatch = useDispatch();
 
   const token = localStorage.getItem("token");
   if (token) {
@@ -16,18 +13,12 @@ function Login() {
   }
   const handleLogin = async (e: any) => {
     e.preventDefault();
-
-    // Check the username and password (you may want to replace this with actual authentication logic)
     await login({ username, password })
       .then((response: any) => {
         console.log(response);
         localStorage.setItem("token", response.accessToken);
         localStorage.setItem("refreshToken", response.refreshToken);
-        localStorage.setItem("username", response.username);
         localStorage.setItem("id", response.id);
-        const { id, username } = response;
-        console.log(id, username);
-        dispatch({ type: "user/setUser", payload: { id, username } });
         window.location.href = "/";
       })
       .catch((error: any) => {

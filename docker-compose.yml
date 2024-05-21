@@ -10,12 +10,14 @@ services:
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
+    env_file:
+      - .env
     networks:
       - app-network
 
   back-end:
     container_name: back-end
-    build: backend
+    build: ./backend
     restart: always
     ports:
       - '3000:3000'
@@ -23,8 +25,9 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
+      - ./backend/src/images:/app/src/images
     env_file:
-    - .env 
+      - .env 
     networks:
       - app-network
 

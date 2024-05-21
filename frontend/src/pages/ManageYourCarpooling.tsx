@@ -2,7 +2,7 @@ import { getCarpoolingByPublisherId } from "../api/methods";
 import { useEffect, useState } from "react";
 import { PiSeatbeltFill } from "react-icons/pi";
 import MyModal from "../components/MyModal";
-import { acceptCarpoolingRequest } from "../api/methods";
+import { acceptCarpoolingRequest, url } from "../api/methods";
 import { message } from "antd";
 import { socket } from "../socket/socket";
 import { format } from "date-fns";
@@ -104,9 +104,11 @@ const ManageYourCarpooling = () => {
                             to={`/user/${request.requester_id}`}
                             key={request.id}
                           >
-                            <div className="flex items-center gap-1 border min-w-[150px] max-w-[250px] p-1 rounded-md">
+                            <div className="flex items-center gap-4 border min-w-[150px] max-w-[250px] p-1 rounded-md">
                               <div className="w-12 h-12 bg-gray-300 rounded-full">
-                                <img src={request.profile_picture} alt="" />
+                                <img src={`${url}${request.profile_picture}`} alt="" 
+                                  className="w-12 h-12 rounded-full object-cover"
+                                />
                               </div>
                               <div className="flex-1">
                                 <p>{request.username}</p>

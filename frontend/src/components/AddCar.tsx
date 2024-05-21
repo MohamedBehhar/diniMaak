@@ -5,27 +5,37 @@ import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import { PlusOutlined } from "@ant-design/icons";
 import { Image } from "antd";
-import { addCar, getCarByUserId } from "../api/methods";
+import { addCar, getCarByUserId, editCar } from "../api/methods";
 
 interface AddCarProps {
   increment: () => void;
   setCar_id: (car_id: string) => void;
+  car_id: string;
 }
 
-const AddCar = ({ increment, setCar_id }: AddCarProps) => {
+interface Car {
+  brand: string;
+  year: string;
+  image: string;
+  user_id: string;
+  plate: string;
+}
+
+const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
   const [brands, setBrands] = useState([]);
   const [image, setImage] = useState("");
   const user_id = localStorage.getItem("id") || "";
-
+  const [car, setCar] = useState({} as Car);
 
   const [alreadyHasCar, setAlreadyHasCar] = useState(false);
   const fetchCar = async () => {
     await getCarByUserId(user_id)
       .then((response: any) => {
         console.log("response === ", response.data);
-        if (response.data.length > 0) {
+        if (response.data) {
           setAlreadyHasCar(true);
-          setCar_id(response[0].car_id);
+          setCar_id(response.data.car_id);
+          setCar(response.data);
         }
       })
       .catch((error: any) => {
@@ -84,9 +94,30 @@ const AddCar = ({ increment, setCar_id }: AddCarProps) => {
       });
   };
 
+  const handleEditCar = async () => {
+    console.log("data === ", data);
+    const formdata = new FormData();
+    formdata.append("image", image);
+    formdata.append("brand", data.brand);
+    formdata.append("year", data.year);
+    formdata.append("user_id", data.user_id);
+    formdata.append("plate", data.plate);
+    formdata.append("car_id", car_id);
+    console.log("formdata === ", formdata);
+
+    await editCar(formdata)
+      .then((response: any) => {
+        message.success("Car updated successfully");
+        increment();
+      })
+      .catch((error: any) => {
+        message.error("Error adding car");
+        console.log(error);
+      });
+  };
+
   return (
     <div className=" h-full">
-      <div>test {alreadyHasCar}</div>
       {alreadyHasCar === false ? (
         <div>
           <div className="flex sm:flex-row flex-col h-[80%] gap-5">
@@ -163,7 +194,9 @@ const AddCar = ({ increment, setCar_id }: AddCarProps) => {
           </div>
           <button
             className="bg-cyan-600 text-white p-2 rounded-md max-w-64 mx-auto"
-            onClick={handleAddCar}
+            onClick={() => {
+              car_id ? handleEditCar() : handleAddCar();
+            }}
           >
             confirm
           </button>
@@ -172,16 +205,39 @@ const AddCar = ({ increment, setCar_id }: AddCarProps) => {
         ""
       )}
       {alreadyHasCar === true ? (
-        <div>
-          <h1>You already have a car registered</h1>
-          <div>
+        <div className="">
+          <div className="flex gap-2  text-center  justify-center items-center">
+            <h1
+              className="text-2xl font-bold text-center "
+              style={{ color: "#333" }}
+            >
+              You already have a car registered
+            </h1>
             <div>
-              <h1>Car Brand: </h1>
-              <h2>{data.brand}</h2>
-              <h1>Car Model: </h1>
-              <h2>{data.year}</h2>
-              <h1>Car Plate: </h1>
-              <h2>{data.plate}</h2>
+              did you change your car?
+              <button
+                className="bg-cyan-600 text-white p-1 rounded-md max-w-64 mx-auto"
+                onClick={() => setAlreadyHasCar(false)}
+              >
+                Add new car
+              </button>
+            </div>
+          </div>
+
+          <div className="text-center flex items-center gap-5 justify-center">
+            <div className="image w-[200px] aspect-square">
+              <Image
+                width={"100%"}
+                height={"100%"}
+                className="rounded-full object-cover"
+                src={`http://localhost:3000${car.image}`}
+                alt="d"
+              />
+            </div>
+            <div className="info flex flex-col gap-5">
+              <p>Brand: {car.brand}</p>
+              <p>Year: {car.year}</p>
+              <p>Plate: {car.plate}</p>
             </div>
           </div>
         </div>

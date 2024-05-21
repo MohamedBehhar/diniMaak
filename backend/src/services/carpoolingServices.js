@@ -32,7 +32,9 @@ const searchCarpooling = async ({ departure, destination, departure_day, request
 		SELECT
 			carpooling.*,
 			cars.*,
-			users.username as driver_name
+			users.username as driver_name,
+			users.rating ,
+			users.profile_picture
 		FROM
 			carpooling
 		INNER JOIN
@@ -286,6 +288,8 @@ const getCarpoolingByPublisherId = async (user_id) => {
 			carpooling
 		WHERE
 			publisher_id = $1
+		ORDER BY
+			departure_day ASC
 		`, [user_id]);
 
 
@@ -326,13 +330,10 @@ const getCarpoolingByPublisherId = async (user_id) => {
 				carpooling_id = $1
 				AND status = 'confirmed'
 			`, [carpooling_id]);
-
-
 			carpooling.rows[i].confirmed_requests = confirmedRequests.rows;
 			carpooling.rows[i].requests_infos = bookingRequests.rows;
 		}
 
-		console.log("carpooling====", carpooling.rows);
 
 
 		return carpooling.rows;

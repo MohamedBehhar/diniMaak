@@ -5,12 +5,13 @@ const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
 
-const uploadDir = path.join(__dirname, '../../images');
-
+const uploadDir = path.join(__dirname, '../../public');
 // Ensure the uploads directory exists
 if (!fs.existsSync(uploadDir)) {
 	fs.mkdirSync(uploadDir, { recursive: true });
 }
+
+console.log('0---0--0-0--0-0-0-0-0-0-0--0 ',uploadDir);
 
 // Configure storage for multer
 const storage = multer.diskStorage({

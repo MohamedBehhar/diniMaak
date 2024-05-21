@@ -10,6 +10,7 @@ const carpoolingRouter = require("./v1/routes/carpoolingRoutes");
 const notificationsRouter = require("./v1/routes/notificationsRouter");
 const carRouter = require("./v1/routes/carRoutes");
 const path = require('path');
+const multer = require('multer');
 
 const verifyJWT = require("./middlewares/verifyJWT");
 const cors = require('cors');
@@ -20,7 +21,6 @@ const server = http.createServer(app);
 const io = initializeSocket(server); // Use initializeSocket function to initialize io
 const port = 3000;
 
-const uploadDir = path.join(__dirname, '../../images');
 
 global.io = io; // Make io global
 
@@ -28,9 +28,9 @@ global.io = io; // Make io global
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-
 app.use(bodyParser.json());
-app.use('/images', express.static(path.join(__dirname, '../../images')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/public/cars', express.static(path.join(__dirname, 'public/cars')));
 app.use(cors());
 app.use("/api/v1/tasks", tasksRouter);
 app.use("/api/v1/auth", authRouter);
@@ -41,6 +41,8 @@ app.use("/api/v1/carpooling", carpoolingRouter);
 app.use("/api/v1/carpooling", carpoolingBookingRouter);
 app.use('/api/v1/notifications', notificationsRouter);
 app.use('/api/v1/car', carRouter);
+
+
 
 server.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

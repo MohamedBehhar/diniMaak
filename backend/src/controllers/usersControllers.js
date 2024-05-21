@@ -46,14 +46,13 @@ const getUserInfo = async (req, res, next) => {
 }
 
 const updateUserInfo = async (req, res, next) => {
-	console.log('pppppp ',req.file.path);
 	try {
 		const user = {
 			id: req.body.id,
 			username: req.body.username,
 			phone_number: req.body.phone_number,
 			email: req.body.email,
-			profile_picture: req.file.path,
+			profile_picture: req.file ? `/public/${req.file.filename}` : null,
 		}
 		const updatedUser = await usersServices.updateUserInfo(user);
 		res.send(updatedUser);

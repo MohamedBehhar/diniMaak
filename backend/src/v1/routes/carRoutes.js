@@ -5,7 +5,7 @@ const path = require('path');
 const routes = express.Router();
 const fs = require('fs');
 
-const uploadDir = path.join(__dirname, '../../images');
+const uploadDir = path.join(__dirname, '../../public/cars');
 
 // Ensure the uploads directory exists
 if (!fs.existsSync(uploadDir)) {
@@ -24,8 +24,9 @@ const storage = multer.diskStorage({
 
 // Initialize upload middleware
 routes.get('/:user_id', carController.getCarByUserId);
+routes.get('/brand/:brand', carController.getCarBrand);
 const upload = multer({ storage });
-routes.get('/:brand', carController.getCarBrand);
 routes.post('/', upload.single('image'), carController.addCar);
+routes.put('/', upload.single('image'), carController.editCar);
 
 module.exports = routes;

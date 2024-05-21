@@ -3,6 +3,7 @@ import instance from "./axios";
 
 
 const baseURL = "http://localhost:3000/api/v1";
+export const url = "http://localhost:3000";
 
 export const login = async ({ username, password }) => {
 	console.log(username, password);
@@ -209,7 +210,7 @@ export const getNotifications = async (user_id) => {
 
 export const getCarBrand = async (brand) => {
 	try {
-		const response = await instance.get(`/car/${brand}`);
+		const response = await instance.get(`/car/brand/${brand}`);
 		return response.data;
 	} catch (error) {
 		throw error;
@@ -219,6 +220,21 @@ export const getCarBrand = async (brand) => {
 export const addCar = async (car) => {
 	try {
 		const response = await instance.post("/car", car
+			, {
+				headers: {
+					'Content-Type': 'multipart/form-data'
+				}
+			}
+		);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export const editCar = async (car) => {
+	try {
+		const response = await instance.put("/car", car
 			, {
 				headers: {
 					'Content-Type': 'multipart/form-data'

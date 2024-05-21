@@ -11,7 +11,6 @@ const Profile = () => {
     email: "",
     phone_number: "",
     profile_picture: "",
-    
   });
 
   const updateProfile = async () => {
@@ -22,7 +21,6 @@ const Profile = () => {
     formData.append("email", user.email);
     formData.append("phone_number", user.phone_number);
 
-
     formData.append("id", user_id!);
 
     console.log("formData === ", formData);
@@ -30,6 +28,8 @@ const Profile = () => {
     await updateUserInfo(formData)
       .then((response: any) => {
         console.log("response === ", response);
+        message.success("Profile updated successfully");
+        getUser(user_id);
       })
       .catch((error: any) => {
         console.log(error);
@@ -52,53 +52,50 @@ const Profile = () => {
   }, []);
 
   return (
-    <div className="h-full flex flex-wrap container">
+    <div className="flex flex-col items-center justify-center gap-4 container">
       <h1 className="w-[100%] text-3xl text-center p-7">Profile</h1>
-      <div className="w-[50%] h-[100%] ">
-        {Object.keys(user).map((key) => {
-          return (
-            <div className="flex items-center gap-5">
-              <p>{key}</p>
-              <input
-                type="text"
-                value={user[key as keyof typeof user]}
-                onChange={(e) => {
-                  setUser({ ...user, [key]: e.target.value });
-                }}
-              />
-            </div>
-          );
-        })}
-      </div>
-      <div className="  w-[50%] flex flex-col ">
-        <div className="h-[72%] flex items-center justify-center ">
-          <div className="w-[100px] h-[100px] bg-gray-200 rounded-full object-cover">
-            <Image
-              width={"100%"}
-              height={"100%"}
-              className="rounded-full object-cover border-none"
-              src={image ? URL.createObjectURL(image) : ""}
+      <div className="   ">
+        <div className=" flex flex-col items-center gap-3">
+          <Image
+            width={"200px"}
+            height={"200px"}
+            className="rounded-full object-cover border-none"
+            src={image ? URL.createObjectURL(image) : `http://localhost:3000${user.profile_picture}`}
+          />
+          <div className="flex items-center  ">
+            <label
+              htmlFor="avatar"
+              className="cursor-pointer w-full flex justify-center items-center bg-gray-200  mx-4 rounded-md gap-5 px-4"
+            >
+              <PlusOutlined className="text-4xl text-gray-500" />
+              <p>Upload your profile picture</p>
+            </label>
+            <input
+              type="file"
+              id="avatar"
+              name="avatar"
+              accept="image/png, image/jpeg"
+              onChange={(e) => {
+                setImage(e.target.files![0]);
+              }}
+              className="hidden"
             />
           </div>
         </div>
-        <div className="flex items-center ">
-          <label
-            htmlFor="avatar"
-            className="cursor-pointer w-full flex justify-center items-center bg-gray-200  mx-4 rounded-md gap-5"
-          >
-            <PlusOutlined className="text-4xl text-gray-500" />
-            <p>Upload your profile picture</p>
-          </label>
-          <input
-            type="file"
-            id="avatar"
-            name="avatar"
-            accept="image/png, image/jpeg"
-            onChange={(e) => {
-              setImage(e.target.files![0]);
-            }}
-            className="hidden"
-          />
+
+        <div className="info">
+          <div className="flex gap-4">
+            <h1 className="text-xl text-cyan-600 font-bold">Name :</h1>
+            <p className="text-lg text-gray-800">{user.username}</p>
+          </div>
+          <div className="flex gap-4">
+            <h1 className="text-xl text-cyan-600 font-bold">Email :</h1>
+            <p className="text-lg text-gray-800">{user.email}</p>
+          </div>
+          <div className="flex gap-4">
+            <h1 className="text-xl text-cyan-600 font-bold">Phone :</h1>
+            <p className="text-lg text-gray-800">{user.phone_number}</p>
+          </div>
         </div>
       </div>
       <button

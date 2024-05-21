@@ -1,5 +1,5 @@
 -- Create a new database
-CREATE DATABASE IF NOT EXISTS TODO_DB
+CREATE DATABASE IF NOT EXISTS TODO_DB;
 
 -- Connect to the newly created database
 \c TODO_DB;
@@ -127,6 +127,7 @@ CREATE TABLE IF NOT EXISTS chat (
     FOREIGN KEY (sender_id) REFERENCES users (id),
     FOREIGN KEY (receiver_id) REFERENCES users (id)
 );
+
 
 -- Create a table for rating
 CREATE TABLE IF NOT EXISTS rating (

@@ -20,7 +20,7 @@ const Steper = ({
 }: Props) => {
   return (
     <div className="w-[90%] mx-auto">
-      <header className="flex justify-center items-center gap-1  p-2   mb-4 ">
+      <header className="flex justify-center items-center gap-1  p-2   mb-4 container">
         <div></div>
         {steps &&
           steps.map((step, index) => {
@@ -62,7 +62,7 @@ const Steper = ({
       <main
         // transition ease-in duration-500 opacity-0
 
-        className="p-4 bg-white shadow-md rounded-md container"
+        className="p-4 bg-white shadow-md rounded-md container mb-4"
       >
         {steps[stepNumber] && (
           <h1

@@ -4,6 +4,7 @@ import { searchCarpooling, bookCarpooling } from "../api/methods";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { format } from "date-fns";
+import { url } from "../api/methods";
 
 const AvailableCarpooling = () => {
   const [carpoolings, setCarpoolings] = useState([]);
@@ -56,8 +57,11 @@ const AvailableCarpooling = () => {
         <div>
           {carpoolings.map((carpooling: any) => {
             return (
-              <div key={carpooling.id} className="container  p-5 border rounded-md shadow-md my-2">
-                <div className="text-xl flex justify-between">
+              <div
+                key={carpooling.id}
+                className="container  p-5 border rounded-md shadow-md my-2 flex flex-col gap-2 "
+              >
+                <div className="sm:text-xl font-bold text-gray-700 flex justify-between">
                   <h2>
                     {carpooling.departure} - {carpooling.destination}
                   </h2>
@@ -66,11 +70,42 @@ const AvailableCarpooling = () => {
                     {carpooling.departure_time}
                   </p>
                 </div>
-                <div className="flex items-end justify-between mt-2">
-                <div>
-                  <p>Price: {carpooling.price}MAD</p>
-                  <p>Available Seats: {carpooling.available_seats}</p>
-                </div>
+                <div className="flex  items-end justify-between mt-2">
+                  <div className="flex sm:flex-row flex-col gap-6">
+                    <div className="flex  items-center gap-2">
+                      <img
+                        src={`${url}${carpooling.profile_picture}`}
+                        alt="d"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <p>Driver: {carpooling.driver_name}</p>
+                        <p>Rating: {carpooling.rating}</p>
+                      </div>
+                    </div>
+                    <div className="flex  items-center gap-2">
+                      <img
+                        src={`${url}${carpooling.image}`}
+                        alt="d"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <p>Brand: {carpooling.brand}</p>
+                        <p>Model: {carpooling.year}</p>
+                      </div>
+                    </div>
+                    <div className="flex  items-center gap-2">
+                      <img
+                        src={`${url}${carpooling.image}`}
+                        alt="d"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <p>Price: {carpooling.price}MAD</p>
+                        <p>Available Seats: {carpooling.available_seats}</p>
+                      </div>
+                    </div>
+                  </div>
                   <button
                     className="bg-blue-500 text-white px-3 py-1 rounded-md"
                     onClick={() => {

@@ -1,19 +1,27 @@
 import { socket } from "../socket/socket";
 import { useEffect, useState } from "react";
-import { getNotifications, getNotificationsCount } from "../api/methods";
+import {
+  getNotifications,
+  getNotificationsCount,
+  getUserInfo,
+} from "../api/methods";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { FaCarSide } from "react-icons/fa";
 import type { MenuProps } from "antd";
 import { Dropdown } from "antd";
-import { FaRegUserCircle } from "react-icons/fa";
-import { signOut } from "../utils/helperFunctions";
+import { concatinatePictureUrl, signOut } from "../utils/helperFunctions";
 import { message } from "antd";
-
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "../store/user/userSlice";
+import { IoChatboxEllipses } from "react-icons/io5";
 
 const Layout = ({ children }: any) => {
-  const userInfo = useSelector((state: RootState) => state.user.test);
+  const userInfo = useSelector((state: RootState) => state.user.user);
+
+  const dispatch = useDispatch();
+
   console.log("userInfo === ", userInfo);
   const [notifications, setNotifications] = useState([]);
 
@@ -42,6 +50,14 @@ const Layout = ({ children }: any) => {
         console.log(error);
       });
 
+    getUserInfo(user_id)
+      .then((response: any) => {
+        dispatch(setUserInfo(response));
+      })
+      .catch(() => {
+        message.error("Error fetching user info");
+      });
+
     return () => {
       socket.off("connection");
       socket.off("newBookingRequest");
@@ -62,17 +78,15 @@ const Layout = ({ children }: any) => {
       key: "5",
       label: "Manage your carpooling",
       onClick: () => {
-        Navigate(
-          "/carpooling/published-carpooling/" + user_id
-        );
+        Navigate("/carpooling/published-carpooling/" + user_id);
       },
     },
     {
-      key: 'notifications',
-      label: 'Notifications',
+      key: "notifications",
+      label: "Notifications",
       onClick: () => {
         Navigate("/notifications/" + user_id);
-      }
+      },
     },
     {
       key: "2",
@@ -111,7 +125,7 @@ const Layout = ({ children }: any) => {
   ];
 
   return (
-    <div className="h-full  ">
+    <div className="h-full relative ">
       <header className="border-b border-b-gray-200 h-[3.5rem]   ">
         <div className="container flex justify-between items-center p-3  text-gray-600 ">
           <Link to="/">
@@ -120,13 +134,24 @@ const Layout = ({ children }: any) => {
               {/* <p className="text-xs">Dini-Maak</p> */}
             </div>
           </Link>
-          <div className="text-xl ">{localStorage.getItem("username")}</div>
+
+          <div className="text-xl ">{userInfo.username}</div>
+          <div
+            className="flex items-center gap-5 cursor-pointer"
+            onClick={() => Navigate("/chat/" + user_id)}
+          >
+            <IoChatboxEllipses />
+          </div>
           <Dropdown menu={{ items }} placement="bottomRight">
-            <div className="bg-[#F3D0D7] p-2 rounded-full relative">
+            <div className="  rounded-full relative">
               {notifications.length > 0 && (
                 <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
               )}
-              <FaRegUserCircle className=" text-cyan-600" />
+              <img
+                src={concatinatePictureUrl(userInfo.profile_picture)}
+                alt=""
+                className="w-8 h-8 rounded-full"
+              />
             </div>
           </Dropdown>
         </div>

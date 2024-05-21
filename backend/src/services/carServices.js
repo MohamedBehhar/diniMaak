@@ -26,12 +26,24 @@ const addCar = async (car) => {
 	}
 }
 
+const editCar = async (car) => {
+	console.log('edit car: ', car);
+	try {
+		const updatedCar = await db.query(
+			'UPDATE cars SET brand = $1, year = $2, plate = $3, image = $4 WHERE car_id = $5 RETURNING *',
+			[car.brand, car.year, car.plate, car.image, car.car_id]
+		);
+		return updatedCar.rows[0];
+	} catch (error) {
+		throw error;
+	}
+}
+
 
 const getCarByUserId = async (user_id) => {
-	console.log('user_id90909090: ', user_id);
 	try {
 		const car = await db.query('SELECT * FROM cars WHERE user_id = $1', [user_id]);
-		return car.rows;
+		return car.rows[0];
 	} catch (error) {
 		throw error;
 	}
@@ -43,4 +55,5 @@ module.exports = {
 	getCarBrand,
 	addCar,
 	getCarByUserId,
+	editCar
 }

@@ -8,7 +8,7 @@ import { FaCar } from "react-icons/fa6";
 import { GiConfirmed } from "react-icons/gi";
 import postCarpooling from "../assets/postCarpooling.svg";
 import { PiSeatbeltFill } from "react-icons/pi";
-import {  DatePicker, TimePicker, Slider, message } from "antd";
+import { DatePicker, TimePicker, Slider, message } from "antd";
 import SearchCities from "../components/SearchCities";
 import dayjs from "dayjs";
 import { creatCarpooling } from "../api/methods";
@@ -25,16 +25,8 @@ const CreatCarPooling = () => {
       icon: <FaCar />,
     },
     {
-      title: "Departure & Destination",
+      title: "CarPool Information",
       icon: <MdDepartureBoard />,
-    },
-    {
-      title: "Date & Time",
-      icon: <BsCalendarDate />,
-    },
-    {
-      title: "Places & Price",
-      icon: <PiSeatbeltBold />,
     },
     {
       title: "Confirm",
@@ -49,7 +41,7 @@ const CreatCarPooling = () => {
   };
 
   const [modify, setModify] = useState(false);
-  const [car_id, setCar_id] = useState(0);
+  const [car_id, setCar_id] = useState("");
   const [data, setData] = useState({
     departure: "",
     destination: "",
@@ -61,10 +53,9 @@ const CreatCarPooling = () => {
     car_id: car_id,
   });
 
-
-
   const Navigate = useNavigate();
   const handleCreatCarpooling = async () => {
+    console.log("909090 ", data);
     await creatCarpooling(data)
       .then((response) => {
         message.success("Carpooling created successfully");
@@ -76,8 +67,6 @@ const CreatCarPooling = () => {
         message.error("Error creating carpooling");
       });
   };
-
-
 
   return (
     <div className=" ">
@@ -93,40 +82,135 @@ const CreatCarPooling = () => {
         {stepNumber}
         {stepNumber == 0 && (
           <div className="w-full h-[300px]">
-            <AddCar increment={increament}
-              setCar_id={(id: number) => {
+            <AddCar
+              increment={increament}
+              setCar_id={(id: string) => {
                 setCar_id(id);
                 setData({ ...data, car_id: id });
               }}
+              car_id={car_id}
             />
           </div>
         )}
         {stepNumber == 1 && (
           <div>
-            <div className="flex flex-col sm:flex-row gap-5">
+            <div className="flex flex-col lg:flex-row items-center gap-5 mb-3">
               <div className="search flex flex-col flex-1 gap-10 sm:gap-0 justify-evenly items-center">
-                <div className="w-[300px] ">
-                  <SearchCities
-                    setChoosedCity={(city: string) => {
-                      setData({ ...data, departure: city });
-                    }}
-                    placeholder="Departure"
-                    icon={
-                      <MdDepartureBoard className="text-cyan-700 text-xl" />
-                    }
-                    defaultValue={data.departure}
-                  />
+                <div className="flex flex-col sm:flex-row w-full gap-5  sm:pb-5">
+                  <div className="w-[300px] ">
+                    <h1 className="text-cyan-700 text-xl">Departure</h1>
+                    <SearchCities
+                      setChoosedCity={(city: string) => {
+                        setData({ ...data, departure: city });
+                      }}
+                      placeholder="Departure"
+                      icon={
+                        <MdDepartureBoard className="text-cyan-700 text-xl" />
+                      }
+                      defaultValue={data.departure}
+                    />
+                  </div>
+                  <div className="w-[300px]">
+                    <h1 className="text-cyan-700 text-xl">Destination</h1>
+                    <SearchCities
+                      setChoosedCity={(city: string) => {
+                        setData({ ...data, destination: city });
+                      }}
+                      placeholder="Destination"
+                      icon={
+                        <MdOutlinePlace className="text-cyan-700 text-xl" />
+                      }
+                      defaultValue={data.destination}
+                    />
+                  </div>
                 </div>
-                <div className="w-[300px]">
-                  <SearchCities
-                    setChoosedCity={(city: string) => {
-                      setData({ ...data, destination: city });
-                    }}
-                    placeholder="Destination"
-                    icon={<MdOutlinePlace className="text-cyan-700 text-xl" />}
-                    defaultValue={data.destination}
-                  />
+                <div className="flex flex-col sm:flex-row w-full gap-5  sm:py-5">
+                  <div className="w-[300px] ">
+                    <h1 className="text-cyan-700 text-xl">Date</h1>
+                    <DatePicker
+                      className="w-full"
+                      size="large"
+                      onChange={(date) => {
+                        setData({
+                          ...data,
+                          departure_day: date.endOf("day").format("YYYY-MM-DD"),
+                        });
+                      }}
+                      defaultValue={dayjs().endOf("day")}
+                      disabledDate={
+                        // disable past dates starting from before today
+                        (current) => {
+                          return current && current <= dayjs().endOf("day");
+                        }
+                      }
+                    />
+                  </div>
+                  <div className="w-[300px] ">
+                    <h1 className="text-cyan-700 text-xl">Time</h1>
+                    <TimePicker
+                      size="large"
+                      className="w-full"
+                      onChange={(time) => {
+                        setData({
+                          ...data,
+                          departure_time: time.format("HH:mm"),
+                        });
+                      }}
+                      defaultOpenValue={dayjs("00:00", "HH:mm")}
+                      value={dayjs(data.departure_time, "HH:mm")}
+                      minuteStep={5}
+                      format={"HH:mm"}
+                    />
+                  </div>
                 </div>
+
+                <div className="flex flex-col sm:flex-row w-full gap-5  sm:py-5">
+                  <div className="w-[300px]  ">
+                    <h1 className="text-xl text-cyan-700">Places</h1>
+                    <div className="flex gap-3 items-center">
+                      {
+                        // creat an array of length 4 and map over it to create 4 buttons
+                        Array.from({ length: 4 }).map((_, index) => (
+                          <button
+                            type="button"
+                            key={index}
+                            onClick={() => {
+                              setData({ ...data, number_of_seats: index + 1 });
+                            }}
+                            className={`${
+                              data.number_of_seats >= index + 1
+                                ? "bg-cyan-700 text-white"
+                                : "bg-gray-300"
+                            } border-none p-2 mx-[2px] text-xl rounded-md`}
+                          >
+                            <PiSeatbeltFill />
+                          </button>
+                        ))
+                      }
+                      <div className="text-center">
+                        {data.number_of_seats} Places
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-[300px] ">
+                    <h1 className="text-xl text-cyan-700">Price</h1>
+                    <div className="flex items-center gap-2">
+                      <Slider
+                        defaultValue={0}
+                        max={100}
+                        min={0}
+                        onChange={(value) => {
+                          setData({ ...data, price: value });
+                        }}
+                        value={data.price}
+                        className="flex-1"
+                      />
+                    <div className="text-center">{data.price} MAD</div>
+                    </div>
+                  </div>
+                </div>
+
+
               </div>
               <div className="svg flex-1">
                 <img
@@ -139,105 +223,8 @@ const CreatCarPooling = () => {
             </div>
           </div>
         )}
-        {stepNumber == 2 && (
-          <div className="flex flex-col sm:flex-row gap-5">
-            <div className="search flex flex-col flex-1 gap-10 sm:gap-0 justify-evenly items-center">
-              <div className="w-[300px] ">
-                <DatePicker
-                  className="w-full"
-                  size="large"
-                  onChange={(date) => {
-                    setData({
-                      ...data,
-                      departure_day: date.endOf("day").format("YYYY-MM-DD"),
-                    });
-                  }}
-                  defaultValue={dayjs().endOf("day")}
-                  disabledDate={
-                    // disable past dates starting from before today
-                    (current) => {
-                      return current && current <= dayjs().endOf("day");
-                    }
-                  }
-                />
-              </div>
-              <div className="w-[300px] ">
-                <TimePicker
-                  size="large"
-                  className="w-full"
-                  onChange={(time) => {
-                    setData({
-                      ...data,
-                      departure_time: time.format("HH:mm"),
-                    });
-                  }}
-                  defaultOpenValue={dayjs("00:00", "HH:mm")}
-                  value={dayjs(data.departure_time, "HH:mm")}
-                  minuteStep={5}
-                  format={"HH:mm"}
-                />
-              </div>
-            </div>
-            <div className="svg flex-1">
-              <img
-                src={postCarpooling}
-                alt=""
-                width={400}
-                className="mx-auto mt-10 max-w-[100%]"
-              />
-            </div>
-          </div>
-        )}
-        {stepNumber == 3 && (
-          <div className="flex flex-col sm:flex-row gap-5">
-            <div className="search flex flex-col flex-1 gap-10 sm:gap-0 justify-evenly items-center">
-              <div className="w-[300px]  flex justify-between items-center">
-                {
-                  // creat an array of length 4 and map over it to create 4 buttons
-                  Array.from({ length: 4 }).map((_, index) => (
-                    <button
-                      type="button"
-                      key={index}
-                      onClick={() => {
-                        setData({ ...data, number_of_seats: index + 1 });
-                      }}
-                      className={`${
-                        data.number_of_seats >= index + 1
-                          ? "bg-cyan-700 text-white"
-                          : "bg-gray-300"
-                      } border-none p-2 mx-[2px] text-xl rounded-md`}
-                    >
-                      <PiSeatbeltFill />
-                    </button>
-                  ))
-                }
-                <div className="text-center">{data.number_of_seats} Places</div>
-              </div>
-              <div className="w-[300px]">
-                <Slider
-                  defaultValue={0}
-                  max={100}
-                  min={0}
-                  onChange={(value) => {
-                    setData({ ...data, price: value });
-                  }}
-                  value={data.price}
-                />
 
-                <div className="text-center">{data.price} MAD</div>
-              </div>
-            </div>
-            <div className="svg flex-1">
-              <img
-                src={postCarpooling}
-                alt=""
-                width={400}
-                className="mx-auto mt-10 max-w-[100%]"
-              />
-            </div>
-          </div>
-        )}
-        {stepNumber == 4 && (
+        {stepNumber == 2 && (
           <div>
             <h1>Confirmation</h1>
             <div className=" flex  gap-5 items-center justify-center relative">
