@@ -30,7 +30,7 @@ function initializeSocket(server) {
         });
 
         socket.on('sendMsg', ({ sender_id, receiver_id, message }) => {
-            console.log('skfjskjfskfjskjf----------sdklfjsdlkjflsdj-----slkfs')
+            console.log('948390248230948230948: ', sender_id, receiver_id, message);
             sendMessage(sender_id, receiver_id, message);
         });
 
@@ -79,27 +79,23 @@ async function sendMessage(sender_id, receiver_id, message) {
     const receiverSocketId = usersMap.get(receiver_id + '')
 
     if (receiverSocketId) {
-        console.log('shfskldfj000000101001010010101010 ', receiverSocketId)
-
-
-
         io.to(receiverSocketId).emit('newMsg', {
             sender_id,
             receiver_id,
             message
         })
 
-        
+
 
         const updateMsgs = await db.query(`
-            UNSERT INTO 
+            INSERT INTO 
                 messages(sender_id, receiver_id, message, timestamp)
             VALUES
                 ($1,$2,$3,NOW())
             RETURNING *   
         `, [sender_id, receiver_id, message]);
 
-        console.log('hhhhhhh sjsjs ', updateMsgs.rowS)
+        console.log('hhhhhhh sjsjs ', updateMsgs.rows)
 
 
     }

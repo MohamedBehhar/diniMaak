@@ -23,7 +23,7 @@ const initialState: UserState = {
     username: "",
     email: "",
     phone_number: "",
-    profile_picture: "",
+    profile_picture: "../assets/user.png",
   },
   loading: false,
   error: null,

@@ -1,5 +1,5 @@
 -- Create a new database
-CREATE DATABASE IF NOT EXISTS TODO_DB;
+CREATE DATABASE IF NOT EXISTS TODO_DB
 
 -- Connect to the newly created database
 \c TODO_DB;

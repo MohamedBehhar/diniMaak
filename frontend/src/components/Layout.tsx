@@ -43,11 +43,6 @@ const Layout = ({ children }: any) => {
       getNotifications(user_id);
     });
 
-    socket.on('newMsg', (data : any) => {
-      alert('hhh');
-    })
-
-
     getNotificationsCount(user_id)
       .then((response: any) => {
         setNotifications(response);
@@ -165,7 +160,9 @@ const Layout = ({ children }: any) => {
           </Dropdown>
         </div>
       </header>
-      <div className=" h-full   ">{children}</div>
+      <div className="  "
+        style={{ height: "calc(100vh - (3.5rem + 4rem))" }}
+      >{children}</div>
       <footer className="p-3 bg-blue-500 text-white h-[4rem] ">footer</footer>
     </div>
   );
