@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getUserInfo, updateUserInfo } from "../api/methods";
 import { PlusOutlined } from "@ant-design/icons";
 import { Image, message } from "antd";
+import  DefaultUserImage  from "../assets/user.png";
 
 const Profile = () => {
   const [image, setImage] = useState<File | null>(null);
@@ -60,7 +61,12 @@ const Profile = () => {
             width={"200px"}
             height={"200px"}
             className="rounded-full object-cover border-none"
-            src={image ? URL.createObjectURL(image) : `http://localhost:3000${user.profile_picture}`}
+            src={image ? URL.createObjectURL(image) : `http://localhost:3000${user.profile_picture}`
+            
+          }
+            onError={(e) => {
+              e.currentTarget.src = DefaultUserImage;
+            }}
           />
           <div className="flex items-center  ">
             <label

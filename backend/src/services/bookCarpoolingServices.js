@@ -128,10 +128,15 @@ const confirmBookingRequest = async (
                 *
         `, [requested_seats, carpooling_id, requester_id]);
 
-
-
-
-
+        // start a conversation between the publisher and the requester
+        const conversation = await db.query(`
+            INSERT INTO
+                messages (sender_id, receiver_id, message, timestamp)
+            VALUES
+                ($1, $2, $3, $4)
+            RETURNING
+                *
+        `, [requester_id, carpooling.rows[0].publisher_id, 'Hello, I have confirmed your booking request', new Date()]);
         // Emit a socket event to notify the client about the confirmation
         sendNotification(requester_id, booking.rows[0].publisher_id, 'Your booking has been confirmed', 'bookingConfirmed');
 

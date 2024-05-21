@@ -9,6 +9,7 @@ const carpoolingBookingRouter = require("./v1/routes/bookCarpoolingRoutes");
 const carpoolingRouter = require("./v1/routes/carpoolingRoutes");
 const notificationsRouter = require("./v1/routes/notificationsRouter");
 const carRouter = require("./v1/routes/carRoutes");
+const chatRouter = require("./v1/routes/chatRoutes");
 const path = require('path');
 const multer = require('multer');
 
@@ -41,6 +42,7 @@ app.use("/api/v1/carpooling", carpoolingRouter);
 app.use("/api/v1/carpooling", carpoolingBookingRouter);
 app.use('/api/v1/notifications', notificationsRouter);
 app.use('/api/v1/car', carRouter);
+app.use('/api/v1/chat/', chatRouter);
 
 
 

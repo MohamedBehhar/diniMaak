@@ -16,6 +16,7 @@ import { message } from "antd";
 import { useDispatch } from "react-redux";
 import { setUserInfo } from "../store/user/userSlice";
 import { IoChatboxEllipses } from "react-icons/io5";
+import DefaultUserImage from "../assets/user.png";
 
 const Layout = ({ children }: any) => {
   const userInfo = useSelector((state: RootState) => state.user.user);
@@ -41,6 +42,11 @@ const Layout = ({ children }: any) => {
       message.info(data.message);
       getNotifications(user_id);
     });
+
+    socket.on('newMsg', (data : any) => {
+      alert('hhh');
+    })
+
 
     getNotificationsCount(user_id)
       .then((response: any) => {
@@ -151,6 +157,9 @@ const Layout = ({ children }: any) => {
                 src={concatinatePictureUrl(userInfo.profile_picture)}
                 alt=""
                 className="w-8 h-8 rounded-full"
+                onError={(e) => {
+                  e.currentTarget.src = DefaultUserImage;
+                }}
               />
             </div>
           </Dropdown>

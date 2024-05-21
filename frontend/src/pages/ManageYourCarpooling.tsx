@@ -12,10 +12,12 @@ import { IoHome } from "react-icons/io5";
 import { IoIosTime } from "react-icons/io";
 import { GiPositionMarker } from "react-icons/gi";
 import { PiSeatbeltBold } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
 
 const ManageYourCarpooling = () => {
   const [carpoolings, setCarpoolings] = useState([]);
   const user_id = localStorage.getItem("id");
+  const navigate = useNavigate();
 
   const fetchCarpooling = async (id: any) => {
     await getCarpoolingByPublisherId(id)
@@ -100,34 +102,38 @@ const ManageYourCarpooling = () => {
                     <div className="flex gap-2 wrap ">
                       {carpooling.confirmed_requests.map((request: any) => {
                         return (
-                          <Link
-                            to={`/user/${request.requester_id}`}
-                            key={request.id}
+                          <div
+                            className="flex items-center gap-4 border min-w-[150px] max-w-[250px] p-1 rounded-md"
+                            onClick={() =>
+                              navigate(
+                                `/chat/${user_id}/${request.requester_id}`
+                              )
+                            }
                           >
-                            <div className="flex items-center gap-4 border min-w-[150px] max-w-[250px] p-1 rounded-md">
-                              <div className="w-12 h-12 bg-gray-300 rounded-full">
-                                <img src={`${url}${request.profile_picture}`} alt="" 
-                                  className="w-12 h-12 rounded-full object-cover"
-                                />
-                              </div>
-                              <div className="flex-1">
-                                <p>{request.username}</p>
-                                <div className="flex gap-3  w-full ">
-                                  <div className="flex items-center">
-                                    <PiSeatbeltFill className="text-cyan-500" />
-                                    <p>{request.requested_seats}</p>
-                                  </div>
-                                  <div className="rating flex ">
-                                    <IoMdStar
-                                      className="text-yellow-500"
-                                      size={20}
-                                    />
-                                    <p>{request.rating}</p>
-                                  </div>
+                            <div className="w-12 h-12 bg-gray-300 rounded-full">
+                              <img
+                                src={`${url}${request.profile_picture}`}
+                                alt=""
+                                className="w-12 h-12 rounded-full object-cover"
+                              />
+                            </div>
+                            <div className="flex-1">
+                              <p>{request.username}</p>
+                              <div className="flex gap-3  w-full ">
+                                <div className="flex items-center">
+                                  <PiSeatbeltFill className="text-cyan-500" />
+                                  <p>{request.requested_seats}</p>
+                                </div>
+                                <div className="rating flex ">
+                                  <IoMdStar
+                                    className="text-yellow-500"
+                                    size={20}
+                                  />
+                                  <p>{request.rating}</p>
                                 </div>
                               </div>
                             </div>
-                          </Link>
+                          </div>
                         );
                       })}
                     </div>

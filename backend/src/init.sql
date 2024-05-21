@@ -117,15 +117,13 @@ CREATE TABLE notifications (
     FOREIGN KEY (receiver_id) REFERENCES users(id)
 );
 
--- Create a table for chat
-CREATE TABLE IF NOT EXISTS chat (
+-- create a table for messages
+CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
-    sender_id INT NOT NULL,
-    receiver_id INT NOT NULL,
-    message VARCHAR (250) NOT NULL,
-    status notification_status DEFAULT 'unread',
-    FOREIGN KEY (sender_id) REFERENCES users (id),
-    FOREIGN KEY (receiver_id) REFERENCES users (id)
+    sender_id INT REFERENCES users(id),
+    receiver_id INT REFERENCES users(id),
+    message TEXT NOT NULL,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 

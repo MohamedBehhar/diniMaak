@@ -275,3 +275,15 @@ export const getCarByUserId = async (user_id) => {
 }
 
 
+export const getChats = async (sender_id, receiver_id) => {
+	console.log('sender_id', sender_id);
+	console.log('receiver_id', receiver_id);
+	try {
+		const response = await instance.get(`/chat/${sender_id}/${receiver_id}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
+
+

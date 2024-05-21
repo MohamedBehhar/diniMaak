@@ -333,6 +333,7 @@ const getCarpoolingByPublisherId = async (user_id) => {
 			carpooling.rows[i].confirmed_requests = confirmedRequests.rows;
 			carpooling.rows[i].requests_infos = bookingRequests.rows;
 		}
+		
 
 
 
