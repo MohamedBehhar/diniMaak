@@ -1,6 +1,5 @@
-import { useEffect } from "react";
 import { getChats } from "../api/methods";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { socket } from "../socket/socket";
 import { set } from "date-fns";
@@ -10,6 +9,7 @@ const Chat = () => {
   const [message, setMessage] = useState("");
   let { sender_id } = useParams();
   let { receiver_id } = useParams();
+  const chatContainerRef = useRef(null);
 
   const handleGetChats = async () => {
     try {
@@ -34,6 +34,15 @@ const Chat = () => {
   };
 
   useEffect(() => {
+    console.log("chats === ", chats);
+
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }
+  , [chats]);
+
+  useEffect(() => {
     handleGetChats();
     socket.on("connection", () => {
       socket.emit("joinRoom", { sender_id, receiver_id });
@@ -44,12 +53,16 @@ const Chat = () => {
         setChats(response);
       });
     });
+
   }, [sender_id, receiver_id, socket]);
 
   return (
     <div className="container h-[80%] p-2">
       <h1>Chat</h1>
-      <div className="h-[100%] flex flex-col overflow-y-scroll p-2">
+      <div
+        className="h-[100%] flex flex-col overflow-y-scroll p-2"
+        ref={chatContainerRef}
+      >
         {chats.map((chat: any) => {
           return (
             <div

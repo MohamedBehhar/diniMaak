@@ -287,3 +287,13 @@ export const getChats = async (sender_id, receiver_id) => {
 }
 
 
+export const getConversations = async (user_id) => {
+	console.log('user_id', user_id);
+	try {
+		const response = await instance.get(`/conversations/${user_id}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
+

@@ -18,6 +18,7 @@ import Profile from "./pages/Profile.tsx";
 import User from "./pages/User.tsx";
 import Notifications from "./pages/Notifications.tsx";
 import Chat from "./pages/Chat.tsx";
+import Conversations from "./pages/Conversations.tsx";
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "/chat/:sender_id/:receiver_id",
         element: <Chat />,
+      },
+      {
+        path: '/conversations/:user_id',
+        element: <Conversations />
       },
       {
         path: "/notifications/:user_id",

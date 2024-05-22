@@ -13,6 +13,7 @@ import { IoIosTime } from "react-icons/io";
 import { GiPositionMarker } from "react-icons/gi";
 import { PiSeatbeltBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
+import { IoChatboxEllipses } from "react-icons/io5";
 
 const ManageYourCarpooling = () => {
   const [carpoolings, setCarpoolings] = useState([]);
@@ -102,14 +103,7 @@ const ManageYourCarpooling = () => {
                     <div className="flex gap-2 wrap ">
                       {carpooling.confirmed_requests.map((request: any) => {
                         return (
-                          <div
-                            className="flex items-center gap-4 border min-w-[150px] max-w-[250px] p-1 rounded-md"
-                            onClick={() =>
-                              navigate(
-                                `/chat/${user_id}/${request.requester_id}`
-                              )
-                            }
-                          >
+                          <div className="flex items-center gap-4 border min-w-[150px] max-w-[250px] p-1 rounded-md">
                             <div className="w-12 h-12 bg-gray-300 rounded-full">
                               <img
                                 src={`${url}${request.profile_picture}`}
@@ -131,6 +125,17 @@ const ManageYourCarpooling = () => {
                                   />
                                   <p>{request.rating}</p>
                                 </div>
+                                <IoChatboxEllipses
+                                  className="text-cyan-600"
+                                  onClick={() =>
+                                    navigate(
+                                      "/chat/" +
+                                        user_id +
+                                        "/" +
+                                        request.requester_id
+                                    )
+                                  }
+                                />
                               </div>
                             </div>
                           </div>
@@ -196,7 +201,18 @@ const ManageYourCarpooling = () => {
         </div>
       ) : (
         <div className="text-center p-5">
-          You don't have any active carpooling
+          <h1 className="text-2xl">You have no carpooling</h1>
+            <h2 className="text-lg">
+              Share your ride with other people and make money
+            </h2>
+            <h3>Start by posting your carpooling</h3>
+            <h4>Click the button below</h4>
+          <Link to="/post-carpooling" className="btn mt-2">
+              <button
+                className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded"
+                type="button"
+              >Post a Carpooling</button>
+            </Link>
         </div>
       )}
     </div>

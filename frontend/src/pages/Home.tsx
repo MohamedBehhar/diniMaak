@@ -36,7 +36,7 @@ function Home() {
             </p>
             <Link to="/post-carpooling" className="btn mt-2">
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded"
                 type="button"
               >Post a Carpooling</button>
             </Link>

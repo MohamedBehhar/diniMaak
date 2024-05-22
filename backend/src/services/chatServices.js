@@ -5,16 +5,11 @@ const getChats = async (
 	sender_id,
 	receiver_id
 ) => {
-
-	console.log('9090777====? sender_id', sender_id);
-	console.log('9090777====? receiver_id', receiver_id);
-
 	try {
 		const chats = await db.query(
 			`SELECT * FROM messages WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1)`,
 			[sender_id, receiver_id]
 		);
-		console.log('chats', chats.rows);
 		return chats.rows;
 	} catch (error) {
 		console.error(error);
@@ -40,6 +35,9 @@ const sendMessage = async (
 	}
 }
 
+
+
 module.exports = {
-	getChats
+	getChats,
+	sendMessage
 };

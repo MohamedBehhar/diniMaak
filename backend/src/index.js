@@ -11,7 +11,7 @@ const notificationsRouter = require("./v1/routes/notificationsRouter");
 const carRouter = require("./v1/routes/carRoutes");
 const chatRouter = require("./v1/routes/chatRoutes");
 const path = require('path');
-const multer = require('multer');
+const conversationsRouter = require("./v1/routes/conversationsRoutes");
 
 const verifyJWT = require("./middlewares/verifyJWT");
 const cors = require('cors');
@@ -43,6 +43,7 @@ app.use("/api/v1/carpooling", carpoolingBookingRouter);
 app.use('/api/v1/notifications', notificationsRouter);
 app.use('/api/v1/car', carRouter);
 app.use('/api/v1/chat/', chatRouter);
+app.use('/api/v1/conversations/', conversationsRouter);
 
 
 

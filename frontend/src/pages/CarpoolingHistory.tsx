@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { cancelBookingRequest, confirmBookingRequest } from "../api/methods";
 import { socket } from "../socket/socket";
 import { message } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const CarpoolingHistory = () => {
   const user_id = localStorage.getItem("id");
@@ -47,6 +48,8 @@ const CarpoolingHistory = () => {
       });
   };
 
+  const Navigate = useNavigate();
+
   return (
     <div className="container p-3">
       {bookedCarpooling.map((carpooling: any) => {
@@ -78,6 +81,7 @@ const CarpoolingHistory = () => {
             <h6>driver : {carpooling.driver_name}</h6>
             {carpooling.status === "accepted" && (
               <div className="grid  ">
+                <p>{carpooling.driver_name} Has accepted your request, pay to confirm your seat and start a conversation</p>
                 <div className="justify-self-end flex gap-10">
                   <button
                     className="bg-red-700 text-white rounded-md p-2"
@@ -87,9 +91,11 @@ const CarpoolingHistory = () => {
                   </button>
                   <button
                     className="bg-green-700 text-white rounded-md p-2"
-                    onClick={() => confirmBooking(carpooling)}
+                    onClick={() => 
+                      Navigate("/chat/" + user_id + "/" + carpooling.publisher_id)
+                    }
                   >
-                    confirm Booking
+                    Pay
                   </button>
                 </div>
               </div>

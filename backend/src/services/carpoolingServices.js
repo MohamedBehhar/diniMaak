@@ -86,6 +86,7 @@ const checkCarpooling = async (user_id, departure_day) => {
 // creat a carpooling with user id, departure, destination, date, time, seats, price, and description
 const createCarpooling = async ({ user_id, departure, destination, departure_time, departure_day, number_of_seats, price, driver_name,car_id }) => {
 
+
 	try {
 		const carpooling = await db.query('INSERT INTO carpooling (publisher_id, departure, destination, departure_day, departure_time, number_of_seats, available_seats,  price, driver_name, car_id) VALUES ( $1, $2, $3, $4, $5 , $6, $7, $8, $9, $10) RETURNING *', [user_id, departure, destination, departure_day, departure_time, number_of_seats, number_of_seats, price, driver_name, car_id]);
 		return carpooling.rows[0];
@@ -246,6 +247,16 @@ const acceptCarpoolingRequest = async ({ requester_id, publisher_id, carpooling_
 			sender_id, receiver_id, `${sender_name} has accepted your request`, 'requestAccepted'
 		]);
 
+		//  start a conversation between the two users
+		const conversation = await db.query(`
+		INSERT INTO
+			messages (sender_id, receiver_id, message, timestamp)
+		VALUES
+			($1, $2, $3, $4)
+		RETURNING *
+	`, [sender_id, receiver_id, 'Hello, I have accepted your request', new Date()]);
+
+
 
 
 		return requestInfo.rows[0];
@@ -313,7 +324,7 @@ const getCarpoolingByPublisherId = async (user_id) => {
 				AND status = 'pending'
 			`, [carpooling_id]);
 
-			const confirmedRequests = await db.query(`
+			const acceptedRequests = await db.query(`
 			SELECT
 				booking.*,
 				users.username,
@@ -328,9 +339,9 @@ const getCarpoolingByPublisherId = async (user_id) => {
 				booking.requester_id = users.id
 			WHERE
 				carpooling_id = $1
-				AND status = 'confirmed'
+				AND status = 'accepted'
 			`, [carpooling_id]);
-			carpooling.rows[i].confirmed_requests = confirmedRequests.rows;
+			carpooling.rows[i].confirmed_requests = acceptedRequests.rows;
 			carpooling.rows[i].requests_infos = bookingRequests.rows;
 		}
 		

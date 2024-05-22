@@ -138,10 +138,13 @@ const Layout = ({ children }: any) => {
 
           <div className="text-xl ">{userInfo.username}</div>
           <div
-            className="flex items-center gap-5 cursor-pointer"
-            onClick={() => Navigate("/chat/" + user_id)}
+            className="flex items-center gap-5 cursor-pointer relative"
+            onClick={() => Navigate("/conversations/" + user_id)}
           >
-            <IoChatboxEllipses />
+            <div className="notifications bg-red-600 absolute bottom-4 -right-1 w-2 aspect-square rounded-full "></div>
+            <IoChatboxEllipses
+              className="text-cyan-600 text-2xl"
+            />
           </div>
           <Dropdown menu={{ items }} placement="bottomRight">
             <div className="  rounded-full relative">
