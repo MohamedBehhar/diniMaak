@@ -2,7 +2,6 @@ import { getChats } from "../api/methods";
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { socket } from "../socket/socket";
-import { set } from "date-fns";
 
 const Chat = () => {
   const [chats, setChats] = useState([]);
@@ -10,6 +9,8 @@ const Chat = () => {
   let { sender_id } = useParams();
   let { receiver_id } = useParams();
   const chatContainerRef = useRef(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const user_id = localStorage.getItem("id");
 
   const handleGetChats = async () => {
     try {
@@ -34,26 +35,35 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    console.log("chats === ", chats);
-
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
-  }
-  , [chats]);
+  }, [chats]);
+
 
   useEffect(() => {
     handleGetChats();
     socket.on("connection", () => {
       socket.emit("joinRoom", { sender_id, receiver_id });
     });
-    socket.on("newMsg", (data) => {
-      getChats(sender_id, receiver_id).then((response) => {
-        console.log("response === ", response);
+    socket.on("newMsg", () => {
+      getChats(sender_id, receiver_id).then((response:any) => {
         setChats(response);
       });
     });
+    socket.on("receiverWriteMsg", (data: any) => {
+      if (data.receiver_id == user_id) {
+        setIsTyping(true);
+        setTimeout(() => {
+          setIsTyping(false);
+        }, 2000);
+      }
+    });
 
+    return () => {
+      socket.off("newMsg");
+    };
   }, [sender_id, receiver_id, socket]);
 
   return (
@@ -69,8 +79,8 @@ const Chat = () => {
               key={chat.id}
               className={`${
                 chat.sender_id == sender_id
-                  ? "bg-red-200  self-end"
-                  : "bg-blue-200  self-start"
+                  ? "bg-blue-200  self-end"
+                  : "bg-red-200  self-start"
               } p-2 m-2 w-fit rounded-lg `}
             >
               {chat.id}
@@ -93,9 +103,14 @@ const Chat = () => {
             name=""
             id=""
             className="w-full border-2 border-gray-300 p-2"
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={(e) => {
+              setMessage(e.target.value);
+              socket.emit("writeMsg", { sender_id, receiver_id });
+            }}
             value={message}
+            placeholder={isTyping ? "Typing..." : "Type a message"}
           />
+
           <button className="bg-blue-500 p-2 text-white" type="submit">
             Send
           </button>

@@ -34,6 +34,13 @@ function initializeSocket(server) {
             sendMessage(sender_id, receiver_id, message);
         });
 
+        socket.on('writeMsg', data => {
+            const receiverSocketId = usersMap.get(data.receiver_id + '');
+            console.log('receiverSocketId', receiverSocketId);
+            io.to(receiverSocketId).emit('receiverWriteMsg', data)
+        }
+        )
+
     });
 
     return io;
