@@ -41,6 +41,13 @@ function initializeSocket(server) {
         }
         )
 
+        socket.on('isTyping', data => {
+            
+            const receiverSocketId = usersMap.get(data.receiver_id + '');
+            io.to(receiverSocketId).emit('receiverIsTyping', data)
+        
+        })
+
     });
 
     return io;

@@ -11,6 +11,7 @@ const Chat = () => {
   const chatContainerRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
   const user_id = localStorage.getItem("id");
+  const [placeholder, setPlaceholder] = useState("Type a message");
 
   const handleGetChats = async () => {
     try {
@@ -41,6 +42,10 @@ const Chat = () => {
     }
   }, [chats]);
 
+  useEffect(() => {
+    socket.emit('isTyping', { sender_id, receiver_id })
+  }, [message]);
+
 
   useEffect(() => {
     handleGetChats();
@@ -57,6 +62,15 @@ const Chat = () => {
         setIsTyping(true);
         setTimeout(() => {
           setIsTyping(false);
+        }, 2000);
+      }
+    });
+    socket.on('receiverIsTyping', (data: any) => {
+      console.log('receiverIsTyping ', data);
+      if (data.receiver_id == user_id) {
+        setPlaceholder("Typing...");
+        setTimeout(() => {
+          setPlaceholder("Type a message");
         }, 2000);
       }
     });
@@ -108,7 +122,7 @@ const Chat = () => {
               socket.emit("writeMsg", { sender_id, receiver_id });
             }}
             value={message}
-            placeholder={isTyping ? "Typing..." : "Type a message"}
+            placeholder={placeholder}
           />
 
           <button className="bg-blue-500 p-2 text-white" type="submit">

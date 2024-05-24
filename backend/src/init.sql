@@ -121,8 +121,12 @@ CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
     sender_id INT REFERENCES users(id),
     receiver_id INT REFERENCES users(id),
+    carpooling_id INT REFERENCES carpooling(id),
     message TEXT NOT NULL,
-    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES users(id),
+    FOREIGN KEY (receiver_id) REFERENCES users(id),
+    FOREIGN KEY (carpooling_id) REFERENCES carpooling(id)
 );
 
 

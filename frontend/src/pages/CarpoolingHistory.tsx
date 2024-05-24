@@ -27,7 +27,6 @@ const CarpoolingHistory = () => {
       });
   };
 
-
   const cancelBooking = async (carpooling: any) => {
     try {
       await cancelBookingRequest(carpooling);
@@ -79,27 +78,35 @@ const CarpoolingHistory = () => {
             <h4>Number of Seats: {carpooling.number_of_seats}</h4>
             <h5>{carpooling.car}</h5>
             <h6>driver : {carpooling.driver_name}</h6>
-            {carpooling.status === "accepted" && (
-              <div className="grid  ">
-                <p>{carpooling.driver_name} Has accepted your request, pay to confirm your seat and start a conversation</p>
-                <div className="justify-self-end flex gap-10">
+            <div className="grid  ">
+              <p>
+                {carpooling.driver_name} Has accepted your request, pay to
+                confirm your seat and start a conversation
+              </p>
+              <div className="justify-self-end flex gap-10">
+                {carpooling.status === "confirmed" && (
                   <button
                     className="bg-red-700 text-white rounded-md p-2"
                     onClick={() => cancelBooking(carpooling)}
                   >
                     Cancel Booking
                   </button>
+                )}
+                {carpooling.status === "accepted" && (
                   <button
                     className="bg-green-700 text-white rounded-md p-2"
-                    onClick={() => 
-                      Navigate("/chat/" + user_id + "/" + carpooling.publisher_id)
-                    }
+                    onClick={() => {
+                      confirmBooking(carpooling);
+                      Navigate(
+                        "/chat/" + user_id + "/" + carpooling.publisher_id
+                      );
+                    }}
                   >
                     Pay
                   </button>
-                </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         );
       })}
