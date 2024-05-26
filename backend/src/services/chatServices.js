@@ -3,12 +3,13 @@ const io = require('../initSocket');
 
 const getChats = async (
 	sender_id,
-	receiver_id
+	receiver_id,
+	carpooling_id
 ) => {
 	try {
 		const chats = await db.query(
-			`SELECT * FROM messages WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1)`,
-			[sender_id, receiver_id]
+			`SELECT * FROM messages WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1) AND carpooling_id = $3 ORDER BY timestamp ASC`,
+			[sender_id, receiver_id, carpooling_id]
 		);
 		return chats.rows;
 	} catch (error) {
@@ -20,14 +21,15 @@ const getChats = async (
 const sendMessage = async (
 	sender_id,
 	receiver_id,
-	message
+	message,
+	carpooling_id
 ) => {
 	try {
 		const newMessage = await db.query(
-			`INSERT INTO messages (sender_id, receiver_id, message, timestamp) VALUES ($1, $2, $3, NOW()) RETURNING *`,
-			[sender_id, receiver_id, message]
+			`INSERT INTO messages (sender_id, receiver_id, message, timestamp, carpooling_id) VALUES ($1, $2, $3, NOW(), $4) RETURNING *`,
+			[sender_id, receiver_id, message, carpooling_id]
 		);
-		io.getIO().emit('newMessage', { sender_id, receiver_id, message });
+		io.getIO().emit('newMessage', { sender_id, receiver_id, message, carpooling_id });
 		return newMessage.rows[0];
 	} catch (error) {
 		console.error(error);

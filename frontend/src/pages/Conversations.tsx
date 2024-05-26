@@ -34,7 +34,7 @@ const Conversations = () => {
                 key={conversation.id}
                 className="container flex w-full justify-between items-center p-5 border rounded-md shadow-md my-2 gap-2 cursor-pointer hover:bg-gray-100"
                 onClick={() => {
-                  Navigate("/chat/" + user_id + "/" + conversation.receiver_id);
+                  Navigate(`/chat/${user_id}/${conversation.receiver_id}/${conversation.carpooling_id}`);
                 }}
               >
                 <img

@@ -130,6 +130,18 @@ CREATE TABLE messages (
 );
 
 
+CREATE TABLE conversations (
+    id SERIAL PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    carpooling_id INT NOT NULL,
+    last_message_id INT,
+    FOREIGN KEY (user1_id) REFERENCES users(id),
+    FOREIGN KEY (user2_id) REFERENCES users(id),
+    FOREIGN KEY (carpooling_id) REFERENCES carpooling(id),
+    FOREIGN KEY (last_message_id) REFERENCES messages(id)
+);
+
 -- Create a table for rating
 CREATE TABLE IF NOT EXISTS rating (
     id SERIAL PRIMARY KEY,

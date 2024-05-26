@@ -8,6 +8,7 @@ const Chat = () => {
   const [message, setMessage] = useState("");
   let { sender_id } = useParams();
   let { receiver_id } = useParams();
+  let { carpooling_id } = useParams();
   const chatContainerRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
   const user_id = localStorage.getItem("id");
@@ -30,6 +31,7 @@ const Chat = () => {
       sender_id,
       receiver_id,
       message,
+      carpooling_id, 
     });
     setChats([...chats, { sender_id, receiver_id, message }]);
     setMessage("");

@@ -146,9 +146,6 @@ const getBookedCarpooling = async (user_id) => {
 				booking.requester_id = $1
 		`, [user_id]);
 
-		console.log("----------------------------------------------------bookedCarpooling--------------------------", bookedCarpooling.rows);
-		console.log("----------------------------------------------------bookedCarpooling--------------------------");
-
 		return bookedCarpooling.rows;
 	} catch (err) {
 		console.error(err);
@@ -210,14 +207,8 @@ const getAvailableSeats = async (carpooling_id, number_of_seats) => {
 }
 
 const acceptCarpoolingRequest = async ({ requester_id, publisher_id, carpooling_id, requested_seats }) => {
-	// update the booking status to accepted and decrease the number of seats in the carpooling
+
 	try {
-		console.log("requester_id", requester_id);
-		console.log("carpooling_id", carpooling_id);
-		console.log("requested_seats", requested_seats);
-
-
-
 		const requestInfo = await db.query(`
 		UPDATE
 			booking
@@ -248,16 +239,21 @@ const acceptCarpoolingRequest = async ({ requester_id, publisher_id, carpooling_
 		]);
 
 		//  start a conversation between the two users
+		const message = await db.query(`
+		INSERT INTO
+			messages (sender_id, receiver_id, message, timestamp, carpooling_id)
+		VALUES
+			($1, $2, $3, $4, $5)
+		RETURNING *
+	`, [sender_id, receiver_id, 'Hello, I have accepted your request', new Date(), carpooling_id], );
+
 		const conversation = await db.query(`
 		INSERT INTO
-			messages (sender_id, receiver_id, message, timestamp)
+			conversations (user1_id, user2_id, last_message_id, carpooling_id)
 		VALUES
 			($1, $2, $3, $4)
 		RETURNING *
-	`, [sender_id, receiver_id, 'Hello, I have accepted your request', new Date()]);
-
-
-
+	`, [sender_id, receiver_id, message.rows[0].id, carpooling_id]);
 
 		return requestInfo.rows[0];
 	} catch (err) {
@@ -345,9 +341,6 @@ const getCarpoolingByPublisherId = async (user_id) => {
 			carpooling.rows[i].requests_infos = bookingRequests.rows;
 		}
 		
-
-
-
 		return carpooling.rows;
 	} catch (err) {
 		console.error(err);
