@@ -1,27 +1,55 @@
-CREATE DATABASE IF NOT EXISTS TODO_DB;
-
--- Connect to the newly created database
-\c TODO_DB;
-
--- Car table
-CREATE TABLE IF NOT EXISTS cars (
-    car_id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
-    brand VARCHAR (50) NOT NULL,
-    year INT NOT NULL,
-    plate VARCHAR (50),
-    image VARCHAR (250),
-    FOREIGN KEY (user_id) REFERENCES users (id)
-);
-
--- Create a table for most known car brands
-CREATE TABLE IF NOT EXISTS cars_brands (
-    id SERIAL PRIMARY KEY,
-    label VARCHAR (50) NOT NULL
-);
+-- Drop types if they exist to avoid "already exists" errors (optional)
+-- DO NOT use in production as it will break existing data referencing these types
 
 -- Create user roles enum
-CREATE TYPE role AS ENUM ('driver', 'passenger');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'role') THEN
+        CREATE TYPE role AS ENUM ('driver', 'passenger');
+    END IF;
+END $$;
+
+-- Create carpooling status enum
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'bookingStatus') THEN
+        CREATE TYPE bookingStatus AS ENUM (
+            'pending',
+            'accepted',
+            'rejected',
+            'canceled',
+            'confirmed',
+            'completed'
+        );
+    END IF;
+END $$;
+
+-- Create notifications type enum
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'notifications_type') THEN
+        CREATE TYPE notifications_type AS ENUM (
+            'rating',
+            'comment',
+            'newBookingRequest',
+            'bookingConfirmed',
+            'bookingCanceled',
+            'requestAccepted',
+            'requestRejected',
+            'requestCanceled',
+            'chat',
+            'carpoolingPublished'
+        );
+    END IF;
+END $$;
+
+-- Create notification status enum
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'notification_status') THEN
+        CREATE TYPE notification_status AS ENUM ('unread', 'read');
+    END IF;
+END $$;
 
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
@@ -37,16 +65,47 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create carpooling status enum
-CREATE TYPE bookingStatus AS ENUM (
-    'pending',
-    'accepted',
-    'rejected',
-    'canceled',
-    'confirmed',
-    'completed'
+-- Create cars table
+CREATE TABLE IF NOT EXISTS cars (
+    car_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    brand VARCHAR (50) NOT NULL,
+    year INT NOT NULL,
+    plate VARCHAR (50),
+    image VARCHAR (250),
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
+-- Create conversations table
+CREATE TABLE conversations (
+    id SERIAL PRIMARY KEY,
+    carpooling_id INT REFERENCES carpooling(id),
+    last_message_id INT REFERENCES messages(id)
+);
+
+-- Create messages table
+CREATE TABLE IF NOT EXISTS messages (
+    id SERIAL PRIMARY KEY,
+    conversation_id INT REFERENCES conversations(id),
+    sender_id INT REFERENCES users(id),
+    message TEXT NOT NULL,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create user_conversations table
+CREATE TABLE IF NOT EXISTS user_conversations (
+    user_id INT REFERENCES users(id),
+    conversation_id INT REFERENCES conversations(id),
+    PRIMARY KEY (user_id, conversation_id)
+);
+
+-- Create cars_brands table
+CREATE TABLE IF NOT EXISTS cars_brands (
+    id SERIAL PRIMARY KEY,
+    label VARCHAR (50) NOT NULL
+);
+
+-- Create booking table
 CREATE TABLE IF NOT EXISTS booking (
     booking_id SERIAL PRIMARY KEY,
     publisher_id INT NOT NULL,
@@ -59,7 +118,7 @@ CREATE TABLE IF NOT EXISTS booking (
     FOREIGN KEY (carpooling_id) REFERENCES carpooling (id)
 );
 
--- Create tables for carpooling
+-- Create carpooling table
 CREATE TABLE IF NOT EXISTS carpooling (
     id SERIAL PRIMARY KEY,
     publisher_id INT NOT NULL,
@@ -78,34 +137,8 @@ CREATE TABLE IF NOT EXISTS carpooling (
     FOREIGN KEY (car_id) REFERENCES cars (car_id)
 );
 
--- Create requesters table
-CREATE TABLE IF NOT EXISTS requesters (
-    id SERIAL PRIMARY KEY,
-    carpooling_id INT NOT NULL,
-    requester_id INT NOT NULL,
-    number_of_seats INT NOT NULL,
-    status bookingStatus DEFAULT 'pending',
-    FOREIGN KEY (carpooling_id) REFERENCES carpooling (id),
-    FOREIGN KEY (requester_id) REFERENCES users (id)
-);
-
--- Create a table for notifications
-CREATE TYPE notifications_type AS ENUM (
-    'rating',
-    'comment',
-    'newBookingRequest',
-    'bookingConfirmed',
-    'bookingCanceled',
-    'requestAccepted',
-    'requestRejected',
-    'requestCanceled',
-    'chat',
-    'carpoolingPublished'
-);
-
-CREATE TYPE notification_status AS ENUM ('unread', 'read');
-
-CREATE TABLE notifications (
+-- Create notifications table
+CREATE TABLE IF NOT EXISTS notifications (
     notification_id SERIAL PRIMARY KEY,
     sender_id INT NOT NULL,
     receiver_id INT NOT NULL,
@@ -116,33 +149,7 @@ CREATE TABLE notifications (
     FOREIGN KEY (receiver_id) REFERENCES users(id)
 );
 
--- create a table for messages
-CREATE TABLE messages (
-    id SERIAL PRIMARY KEY,
-    sender_id INT REFERENCES users(id),
-    receiver_id INT REFERENCES users(id),
-    carpooling_id INT REFERENCES carpooling(id),
-    message TEXT NOT NULL,
-    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (sender_id) REFERENCES users(id),
-    FOREIGN KEY (receiver_id) REFERENCES users(id),
-    FOREIGN KEY (carpooling_id) REFERENCES carpooling(id)
-);
-
-
-CREATE TABLE conversations (
-    id SERIAL PRIMARY KEY,
-    sender_id INT NOT NULL,
-    receiver_id INT NOT NULL,
-    carpooling_id INT NOT NULL,
-    last_message_id INT,
-    FOREIGN KEY (user1_id) REFERENCES users(id),
-    FOREIGN KEY (user2_id) REFERENCES users(id),
-    FOREIGN KEY (carpooling_id) REFERENCES carpooling(id),
-    FOREIGN KEY (last_message_id) REFERENCES messages(id)
-);
-
--- Create a table for rating
+-- Create rating table
 CREATE TABLE IF NOT EXISTS rating (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
@@ -152,7 +159,7 @@ CREATE TABLE IF NOT EXISTS rating (
     FOREIGN KEY (carpooling_id) REFERENCES carpooling (id)
 );
 
--- Create a table for comment
+-- Create comment table
 CREATE TABLE IF NOT EXISTS comment (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
@@ -162,94 +169,80 @@ CREATE TABLE IF NOT EXISTS comment (
     FOREIGN KEY (carpooling_id) REFERENCES carpooling (id)
 );
 
--- Create a Moroccan cities table
+-- Create cities table
 CREATE TABLE IF NOT EXISTS cities (
     id SERIAL PRIMARY KEY,
     label VARCHAR (50) NOT NULL
 );
 
+-- Create indexes
+CREATE INDEX IF NOT EXISTS idx_messages_conversation_id ON messages(conversation_id);
+CREATE INDEX IF NOT EXISTS idx_messages_sender_id ON messages(sender_id);
+CREATE INDEX IF NOT EXISTS idx_user_conversations_user_id ON user_conversations(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_conversations_conversation_id ON user_conversations(conversation_id);
+
 -- Insert some Moroccan cities into the cities table only once
-INSERT INTO
-    cities (label)
-SELECT
-    label
-FROM
-    (
-        VALUES
-            ('Casablanca'),
-            ('Rabat'),
-            ('Tanger'),
-            ('Fes'),
-            ('Marrakech'),
-            ('Agadir'),
-            ('Oujda'),
-            ('Kenitra'),
-            ('Tetouan'),
-            ('Safi'),
-            ('El Jadida'),
-            ('Nador'),
-            ('Beni Mellal'),
-            ('Khouribga'),
-            ('Taza'),
-            ('Mohammedia'),
-            ('Khemisset'),
-            ('Taourirt'),
-            ('Berrech'),
-            ('Ouarzazate'),
-            ('Larache'),
-            ('Settat'),
-            ('Ksar El Kebir'),
-            ('Guelmim'),
-            ('Tiznit')
-    ) AS cities(label)
-WHERE
-    NOT EXISTS (
-        SELECT
-            1
-        FROM
-            cities
-    );
+INSERT INTO cities (label)
+SELECT label
+FROM (
+    VALUES
+        ('Casablanca'),
+        ('Rabat'),
+        ('Tanger'),
+        ('Fes'),
+        ('Marrakech'),
+        ('Agadir'),
+        ('Oujda'),
+        ('Kenitra'),
+        ('Tetouan'),
+        ('Safi'),
+        ('El Jadida'),
+        ('Nador'),
+        ('Beni Mellal'),
+        ('Khouribga'),
+        ('Taza'),
+        ('Mohammedia'),
+        ('Khemisset'),
+        ('Taourirt'),
+        ('Berrechid'),
+        ('Ouarzazate'),
+        ('Larache'),
+        ('Settat'),
+        ('Ksar El Kebir'),
+        ('Guelmim'),
+        ('Tiznit')
+) AS cities(label)
+WHERE NOT EXISTS (SELECT 1 FROM cities WHERE cities.label = cities.label);
 
 -- Insert some car brands into the cars_brands table only once
-INSERT INTO
-    cars_brands (label)
-SELECT
-    label
-FROM
-    (
-        VALUES
-            ('Audi'),
-            ('BMW'),
-            ('Chevrolet'),
-            ('Citroen'),
-            ('Dacia'),
-            ('Fiat'),
-            ('Ford'),
-            ('Honda'),
-            ('Hyundai'),
-            ('Jeep'),
-            ('Kia'),
-            ('Land Rover'),
-            ('Mazda'),
-            ('Mercedes'),
-            ('Mitsubishi'),
-            ('Nissan'),
-            ('Opel'),
-            ('Peugeot'),
-            ('Renault'),
-            ('Seat'),
-            ('Skoda'),
-            ('Suzuki'),
-            ('Toyota'),
-            ('Volkswagen'),
-            ('Volvo')
-    ) AS cars_brands(label)
-WHERE
-    NOT EXISTS (
-        SELECT
-            1
-        FROM
-            cars_brands
-    );
-
-
+INSERT INTO cars_brands (label)
+SELECT label
+FROM (
+    VALUES
+        ('Audi'),
+        ('BMW'),
+        ('Chevrolet'),
+        ('Citroen'),
+        ('Dacia'),
+        ('Fiat'),
+        ('Ford'),
+        ('Honda'),
+        ('Hyundai'),
+        ('Jeep'),
+        ('Kia'),
+        ('Land Rover'),
+        ('Mazda'),
+        ('Mercedes'),
+        ('Mitsubishi'),
+        ('Nissan'),
+        ('Opel'),
+        ('Peugeot'),
+        ('Renault'),
+        ('Seat'),
+        ('Skoda'),
+        ('Suzuki'),
+        ('Toyota'),
+        ('Volkswagen'),
+        ('Volvo')
+) AS cars_brands(label)
+WHERE NOT EXISTS (SELECT 1 FROM cars_brands WHERE cars_brands.label = cars_brands.label);
