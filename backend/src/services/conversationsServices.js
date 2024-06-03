@@ -26,29 +26,46 @@ const getConversations = async (user_id) => {
 
 		const conversations = await db.query(
 			`
-				SELECT 
-					conversations.*,
-					users.id,
-					users.username,
-					users.profile_picture,
-					messages.message
-				FROM
-					conversations
-				INNER JOIN
-					users
-				ON
-					conversations.user1_id = users.id
-				INNER JOIN
-					messages
-				ON
-					messages.id = conversations.last_message_id
-				WHERE conversations.user1_id = $1 OR conversations.user1_id = $1
-
-			`,
-			[user_id]
+			  SELECT 
+				user_conversations.*,
+				conversations.*,
+				carpooling.*,
+				messages.message,
+				CASE 
+				  WHEN conversations.user1_id = $1 THEN u2.username
+				  ELSE u1.username
+				END AS receiver_name,
+				u2.profile_picture
+			  FROM
+				user_conversations
+			  INNER JOIN
+				conversations
+			  ON
+				user_conversations.conversation_id = conversations.id
+			  INNER JOIN
+				users AS u1
+			  ON
+				conversations.user1_id = u1.id
+			  INNER JOIN
+				users AS u2
+			  ON
+				conversations.user2_id = u2.id
+			  LEFT JOIN
+				carpooling
+			  ON
+				conversations.carpooling_id = carpooling.id
+			  LEFT JOIN
+			  	messages
+			  ON
+				conversations.last_message_id = messages.id
+			  WHERE
+				user_conversations.user_id = $1
+			`, [user_id]
 		)
+
 		console.log('conversations', conversations.rows);
 		return conversations.rows;
+
 	} catch (error) {
 		throw error;
 	}

@@ -92,19 +92,22 @@ CREATE TABLE IF NOT EXISTS notifications (
     FOREIGN KEY (receiver_id) REFERENCES users(id)
 );
 
+-- Create conversations table
+CREATE TABLE IF NOT EXISTS conversations (
+    id SERIAL PRIMARY KEY,
+    carpooling_id INT REFERENCES carpooling(id),
+    user1_id INT REFERENCES users(id),
+    user2_id INT REFERENCES users(id),
+    last_message_id INT REFERENCES messages(id)
+);
+
 -- Create messages table
 CREATE TABLE IF NOT EXISTS messages (
     id SERIAL PRIMARY KEY,
     sender_id INT REFERENCES users(id),
     message TEXT NOT NULL,
-    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-);
-
--- Create conversations table
-CREATE TABLE IF NOT EXISTS conversations (
-    id SERIAL PRIMARY KEY,
-    carpooling_id INT REFERENCES carpooling(id),
-    last_message_id INT REFERENCES messages(id)
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    conversation_id INT REFERENCES conversations(id)
 );
 
 -- Create user_conversations table

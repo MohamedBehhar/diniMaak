@@ -84,7 +84,7 @@ const checkCarpooling = async (user_id, departure_day) => {
 
 
 // creat a carpooling with user id, departure, destination, date, time, seats, price, and description
-const createCarpooling = async ({ user_id, departure, destination, departure_time, departure_day, number_of_seats, price, driver_name,car_id }) => {
+const createCarpooling = async ({ user_id, departure, destination, departure_time, departure_day, number_of_seats, price, driver_name, car_id }) => {
 
 
 	try {
@@ -241,19 +241,36 @@ const acceptCarpoolingRequest = async ({ requester_id, publisher_id, carpooling_
 		//  start a conversation between the two users
 		const message = await db.query(`
 		INSERT INTO
-			messages (sender_id, receiver_id, message, timestamp, carpooling_id)
+			messages (sender_id, message, timestamp)
 		VALUES
-			($1, $2, $3, $4, $5)
+			($1, $2, $3)
 		RETURNING *
-	`, [sender_id, receiver_id, 'Hello, I have accepted your request', new Date(), carpooling_id], );
+	`, [sender_id, 'Hello, I have accepted your request', new Date()],);
 
 		const conversation = await db.query(`
 		INSERT INTO
-			conversations (user1_id, user2_id, last_message_id, carpooling_id)
+			conversations (user1_id, user2_id, carpooling_id, last_message_id)
 		VALUES
 			($1, $2, $3, $4)
 		RETURNING *
-	`, [sender_id, receiver_id, message.rows[0].id, carpooling_id]);
+	`, [sender_id, receiver_id, carpooling_id, message.rows[0].id]);
+
+		const userConversations = await db.query(`
+		INSERT INTO
+			user_conversations (user_id, conversation_id)
+		VALUES
+			($1, $2)
+		RETURNING *
+	`, [sender_id, conversation.rows[0].id]);
+
+		const receiverConversations = await db.query(`
+		INSERT INTO
+			user_conversations (user_id, conversation_id)
+		VALUES
+			($1, $2)
+		RETURNING *
+	`, [receiver_id, conversation.rows[0].id]);
+
 
 		return requestInfo.rows[0];
 	} catch (err) {
@@ -340,7 +357,7 @@ const getCarpoolingByPublisherId = async (user_id) => {
 			carpooling.rows[i].confirmed_requests = acceptedRequests.rows;
 			carpooling.rows[i].requests_infos = bookingRequests.rows;
 		}
-		
+
 		return carpooling.rows;
 	} catch (err) {
 		console.error(err);

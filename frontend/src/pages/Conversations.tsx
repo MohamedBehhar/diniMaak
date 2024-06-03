@@ -3,6 +3,7 @@ import { getConversations } from "../api/methods";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { concatinatePictureUrl } from "../utils/helperFunctions";
+import { format } from "date-fns";
 
 const Conversations = () => {
   const [conversations, setConversations] = useState([]);
@@ -34,13 +35,15 @@ const Conversations = () => {
                 key={conversation.id}
                 className="container flex w-full justify-between items-center p-5 border rounded-md shadow-md my-2 gap-2 cursor-pointer hover:bg-gray-100"
                 onClick={() => {
-                  Navigate(`/chat/${user_id}/${conversation.receiver_id}/${conversation.carpooling_id}`);
+                  Navigate(
+                    `/chat/${user_id}/${conversation.receiver_id}/${conversation.carpooling_id}`
+                  );
                 }}
               >
                 <img
-                  src={
-					concatinatePictureUrl(conversation.receiver_profile_picture)
-				  }
+                  src={concatinatePictureUrl(
+                    conversation.receiver_profile_picture
+                  )}
                   alt="img"
                   onError={(e) => {
                     e.currentTarget.src =
@@ -48,9 +51,18 @@ const Conversations = () => {
                   }}
                   className="w-10 h-10 rounded-full object-cover"
                 />
-                <div className="info flex-1">
+                <div className="info flex-1 ">
                   <h1>{conversation.receiver_name}</h1>
-                  <p>{conversation.message}</p>
+                  <div>
+                    <p className="text-gray-500">{conversation.message}</p>
+                  </div>
+                </div>
+                <div className="flex-1 flex gap-4 justify-between self-start">
+                  <div className='flex gap-2 text-xl bold'>
+                    <span>{conversation.departure}</span>
+                    <span>{conversation.destination}</span>
+                  </div>
+                  <p>{format(conversation.departure_day, "EEEE, MM/yyyy")}</p>
                 </div>
               </div>
             );
