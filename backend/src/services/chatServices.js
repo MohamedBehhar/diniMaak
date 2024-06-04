@@ -2,14 +2,12 @@ const db = require('../db/db');
 const io = require('../initSocket');
 
 const getChats = async (
-	sender_id,
-	receiver_id,
-	carpooling_id
+	conversation_id
 ) => {
 	try {
 		const chats = await db.query(
-			`SELECT * FROM messages WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1) AND carpooling_id = $3 ORDER BY timestamp ASC`,
-			[sender_id, receiver_id, carpooling_id]
+			`SELECT * FROM messages WHERE conversation_id = $1 ORDER BY timestamp ASC`,
+			[conversation_id]
 		);
 		return chats.rows;
 	} catch (error) {

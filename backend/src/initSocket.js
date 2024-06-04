@@ -29,23 +29,22 @@ function initializeSocket(server) {
             }
         });
 
-        socket.on('sendMsg', ({ sender_id, receiver_id, message }) => {
-            console.log('948390248230948230948: ', sender_id, receiver_id, message);
-            sendMessage(sender_id, receiver_id, message);
+        socket.on('sendMsg', ({ sender_id, receiver_id, message, conversation_id }) => {
+            console.log('948390248230948230948: ', sender_id, receiver_id, message, conversation_id);
+            sendMessage(sender_id, receiver_id, message, conversation_id);
         });
 
         socket.on('writeMsg', data => {
             const receiverSocketId = usersMap.get(data.receiver_id + '');
-            console.log('receiverSocketId', receiverSocketId);
             io.to(receiverSocketId).emit('receiverWriteMsg', data)
         }
         )
 
         socket.on('isTyping', data => {
-            
+
             const receiverSocketId = usersMap.get(data.receiver_id + '');
             io.to(receiverSocketId).emit('receiverIsTyping', data)
-        
+
         })
 
     });
@@ -55,7 +54,6 @@ function initializeSocket(server) {
 
 async function sendNotification(sender_id, receiver_id, message, type) {
     const receiverSocketId = usersMap.get(receiver_id + '');
-    console.log('receiverSocketId', receiverSocketId);
     console.log('sender_idtype ; ; ', type);
 
     if (receiverSocketId) {
@@ -89,30 +87,48 @@ async function sendNotification(sender_id, receiver_id, message, type) {
     }
 }
 
-async function sendMessage(sender_id, receiver_id, message) {
+async function sendMessage(sender_id, receiver_id, message, conversation_id) {
     const receiverSocketId = usersMap.get(receiver_id + '')
-
+    console.log('receiverSocketId is offf', receiverSocketId);
     if (receiverSocketId) {
         io.to(receiverSocketId).emit('newMsg', {
             sender_id,
             receiver_id,
-            message
+            message,
+            conversation_id
         })
-
-
-
-        const updateMsgs = await db.query(`
-            INSERT INTO 
-                messages(sender_id, receiver_id, message, timestamp)
-            VALUES
-                ($1,$2,$3,NOW())
-            RETURNING *   
-        `, [sender_id, receiver_id, message]);
-
-        console.log('hhhhhhh sjsjs ', updateMsgs.rows)
-
-
     }
+
+    try {
+        const messages = await db.query(`
+        INSERT INTO 
+            messages(sender_id, message, timestamp, conversation_id)
+        VALUES
+            ($1,$2,NOW(), $3)
+        RETURNING *   
+    `, [sender_id, message, conversation_id]);
+
+        const conversation = await db.query(`
+            UPDATE 
+                conversations
+            SET
+                last_message_id = $1
+            WHERE
+                id = $2
+            RETURNING *
+        `, [messages.rows[0].id, conversation_id]);
+
+
+
+
+
+
+    } catch (err) {
+        console.log(err);
+    }
+
+
+
 }
 
 module.exports = {

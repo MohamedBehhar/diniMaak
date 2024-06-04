@@ -4,7 +4,7 @@ const getChats = async (req, res) => {
 	const sender_id = parseInt(req.params.sender_id);
 	const receiver_id = parseInt(req.params.receiver_id);
 	const conversation_id = parseInt(req.params.conversation_id);
-	if (!sender_id || !receiver_id) {
+	if (!sender_id || !receiver_id || !conversation_id) {
 		res.status(400).json({ error: 'Invalid request' });
 		return;
 	}

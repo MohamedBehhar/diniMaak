@@ -6,9 +6,8 @@ import { socket } from "../socket/socket";
 const Chat = () => {
   const [chats, setChats] = useState([]);
   const [message, setMessage] = useState("");
-  let { sender_id } = useParams();
-  let { receiver_id } = useParams();
-  let { carpooling_id } = useParams();
+  let { conversation_id, sender_id, receiver_id } = useParams();
+
   const chatContainerRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
   const user_id = localStorage.getItem("id");
@@ -16,7 +15,7 @@ const Chat = () => {
 
   const handleGetChats = async () => {
     try {
-      const response = await getChats(sender_id, receiver_id);
+      const response = await getChats(sender_id, receiver_id, conversation_id);
       setChats(response);
     } catch (error) {
       console.log("error === ", error);
@@ -30,8 +29,8 @@ const Chat = () => {
     socket.emit("sendMsg", {
       sender_id,
       receiver_id,
+      conversation_id,
       message,
-      carpooling_id, 
     });
     setChats([...chats, { sender_id, receiver_id, message }]);
     setMessage("");
@@ -45,19 +44,16 @@ const Chat = () => {
   }, [chats]);
 
   useEffect(() => {
-    socket.emit('isTyping', { sender_id, receiver_id })
+    socket.emit("isTyping", { sender_id });
   }, [message]);
-
 
   useEffect(() => {
     handleGetChats();
     socket.on("connection", () => {
-      socket.emit("joinRoom", { sender_id, receiver_id });
+      socket.emit("joinRoom", { sender_id });
     });
     socket.on("newMsg", () => {
-      getChats(sender_id, receiver_id).then((response:any) => {
-        setChats(response);
-      });
+      handleGetChats();
     });
     socket.on("receiverWriteMsg", (data: any) => {
       if (data.receiver_id == user_id) {
@@ -67,8 +63,8 @@ const Chat = () => {
         }, 2000);
       }
     });
-    socket.on('receiverIsTyping', (data: any) => {
-      console.log('receiverIsTyping ', data);
+    socket.on("receiverIsTyping", (data: any) => {
+      console.log("receiverIsTyping ", data);
       if (data.receiver_id == user_id) {
         setPlaceholder("Typing...");
         setTimeout(() => {

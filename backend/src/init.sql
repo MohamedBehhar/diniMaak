@@ -92,16 +92,16 @@ CREATE TABLE IF NOT EXISTS notifications (
     FOREIGN KEY (receiver_id) REFERENCES users(id)
 );
 
--- Create conversations table
+-- Create conversations table without the foreign key constraint on last_message_id
 CREATE TABLE IF NOT EXISTS conversations (
     id SERIAL PRIMARY KEY,
     carpooling_id INT REFERENCES carpooling(id),
     user1_id INT REFERENCES users(id),
     user2_id INT REFERENCES users(id),
-    last_message_id INT REFERENCES messages(id)
+    last_message_id INT -- This will be added as a foreign key later
 );
 
--- Create messages table
+-- Create messages table with the foreign key constraint on conversation_id
 CREATE TABLE IF NOT EXISTS messages (
     id SERIAL PRIMARY KEY,
     sender_id INT REFERENCES users(id),
@@ -109,6 +109,12 @@ CREATE TABLE IF NOT EXISTS messages (
     timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     conversation_id INT REFERENCES conversations(id)
 );
+
+-- Alter conversations table to add the foreign key constraint on last_message_id
+ALTER TABLE conversations
+ADD CONSTRAINT fk_last_message
+FOREIGN KEY (last_message_id) REFERENCES messages(id);
+
 
 -- Create user_conversations table
 CREATE TABLE IF NOT EXISTS user_conversations (

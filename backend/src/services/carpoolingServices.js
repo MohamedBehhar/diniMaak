@@ -238,22 +238,33 @@ const acceptCarpoolingRequest = async ({ requester_id, publisher_id, carpooling_
 			sender_id, receiver_id, `${sender_name} has accepted your request`, 'requestAccepted'
 		]);
 
-		//  start a conversation between the two users
-		const message = await db.query(`
-		INSERT INTO
-			messages (sender_id, message, timestamp)
-		VALUES
-			($1, $2, $3)
-		RETURNING *
-	`, [sender_id, 'Hello, I have accepted your request', new Date()],);
 
 		const conversation = await db.query(`
 		INSERT INTO
-			conversations (user1_id, user2_id, carpooling_id, last_message_id)
+			conversations (user1_id, user2_id, carpooling_id)
 		VALUES
-			($1, $2, $3, $4)
+			($1, $2, $3)
 		RETURNING *
-	`, [sender_id, receiver_id, carpooling_id, message.rows[0].id]);
+	`, [sender_id, receiver_id, carpooling_id]);
+
+		//  start a conversation between the two users
+		const message = await db.query(`
+			INSERT INTO
+				messages (sender_id, message, timestamp, conversation_id)
+			VALUES
+				($1, $2, $3, $4)
+			RETURNING *
+		`, [sender_id, 'Hello, I have accepted your request', new Date(), conversation.rows[0].id]);
+
+		// update last message_id in the conversation table
+		await db.query(`
+		UPDATE
+			conversations
+		SET
+			last_message_id = $1
+		WHERE
+			id = $2
+	`, [message.rows[0].id, conversation.rows[0].id]);
 
 		const userConversations = await db.query(`
 		INSERT INTO

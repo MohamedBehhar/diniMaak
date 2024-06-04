@@ -32,10 +32,17 @@ const getConversations = async (user_id) => {
 				carpooling.*,
 				messages.message,
 				CASE 
+				  WHEN conversations.user1_id = $1 THEN u2.id
+				  ELSE u1.id
+				END AS receiver_id,
+				CASE 
 				  WHEN conversations.user1_id = $1 THEN u2.username
 				  ELSE u1.username
 				END AS receiver_name,
-				u2.profile_picture
+				CASE
+				  WHEN conversations.user1_id = $1 THEN u2.profile_picture
+				  ELSE u1.profile_picture
+				END AS receiver_profile_picture
 			  FROM
 				user_conversations
 			  INNER JOIN
@@ -55,13 +62,15 @@ const getConversations = async (user_id) => {
 			  ON
 				conversations.carpooling_id = carpooling.id
 			  LEFT JOIN
-			  	messages
+				messages
 			  ON
 				conversations.last_message_id = messages.id
 			  WHERE
 				user_conversations.user_id = $1
-			`, [user_id]
-		)
+			`,
+			[user_id]
+		  );
+		  
 
 		console.log('conversations', conversations.rows);
 		return conversations.rows;
