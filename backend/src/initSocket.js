@@ -89,7 +89,6 @@ async function sendNotification(sender_id, receiver_id, message, type) {
 
 async function sendMessage(sender_id, receiver_id, message, conversation_id) {
     const receiverSocketId = usersMap.get(receiver_id + '')
-    console.log('receiverSocketId is offf', receiverSocketId);
     if (receiverSocketId) {
         io.to(receiverSocketId).emit('newMsg', {
             sender_id,

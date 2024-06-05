@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { concatinatePictureUrl } from "../utils/helperFunctions";
 import { format } from "date-fns";
 import DefaultUserImage from "../assets/user.png";
+import { socket } from "../socket/socket";
 
 const Conversations = () => {
   const [conversations, setConversations] = useState([]);
@@ -22,6 +23,9 @@ const Conversations = () => {
   };
 
   useEffect(() => {
+    socket.on("newMsg", () => {
+      fetchConversations();
+    });
     fetchConversations();
   }, []);
 

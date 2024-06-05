@@ -120,7 +120,20 @@ const AvailableCarpooling = () => {
           })}
         </div>
       ) : (
-        <div className="text-center p-5">No carpooling available</div>
+        <div className="text-center p-5">
+          <h1>No carpooling available</h1>
+          <label htmlFor="reminder" className=" rounded-md cursor-pointer px-2">
+            Set Reminder
+            <input
+              type="checkbox"
+              className=" px-2
+          bg-blue-500 
+          "
+              name="reminder"
+              id="reminder"
+            />
+          </label>
+        </div>
       )}
     </div>
   );

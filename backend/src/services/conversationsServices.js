@@ -75,6 +75,7 @@ const getUnreadLastMessagesCount = async (user_id) => {
 					conversations.user1_id = $1 OR
 					conversations.user2_id = $1
 				)
+				AND messages.sender_id != $1
 
 			`,
 			[user_id]
