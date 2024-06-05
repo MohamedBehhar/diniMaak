@@ -286,6 +286,16 @@ export const getChats = async (sender_id, receiver_id, conversation_id) => {
 	}
 }
 
+export const getUnreadLastMessagesCount = async (user_id) => {
+	try {
+		const response = await instance.get(`/conversations/unread/${user_id}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
+
+
 
 export const getConversations = async (user_id) => {
 	console.log('user_id', user_id);

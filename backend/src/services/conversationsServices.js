@@ -2,28 +2,6 @@ const db = require('../db/db');
 
 const getConversations = async (user_id) => {
 	try {
-		// const conversations = await db.query(`
-		// 	SELECT DISTINCT ON (messages.receiver_id)
-		// 		messages.id,
-		// 		messages.sender_id,
-		// 		messages.receiver_id,
-		// 		messages.message,
-		// 		messages.timestamp,
-		// 		users.username as receiver_name,
-		// 		users.profile_picture as receiver_profile_picture
-		// 	FROM
-		// 		messages
-		// 	INNER JOIN
-		// 		users
-		// 	ON
-		// 		messages.receiver_id = users.id
-		// 	WHERE
-		// 		messages.receiver_id = $1 OR messages.sender_id = $1
-		// 	ORDER BY
-		// 		messages.receiver_id,
-		// 		messages.timestamp DESC
-		// `, [user_id]);
-
 		const conversations = await db.query(
 			`
 			  SELECT 
@@ -31,6 +9,8 @@ const getConversations = async (user_id) => {
 				conversations.*,
 				carpooling.*,
 				messages.message,
+				messages.timestamp,
+				messages.is_read,
 				CASE 
 				  WHEN conversations.user1_id = $1 THEN u2.id
 				  ELSE u1.id
@@ -69,10 +49,7 @@ const getConversations = async (user_id) => {
 				user_conversations.user_id = $1
 			`,
 			[user_id]
-		  );
-		  
-
-		console.log('conversations', conversations.rows);
+		);
 		return conversations.rows;
 
 	} catch (error) {
@@ -80,7 +57,37 @@ const getConversations = async (user_id) => {
 	}
 }
 
+const getUnreadLastMessagesCount = async (user_id) => {
+	try {
+		const unreadMessages = await db.query(
+			`
+			SELECT
+				COUNT(*) as count
+			FROM
+				conversations
+			INNER JOIN
+				messages
+			ON
+				conversations.last_message_id = messages.id
+			WHERE
+				messages.is_read = false AND
+				(
+					conversations.user1_id = $1 OR
+					conversations.user2_id = $1
+				)
+
+			`,
+			[user_id]
+		);
+		return unreadMessages.rows[0].count;
+	} catch (error) {
+		throw error;
+	}
+}
+
+
 
 module.exports = {
-	getConversations
+	getConversations,
+	getUnreadLastMessagesCount
 };

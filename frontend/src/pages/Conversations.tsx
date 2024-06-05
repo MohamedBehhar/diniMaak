@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { concatinatePictureUrl } from "../utils/helperFunctions";
 import { format } from "date-fns";
+import DefaultUserImage from "../assets/user.png";
 
 const Conversations = () => {
   const [conversations, setConversations] = useState([]);
@@ -33,7 +34,10 @@ const Conversations = () => {
             return (
               <div
                 key={conversation.id}
-                className="container flex w-full justify-between items-center p-5 border rounded-md shadow-md my-2 gap-2 cursor-pointer hover:bg-gray-100"
+                className={ `${
+                  conversation.is_read ? "bg-gray-100" : "bg-white"
+                } container flex w-full justify-between items-center p-5 border rounded-md shadow-md my-2 gap-2 cursor-pointer hover:bg-gray-100`}
+                
                 onClick={() => {
                   Navigate(
                     `/chat/${user_id}/${conversation.receiver_id}/${conversation.conversation_id}`
@@ -46,8 +50,7 @@ const Conversations = () => {
                   )}
                   alt="img"
                   onError={(e) => {
-                    e.currentTarget.src =
-                      "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png";
+                    e.currentTarget.src = DefaultUserImage;
                   }}
                   className="w-10 h-10 rounded-full object-cover"
                 />

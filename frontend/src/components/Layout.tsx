@@ -4,6 +4,7 @@ import {
   getNotifications,
   getNotificationsCount,
   getUserInfo,
+  getUnreadLastMessagesCount,
 } from "../api/methods";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -20,8 +21,39 @@ import DefaultUserImage from "../assets/user.png";
 
 const Layout = ({ children }: any) => {
   const userInfo = useSelector((state: RootState) => state.user.user);
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
   const dispatch = useDispatch();
+
+  const getMessagesCount = async () => {
+    await getUnreadLastMessagesCount(user_id)
+      .then((response: any) => {
+        setUnreadMessages(response);
+      })
+      .catch((error: any) => {
+        message.error("Error fetching unread messages");
+      });
+  }
+
+  const fetchNotificationsCount = async () => {
+    await getNotificationsCount(user_id)
+    .then((response: any) => {
+      setNotifications(response);
+    })
+    .catch((error: any) => {
+      message.error("Error fetching notifications");
+    });
+  };
+
+  const fetchUserInfo = async () => {
+    await getUserInfo(user_id)
+      .then((response: any) => {
+        dispatch(setUserInfo(response));
+      })
+      .catch((error: any) => {
+        message.error("Error fetching user info");
+      });
+  };
 
   console.log("userInfo === ", userInfo);
   const [notifications, setNotifications] = useState([]);
@@ -29,7 +61,6 @@ const Layout = ({ children }: any) => {
   const user_id = localStorage.getItem("id");
   useEffect(() => {
     socket.on("connection", () => {
-      console.log("connected-----------------socket");
       socket.emit("join", user_id);
     });
     socket.on("newBookingRequest", (data: any) => {
@@ -43,21 +74,13 @@ const Layout = ({ children }: any) => {
       getNotifications(user_id);
     });
 
-    getNotificationsCount(user_id)
-      .then((response: any) => {
-        setNotifications(response);
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
+    socket.on("newMsg", () => {
+      getMessagesCount();
+    });
 
-    getUserInfo(user_id)
-      .then((response: any) => {
-        dispatch(setUserInfo(response));
-      })
-      .catch(() => {
-        message.error("Error fetching user info");
-      });
+    getMessagesCount();
+    fetchNotificationsCount();
+    fetchUserInfo();
 
     return () => {
       socket.off("connection");
@@ -141,10 +164,12 @@ const Layout = ({ children }: any) => {
             className="flex items-center gap-5 cursor-pointer relative"
             onClick={() => Navigate("/conversations/" + user_id)}
           >
-            <div className="notifications bg-red-600 absolute bottom-4 -right-1 w-2 aspect-square rounded-full "></div>
-            <IoChatboxEllipses
-              className="text-cyan-600 text-2xl"
-            />
+            {unreadMessages > 0 && (
+              <div className="notifications bg-red-600 absolute bottom-4 -right-1 w-[12px] aspect-square rounded-full text-[10px] flex  justify-center text-white ">
+                {unreadMessages}
+              </div>
+            )}
+            <IoChatboxEllipses className="text-cyan-600 text-2xl" />
           </div>
           <Dropdown menu={{ items }} placement="bottomRight">
             <div className="  rounded-full relative">
@@ -163,9 +188,9 @@ const Layout = ({ children }: any) => {
           </Dropdown>
         </div>
       </header>
-      <div className="  "
-        style={{ height: "calc(100vh - (3.5rem + 4rem))" }}
-      >{children}</div>
+      <div className="  " style={{ height: "calc(100vh - (3.5rem + 4rem))" }}>
+        {children}
+      </div>
       <footer className="p-3 bg-blue-500 text-white h-[4rem] ">footer</footer>
     </div>
   );

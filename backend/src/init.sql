@@ -13,9 +13,6 @@ CREATE TYPE bookingStatus AS ENUM ('pending', 'accepted', 'rejected', 'canceled'
 -- Create notifications type enum
 CREATE TYPE notifications_type AS ENUM ('rating', 'comment', 'newBookingRequest', 'bookingConfirmed', 'bookingCanceled', 'requestAccepted', 'requestRejected', 'requestCanceled', 'chat', 'carpoolingPublished');
 
--- Create notification status enum
-CREATE TYPE notification_status AS ENUM ('unread', 'read');
-
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -87,7 +84,7 @@ CREATE TABLE IF NOT EXISTS notifications (
     receiver_id INT NOT NULL,
     message VARCHAR(250) NOT NULL,
     notifications_type notifications_type NOT NULL,
-    notification_status notification_status DEFAULT 'unread',
+    is_read BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (sender_id) REFERENCES users(id),
     FOREIGN KEY (receiver_id) REFERENCES users(id)
 );
@@ -105,6 +102,8 @@ CREATE TABLE IF NOT EXISTS conversations (
 CREATE TABLE IF NOT EXISTS messages (
     id SERIAL PRIMARY KEY,
     sender_id INT REFERENCES users(id),
+    receiver_id INT REFERENCES users(id),
+    is_read BOOLEAN DEFAULT FALSE,
     message TEXT NOT NULL,
     timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     conversation_id INT REFERENCES conversations(id)
@@ -222,3 +221,4 @@ WHERE NOT EXISTS (
     FROM cars_brands
     WHERE cars_brands.label = cars_brands.label
 );
+

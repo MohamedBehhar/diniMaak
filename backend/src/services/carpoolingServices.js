@@ -250,11 +250,11 @@ const acceptCarpoolingRequest = async ({ requester_id, publisher_id, carpooling_
 		//  start a conversation between the two users
 		const message = await db.query(`
 			INSERT INTO
-				messages (sender_id, message, timestamp, conversation_id)
+				messages (sender_id, receiver_id, message, timestamp, conversation_id)
 			VALUES
-				($1, $2, $3, $4)
+				($1, $2,  $3, $4, $5)
 			RETURNING *
-		`, [sender_id, 'Hello, I have accepted your request', new Date(), conversation.rows[0].id]);
+		`, [sender_id, receiver_id ,'Hello, I have accepted your request', new Date(), conversation.rows[0].id]);
 
 		// update last message_id in the conversation table
 		await db.query(`

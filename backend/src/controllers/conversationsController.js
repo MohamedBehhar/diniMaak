@@ -13,6 +13,17 @@ const getConversations = async (req, res) => {
 	}
 }
 
+const getUnreadLastMessagesCount = async (req, res) => {
+	try {
+		const unreadMessages = await conversationsServices.getUnreadLastMessagesCount(req.params.user_id);
+		res.status(200).json(unreadMessages);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+}
+
 module.exports = {
-	getConversations
+	getConversations,
+	getUnreadLastMessagesCount
 };

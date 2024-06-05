@@ -54,7 +54,7 @@ const signUp = async ({ username, password, email, phone_number }, res) => {
 		const hashedPassword = await bcrypt.hash(password, salt);
 		console.log('hashedPassword ', username + ' ' + hashedPassword + ' ' + email + ' ' + phone_number);
 		const newUser = await db.query(
-			'INSERT INTO users (username, password, email, phone_number) VALUES ($1, $2, $3, $4) RETURNING *',
+			'INSERT INTO users (username, password, email, phone_number) VALUES ($1, $2, $3, $4 ) RETURNING *',
 			[username, hashedPassword, email, phone_number]
 		).then((result) => {
 

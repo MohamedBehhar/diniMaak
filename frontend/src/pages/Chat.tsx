@@ -1,11 +1,16 @@
-import { getChats } from "../api/methods";
+import { getChats, getUserInfo, getCarpoolingById } from "../api/methods";
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { socket } from "../socket/socket";
+import { concatinatePictureUrl } from "../utils/helperFunctions";
+import DefaultUserImage from "../assets/user.png";
 
 const Chat = () => {
   const [chats, setChats] = useState([]);
   const [message, setMessage] = useState("");
+  const [senderInfo, setSenderInfo] = useState({});
+  const [receiverInfo, setReceiverInfo] = useState({});
+  const [carpoolingInfo, setCarpoolingInfo] = useState({});
   let { conversation_id, sender_id, receiver_id } = useParams();
 
   const chatContainerRef = useRef(null);
@@ -22,6 +27,18 @@ const Chat = () => {
     }
   };
 
+  useEffect(() => {
+    getUserInfo(sender_id).then((response: any) => {
+      setSenderInfo(response);
+    });
+    getUserInfo(receiver_id).then((response: any) => {
+      setReceiverInfo(response);
+    });
+    getCarpoolingById(conversation_id).then((response: any) => {
+      setCarpoolingInfo(response);
+    });
+  }, [sender_id, receiver_id, conversation_id]);
+
   const sendMsg = () => {
     if (!message || message.split(" ").join("") == "") {
       return;
@@ -32,7 +49,10 @@ const Chat = () => {
       conversation_id,
       message,
     });
-    setChats([...chats, { sender_id, receiver_id, message }]);
+    setChats([
+      ...chats,
+      { id: Math.random().toFixed(2), sender_id, receiver_id, message },
+    ]);
     setMessage("");
   };
 
@@ -80,7 +100,12 @@ const Chat = () => {
 
   return (
     <div className="container h-[80%] p-2">
-      <h1>Chat</h1>
+      <div className="bg-gray-200 p-2 rounded-lg flex gap-2 justify-between items-center">
+        <h1>{carpoolingInfo.destination}</h1>
+        <h1>{carpoolingInfo.departure}</h1>
+        <h1>{carpoolingInfo.departure_day}</h1>
+        <h1>{carpoolingInfo.departure_time}</h1>
+      </div>
       <div
         className="h-[100%] flex flex-col overflow-y-scroll p-2"
         ref={chatContainerRef}
@@ -91,11 +116,24 @@ const Chat = () => {
               key={chat.id}
               className={`${
                 chat.sender_id == sender_id
-                  ? "bg-blue-200  self-end"
-                  : "bg-red-200  self-start"
-              } p-2 m-2 w-fit rounded-lg `}
+                  ? "bg-blue-100  self-end"
+                  : "bg-red-100  self-start"
+              } p-2 m-2 w-fit rounded-lg  flex gap-2 items-center`}
             >
-              {chat.id}
+              <img
+                src={
+                  chat.sender_id == sender_id
+                    ? concatinatePictureUrl(senderInfo.profile_picture || "")
+                    : concatinatePictureUrl(receiverInfo.profile_picture || "")
+                }
+                className={`${
+                  chat.sender_id == sender_id ? "order-2" : ""
+                } w-10 h-10 rounded-full`}
+                alt=""
+                onError={(e) => {
+                  e.currentTarget.src = DefaultUserImage;
+                }}
+              />
               <h1>{chat.message}</h1>
             </div>
           );

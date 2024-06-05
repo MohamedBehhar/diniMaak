@@ -2,12 +2,20 @@ const db = require('../db/db');
 const io = require('../initSocket');
 
 const getChats = async (
-	conversation_id
+	conversation_id,
+	receiver_id,
+	sender_id
 ) => {
+	console.log('conversation_id', conversation_id);
+	console.log('receiver_id', receiver_id);
 	try {
 		const chats = await db.query(
 			`SELECT * FROM messages WHERE conversation_id = $1 ORDER BY timestamp ASC`,
 			[conversation_id]
+		);
+		const updateMessagesStatus = await db.query(
+			`UPDATE messages SET is_read = true WHERE conversation_id = $1 AND receiver_id = $2`,
+			[conversation_id, sender_id]
 		);
 		return chats.rows;
 	} catch (error) {
@@ -35,9 +43,23 @@ const sendMessage = async (
 	}
 }
 
+const getUnreadMessages = async (user_id) => {
+	try {
+		const unreadMessages = await db.query(
+			`SELECT * FROM messages WHERE receiver_id = $1 AND is_read = false`,
+			[user_id]
+		);
+		return unreadMessages.rows;
+	} catch (error) {
+		console.error(error);
+		throw error;
+	}
+}
+
 
 
 module.exports = {
 	getChats,
-	sendMessage
+	sendMessage,
+	getUnreadMessages
 };

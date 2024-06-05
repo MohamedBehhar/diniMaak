@@ -102,11 +102,11 @@ async function sendMessage(sender_id, receiver_id, message, conversation_id) {
     try {
         const messages = await db.query(`
         INSERT INTO 
-            messages(sender_id, message, timestamp, conversation_id)
+            messages(sender_id, receiver_id, message, timestamp, conversation_id)
         VALUES
-            ($1,$2,NOW(), $3)
+            ($1,$2, $3, NOW(), $4)
         RETURNING *   
-    `, [sender_id, message, conversation_id]);
+    `, [sender_id, receiver_id, message, conversation_id]);
 
         const conversation = await db.query(`
             UPDATE 
