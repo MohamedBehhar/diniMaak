@@ -52,7 +52,7 @@ function initializeSocket(server) {
     return io;
 }
 
-async function sendNotification(sender_id, receiver_id, message, type) {
+async function sendNotification(sender_id, receiver_id, message, type, carpooling_id) {
     const receiverSocketId = usersMap.get(receiver_id + '');
     console.log('sender_idtype ; ; ', type);
 
@@ -78,10 +78,10 @@ async function sendNotification(sender_id, receiver_id, message, type) {
 
         db.query(`
             INSERT INTO
-                notifications (sender_id, receiver_id, message, notifications_type)
+                notifications (sender_id, receiver_id, message, notifications_type, carpooling_id)
             VALUES
-                ($1, $2, $3, $4)
-        `, [sender_id, receiver_id, message, type]);
+                ($1, $2, $3, $4, $5)
+        `, [sender_id, receiver_id, message, type, carpooling_id]);
     } else {
         console.log('receiver is offline');
     }

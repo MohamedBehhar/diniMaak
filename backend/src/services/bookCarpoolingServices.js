@@ -79,7 +79,7 @@ const bookCarpooling = async ({ requester_id, carpooling_id, requested_seats }) 
 
         console.log('requesterName', requesterName.rows[0].username);
 
-        sendNotification(requester_id, publisher_id, `You have a new booking request from ${requesterName.rows[0].username}`, 'newBookingRequest');
+        sendNotification(requester_id, publisher_id, `You have a new booking request from ${requesterName.rows[0].username}`, 'newBookingRequest', carpooling_id);
 
 
         return newBooking;
@@ -125,7 +125,7 @@ const confirmBookingRequest = async (
 
 
         // Emit a socket event to notify the client about the confirmation
-        sendNotification(requester_id, booking.rows[0].publisher_id, 'Your booking has been confirmed', 'bookingConfirmed');
+        sendNotification(requester_id, booking.rows[0].publisher_id, 'Your booking has been confirmed', 'bookingConfirmed', carpooling_id);
 
         return booking.rows[0];
     } catch (error) {

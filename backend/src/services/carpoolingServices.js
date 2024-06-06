@@ -99,17 +99,8 @@ const createCarpooling = async ({ user_id, departure, destination, departure_tim
 			const receiver_id = reminders.rows[0].user_id;
 			const sender_name = user.rows[0].username;
 
-			sendNotification(sender_id, receiver_id, `${sender_name} has created a carpooling for ${departure} to ${destination}`, 'carpoolingPublished');
+			sendNotification(sender_id, receiver_id, `${sender_name} has created a carpooling for ${departure} to ${destination}`, 'carpoolingPublished', carpooling.rows[0].id);
 
-			// insert the booking info into the notifications table
-			await db.query(`
-			INSERT INTO
-				notifications (sender_id, receiver_id, message, notifications_type)
-			VALUES
-				($1, $2, $3, $4)
-		`, [
-				sender_id, receiver_id, `${sender_name} has created a carpooling for ${departure} to ${destination}`, 'carpoolingPublished'
-			]);
 		}
 
 		return carpooling.rows[0];
@@ -249,7 +240,7 @@ const acceptCarpoolingRequest = async ({ requester_id, publisher_id, carpooling_
 		const sender_name = requestInfo.rows[0].driver_name;
 
 		sendNotification(sender_id, receiver_id,
-			`${sender_name} has accepted your request`, 'requestAccepted');
+			`${sender_name} has accepted your request`, 'requestAccepted', carpooling_id);
 
 		// insert the booking info into the notifications table
 		await db.query(`

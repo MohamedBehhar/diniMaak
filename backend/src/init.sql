@@ -97,8 +97,11 @@ CREATE TABLE IF NOT EXISTS notifications (
     sender_id INT NOT NULL,
     receiver_id INT NOT NULL,
     message VARCHAR(250) NOT NULL,
+    carpooling_id INT,
     notifications_type notifications_type NOT NULL,
     is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (carpooling_id) REFERENCES carpooling (id),
     FOREIGN KEY (sender_id) REFERENCES users(id),
     FOREIGN KEY (receiver_id) REFERENCES users(id)
 );

@@ -27,6 +27,25 @@ function Home() {
         </div>
       </header>
       <main className=" mt-64 sm:mt-20 container">
+        <div className="">
+          <h1 className="text-3xl font-bold text-center text-cyan-700">
+            Popular rides
+          </h1>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
+            <div className="p-5 bg-gray-100 rounded-md shadow-md">
+              <h2 className="text-xl font-bold">Casablanca - Rabat</h2>
+            </div>
+            <div className="p-5 bg-gray-100 rounded-md shadow-md">
+              <h2 className="text-xl font-bold">Casablanca - Marrakech</h2>
+            </div>
+            <div className="p-5 bg-gray-100 rounded-md shadow-md">
+              <h2 className="text-xl font-bold">Casablanca - Tanger</h2>
+            </div>
+            <div className="p-5 bg-gray-100 rounded-md shadow-md">
+              <h2 className="text-xl font-bold">Casablanca - Fes</h2>
+            </div>
+          </div>
+        </div>
         <div className="post-carpooling flex sm:flex-row flex-col justify-center items-center">
           <img src={TravelingSvg} alt="" width={400} />
           <div>
@@ -38,11 +57,12 @@ function Home() {
               <button
                 className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded"
                 type="button"
-              >Post a Carpooling</button>
+              >
+                Post a Carpooling
+              </button>
             </Link>
           </div>
         </div>
-
       </main>
     </div>
   );
