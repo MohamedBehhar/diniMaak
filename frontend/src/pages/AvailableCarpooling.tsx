@@ -1,23 +1,30 @@
 import React, { useEffect } from "react";
 import SearchCarpooling from "../components/SearchCarpooling";
-import { searchCarpooling, bookCarpooling } from "../api/methods";
+import { searchCarpooling, bookCarpooling, setReminder } from "../api/methods";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { url } from "../api/methods";
 
 const AvailableCarpooling = () => {
   const [carpoolings, setCarpoolings] = useState([]);
   const [params] = useSearchParams();
+  const [data, setData] = useState({
+    departure: "",
+    destination: "",
+    departure_day: "",
+    number_of_seats: "",
+    user_id: "",
+  });
 
   const fetchCarpoolings = async () => {
-    const data = {
-      departure: params.get("departure"),
-      destination: params.get("destination"),
-      departure_day: params.get("departure_day"),
-      number_of_seats: params.get("number_of_seats"),
-      user_id: params.get("user_id"),
-    };
+    setData({
+      departure: params.get("departure") || "",
+      destination: params.get("destination") || "",
+      departure_day: params.get("departure_day") || "",
+      number_of_seats: params.get("number_of_seats") || "",
+      user_id: localStorage.getItem("id") || "",
+    });
 
     await searchCarpooling(data)
       .then((response: any) => {
@@ -27,6 +34,17 @@ const AvailableCarpooling = () => {
         console.log(error);
       });
   };
+
+  const handelSetReminder = async () => {
+    await setReminder(data)
+      .then((response: any) => {
+        console.log(response);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  
+  }
 
   useEffect(() => {
     fetchCarpoolings();
@@ -131,6 +149,7 @@ const AvailableCarpooling = () => {
           "
               name="reminder"
               id="reminder"
+              onClick={handelSetReminder}
             />
           </label>
         </div>

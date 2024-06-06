@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS cars (
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
+
 -- Create cars_brands table
 CREATE TABLE IF NOT EXISTS cars_brands (
     id SERIAL PRIMARY KEY,
@@ -62,6 +63,19 @@ CREATE TABLE IF NOT EXISTS carpooling (
     FOREIGN KEY (publisher_id) REFERENCES users (id),
     FOREIGN KEY (car_id) REFERENCES cars (car_id)
 );
+
+
+-- REMAINDERS TABLE 
+CREATE TABLE IF NOT EXISTS reminders (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    destination VARCHAR (50) NOT NULL,
+    departure VARCHAR (50) NOT NULL,
+    is_reminded BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+ALTER TABLE reminders ADD CONSTRAINT reminders_unique_constraint UNIQUE (user_id, destination, departure);
 
 -- Create booking table
 CREATE TABLE IF NOT EXISTS booking (

@@ -307,3 +307,12 @@ export const getConversations = async (user_id) => {
 	}
 }
 
+
+export const setReminder = async (data) => {
+	try {
+		const response = await instance.post("/reminders/setReminder", data);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}

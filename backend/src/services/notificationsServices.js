@@ -23,11 +23,11 @@ const getNotificationsCount = async (
 
 	try {
 		let requestsCount = await db.query(
-			`SELECT COUNT(*) FROM notifications WHERE receiver_id = $1 AND notifications_type = 'newBookingRequest' AND notification_status = 'unread'`,
+			`SELECT COUNT(*) FROM notifications WHERE receiver_id = $1 AND notifications_type = 'newBookingRequest' AND is_read = false`,
 			[user_id]
 		);
 		let reservationsCount = await db.query(
-			`SELECT COUNT(*) FROM notifications WHERE receiver_id = $1 AND notifications_type = 'requestAccepted' AND notification_status = 'unread'`,
+			`SELECT COUNT(*) FROM notifications WHERE receiver_id = $1 AND notifications_type = 'requestAccepted' AND is_read = false`,
 			[user_id]
 		);
 

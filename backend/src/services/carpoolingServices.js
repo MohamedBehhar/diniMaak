@@ -89,6 +89,29 @@ const createCarpooling = async ({ user_id, departure, destination, departure_tim
 
 	try {
 		const carpooling = await db.query('INSERT INTO carpooling (publisher_id, departure, destination, departure_day, departure_time, number_of_seats, available_seats,  price, driver_name, car_id) VALUES ( $1, $2, $3, $4, $5 , $6, $7, $8, $9, $10) RETURNING *', [user_id, departure, destination, departure_day, departure_time, number_of_seats, number_of_seats, price, driver_name, car_id]);
+
+		// check if there is a request in reminders table for the same departure and destination and sent a notification to the user
+		const reminders = await db.query('SELECT * FROM reminders WHERE departure = $1 AND destination = $2', [departure, destination]);
+
+		if (reminders.rows.length > 0) {
+			const user = await db.query('SELECT * FROM users WHERE id = $1', [user_id]);
+			const sender_id = user_id;
+			const receiver_id = reminders.rows[0].user_id;
+			const sender_name = user.rows[0].username;
+
+			sendNotification(sender_id, receiver_id, `${sender_name} has created a carpooling for ${departure} to ${destination}`, 'carpoolingPublished');
+
+			// insert the booking info into the notifications table
+			await db.query(`
+			INSERT INTO
+				notifications (sender_id, receiver_id, message, notifications_type)
+			VALUES
+				($1, $2, $3, $4)
+		`, [
+				sender_id, receiver_id, `${sender_name} has created a carpooling for ${departure} to ${destination}`, 'carpoolingPublished'
+			]);
+		}
+
 		return carpooling.rows[0];
 	} catch (err) {
 		console.error(err);
