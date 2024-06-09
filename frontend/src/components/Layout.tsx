@@ -33,16 +33,16 @@ const Layout = ({ children }: any) => {
       .catch((error: any) => {
         message.error("Error fetching unread messages");
       });
-  }
+  };
 
   const fetchNotificationsCount = async () => {
     await getNotificationsCount(user_id)
-    .then((response: any) => {
-      setNotifications(response);
-    })
-    .catch((error: any) => {
-      message.error("Error fetching notifications");
-    });
+      .then((response: any) => {
+        setNotifications(response);
+      })
+      .catch((error: any) => {
+        message.error("Error fetching notifications");
+      });
   };
 
   const fetchUserInfo = async () => {
@@ -159,7 +159,6 @@ const Layout = ({ children }: any) => {
             </div>
           </Link>
 
-          <div className="text-xl ">{userInfo.username}</div>
           <div
             className="flex items-center gap-5 cursor-pointer relative"
             onClick={() => Navigate("/conversations/" + user_id)}
@@ -171,24 +170,29 @@ const Layout = ({ children }: any) => {
             )}
             <IoChatboxEllipses className="text-cyan-600 text-2xl" />
           </div>
-          <Dropdown menu={{ items }} placement="bottomRight">
-            <div className="  rounded-full relative">
-              {notifications.length > 0 && (
-                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-              )}
-              <img
-                src={concatinatePictureUrl(userInfo.profile_picture)}
-                alt=""
-                className="w-8 h-8 rounded-full"
-                onError={(e) => {
-                  e.currentTarget.src = DefaultUserImage;
-                }}
-              />
-            </div>
-          </Dropdown>
+          <div className="flex gap-1 items-center">
+            <h1 className="text-lg font-bold text-cyan-600 ">
+              {userInfo.username}
+            </h1>
+            <Dropdown menu={{ items }} placement="bottomRight">
+              <div className="  rounded-full relative">
+                {notifications.length > 0 && (
+                  <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                )}
+                <img
+                  src={concatinatePictureUrl(userInfo.profile_picture)}
+                  alt=""
+                  className="w-8 h-8 rounded-full cursor-pointer border"
+                  onError={(e) => {
+                    e.currentTarget.src = DefaultUserImage;
+                  }}
+                />
+              </div>
+            </Dropdown>
+          </div>
         </div>
       </header>
-      <div className="  " style={{ height: "calc(100vh - (3.5rem + 4rem))" }}>
+      <div className=" " style={{ minHeight: "calc(100vh - (3.5rem + 4rem))" , height: "100%" }}>
         {children}
       </div>
       <footer className="p-3 bg-blue-500 text-white h-[4rem] ">footer</footer>

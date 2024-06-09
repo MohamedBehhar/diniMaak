@@ -61,7 +61,7 @@ const router = createBrowserRouter([
     element: <ProtectedRoutes />,
     children: [
       {
-        path: "/carpooling-details/:carpooling_id",
+        path: "/carpooling-details/:carpooling_id/:number_of_seats",
         element: <CarpoolingDetails />,
       },
     ],

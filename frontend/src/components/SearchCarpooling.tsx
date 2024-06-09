@@ -25,7 +25,7 @@ interface SearchCarpoolingProps {
 }
 
 const SearchCarpooling = ({
-  redirect,
+  redirect ,
   setCarpoolings,
 }: SearchCarpoolingProps) => {
   const [params, setSearchParams] = useSearchParams();
@@ -42,6 +42,7 @@ const SearchCarpooling = ({
   const user_id = localStorage.getItem("id");
   const searchForCarpooling = async () => {
     data.user_id = user_id;
+  
     if (redirect) {
       navigate({
         pathname: "/carpooling/search",

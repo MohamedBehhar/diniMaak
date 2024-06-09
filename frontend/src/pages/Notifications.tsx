@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { getNotifications } from "../api/methods";
 import { message } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const user_id = localStorage.getItem("id");
+  const Navigate = useNavigate();
 
   useEffect(() => {
     getNotifications(user_id)
@@ -33,6 +35,9 @@ const Notifications = () => {
               <button
                 className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded"
                 type="button"
+                onClick={() => {
+                  Navigate('/carpooling-details/' + notification.carpooling_id + '/' + notification.number_of_seats)
+                }}
               >
                 Reserve
               </button>

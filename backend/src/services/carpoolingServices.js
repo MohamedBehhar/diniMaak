@@ -13,7 +13,18 @@ const getCarpooling = async () => {
 
 const getCarpoolingById = async (id) => {
 	try {
-		const carpooling = await db.query('SELECT * FROM carpooling WHERE id = $1', [id]);
+		const carpooling = await db.query(`
+		SELECT
+		 *, 
+		 cars.*,
+		 users.profile_picture
+		FROM 
+		carpooling
+		INNER JOIN cars
+		ON carpooling.car_id = cars.car_id
+		INNER JOIN users
+		ON carpooling.publisher_id = users.id
+		WHERE carpooling.id = $1`, [id]);
 
 		return carpooling.rows[0];
 	} catch (err) {
@@ -25,8 +36,6 @@ const getCarpoolingById = async (id) => {
 
 
 const searchCarpooling = async ({ departure, destination, departure_day, requester_id, number_of_seats }) => {
-	console.log("searchCarpooling9999 99 9 9 9 9 ", departure, destination, departure_day, requester_id, number_of_seats);
-	console.log("searchCarpooling9999 99 9 9 9 9 ", departure_day)
 	try {
 		const carpooling = await db.query(`
 		SELECT
@@ -268,7 +277,7 @@ const acceptCarpoolingRequest = async ({ requester_id, publisher_id, carpooling_
 			VALUES
 				($1, $2,  $3, $4, $5)
 			RETURNING *
-		`, [sender_id, receiver_id ,'Hello, I have accepted your request', new Date(), conversation.rows[0].id]);
+		`, [sender_id, receiver_id, 'Hello, I have accepted your request', new Date(), conversation.rows[0].id]);
 
 		// update last message_id in the conversation table
 		await db.query(`

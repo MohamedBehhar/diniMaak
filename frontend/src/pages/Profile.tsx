@@ -3,6 +3,8 @@ import { getUserInfo, updateUserInfo } from "../api/methods";
 import { PlusOutlined } from "@ant-design/icons";
 import { Image, message } from "antd";
 import  DefaultUserImage  from "../assets/user.png";
+import { setUserInfo } from "../store/user/userSlice";
+import { useDispatch } from "react-redux";
 
 const Profile = () => {
   const [image, setImage] = useState<File | null>(null);
@@ -13,6 +15,7 @@ const Profile = () => {
     phone_number: "",
     profile_picture: "",
   });
+  const dispatch = useDispatch();
 
   const updateProfile = async () => {
     alert("updateProfile" + user_id);
@@ -30,6 +33,7 @@ const Profile = () => {
       .then((response: any) => {
         console.log("response === ", response);
         message.success("Profile updated successfully");
+        dispatch(setUserInfo(response));
         getUser(user_id);
       })
       .catch((error: any) => {

@@ -99,7 +99,7 @@ const Chat = () => {
   }, [sender_id, receiver_id, socket]);
 
   return (
-    <div className="container h-[80%] p-2">
+    <div className="container  bg-red-300 p-2">
       <div className="bg-gray-200 p-2 rounded-lg flex gap-2 justify-between items-center">
         <h1>{carpoolingInfo.destination}</h1>
         <h1>{carpoolingInfo.departure}</h1>
@@ -107,7 +107,7 @@ const Chat = () => {
         <h1>{carpoolingInfo.departure_time}</h1>
       </div>
       <div
-        className="h-[100%] flex flex-col overflow-y-scroll p-2"
+        className=" flex flex-col overflow-y-scroll p-2"
         ref={chatContainerRef}
       >
         {chats.map((chat: any) => {

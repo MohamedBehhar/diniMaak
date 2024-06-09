@@ -5,10 +5,13 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { format, set } from "date-fns";
 import { url } from "../api/methods";
+import { message } from "antd";
+import { number } from "zod";
 
 const AvailableCarpooling = () => {
   const [carpoolings, setCarpoolings] = useState([]);
   const [params] = useSearchParams();
+  const [reminderValue, setReminderValue] = useState(false);
   const [data, setData] = useState({
     departure: "",
     destination: "",
@@ -16,6 +19,8 @@ const AvailableCarpooling = () => {
     number_of_seats: "",
     user_id: "",
   });
+
+  useEffect(() => {}, []);
 
   const fetchCarpoolings = async () => {
     setData({
@@ -25,7 +30,6 @@ const AvailableCarpooling = () => {
       number_of_seats: params.get("number_of_seats") || "",
       user_id: localStorage.getItem("id") || "",
     });
-
     await searchCarpooling(data)
       .then((response: any) => {
         setCarpoolings(response);
@@ -39,12 +43,14 @@ const AvailableCarpooling = () => {
     await setReminder(data)
       .then((response: any) => {
         console.log(response);
+        message.success("Reminder set successfully");
+      }).then(() => {
+        navigate("/");
       })
       .catch((error: any) => {
-        console.log(error);
+        message.error("Error setting reminder");
       });
-  
-  }
+  };
 
   useEffect(() => {
     fetchCarpoolings();
@@ -127,7 +133,12 @@ const AvailableCarpooling = () => {
                   <button
                     className="bg-blue-500 text-white px-3 py-1 rounded-md"
                     onClick={() => {
-                      handelBookCarpooling(carpooling.id);
+                      navigate(
+                        "/carpooling-details/" +
+                          carpooling.id +
+                          "/" +
+                          params.get("number_of_seats")
+                      );
                     }}
                   >
                     Book
@@ -139,19 +150,22 @@ const AvailableCarpooling = () => {
         </div>
       ) : (
         <div className="text-center p-5">
-          <h1>No carpooling available</h1>
-          <label htmlFor="reminder" className=" rounded-md cursor-pointer px-2">
-            Set Reminder
-            <input
-              type="checkbox"
-              className=" px-2
-          bg-blue-500 
-          "
-              name="reminder"
-              id="reminder"
-              onClick={handelSetReminder}
-            />
-          </label>
+          <h1
+            className="text-2xl font-bold text-gray-700"
+          >Oops!
+         <br /> No carpooling available</h1>
+         <p
+          className="text-gray-500 font-semibold"
+         >
+          There is no carpooling available for the selected criteria for the moment, you can set a reminder to get notified when a carpooling is available.
+         </p>
+         <button
+          className="bg-blue-500 text-white px-3 py-1 rounded-md"
+          onClick={handelSetReminder}
+          
+         >
+          Set A Reminder
+         </button>
         </div>
       )}
     </div>
