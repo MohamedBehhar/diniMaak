@@ -41,22 +41,13 @@ const SearchCarpooling = ({
 
   const user_id = localStorage.getItem("id");
   const searchForCarpooling = async () => {
-    data.user_id = user_id;
-  
-    if (redirect) {
+
+    if (data.departure && data.destination ) {
       navigate({
         pathname: "/carpooling/search",
         search: `?departure=${data.departure}&destination=${data.destination}&departure_day=${data.departure_day}&number_of_seats=${data.number_of_seats}&user_id=${data.user_id}`,
       });
-    } else {
-      await searchCarpooling(data)
-        .then((response: any) => {
-          setCarpoolings(response);
-        })
-        .catch((error: any) => {
-          console.log(error);
-        });
-    }
+    } 
   };
 
   return (

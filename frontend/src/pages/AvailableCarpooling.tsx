@@ -11,7 +11,6 @@ import { number } from "zod";
 const AvailableCarpooling = () => {
   const [carpoolings, setCarpoolings] = useState([]);
   const [params] = useSearchParams();
-  const [reminderValue, setReminderValue] = useState(false);
   const [data, setData] = useState({
     departure: "",
     destination: "",
@@ -20,24 +19,51 @@ const AvailableCarpooling = () => {
     user_id: "",
   });
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    // Extract parameters and localStorage values
+    const departure = params.get("departure") || "";
+    const destination = params.get("destination") || "";
+    const departure_day = params.get("departure_day") || "";
+    const number_of_seats = params.get("number_of_seats") || "";
+    const user_id = localStorage.getItem("id") || "";
 
-  const fetchCarpoolings = async () => {
+    // Set data state
     setData({
-      departure: params.get("departure") || "",
-      destination: params.get("destination") || "",
-      departure_day: params.get("departure_day") || "",
-      number_of_seats: params.get("number_of_seats") || "",
-      user_id: localStorage.getItem("id") || "",
+      departure,
+      destination,
+      departure_day,
+      number_of_seats,
+      user_id,
     });
-    await searchCarpooling(data)
-      .then((response: any) => {
-        setCarpoolings(response);
-      })
-      .catch((error: any) => {
-        console.log(error);
+
+    // Fetch carpoolings
+    fetchCarpoolings({
+      departure,
+      destination,
+      departure_day,
+      number_of_seats,
+      user_id,
+    });
+  }, [params]); // Add params to dependency array
+
+  const fetchCarpoolings = async ({ departure, destination, departure_day, number_of_seats, user_id }:any) => {
+    if (!departure || !destination || !departure_day || !number_of_seats) {
+      return;
+    }
+    try {
+      const response = await searchCarpooling({
+        departure,
+        destination,
+        departure_day,
+        number_of_seats,
+        user_id,
       });
+      setCarpoolings(response);
+    } catch (error) {
+      console.error(error);
+    }
   };
+
 
   const handelSetReminder = async () => {
     await setReminder(data)
@@ -53,7 +79,7 @@ const AvailableCarpooling = () => {
   };
 
   useEffect(() => {
-    fetchCarpoolings();
+    fetchCarpoolings(data);
   }, []);
 
   const navigate = useNavigate();

@@ -52,6 +52,15 @@ input:focus {
   outline: none;
 }
 
+.debug {
+  border: 1px solid red;
+  > * {
+    border: 1px solid blue;
+    > * {
+      border: 1px solid green;
+    }
+  }
+}
 
 
 input[type=number] {

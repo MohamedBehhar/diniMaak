@@ -192,7 +192,7 @@ const Layout = ({ children }: any) => {
           </div>
         </div>
       </header>
-      <div className=" " style={{ minHeight: "calc(100vh - (3.5rem + 4rem))" , height: "100%" }}>
+      <div className=" " style={{ height: "calc(100vh - (3.5rem + 4rem))"  }}>
         {children}
       </div>
       <footer className="p-3 bg-blue-500 text-white h-[4rem] ">footer</footer>
