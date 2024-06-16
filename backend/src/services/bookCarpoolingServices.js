@@ -2,6 +2,8 @@
 const db = require('../db/db');
 const { sendNotification } = require('../initSocket');
 io = require('../initSocket');
+const CustomError = require('../errors/customErrors');
+
 const bookCarpooling = async ({ requester_id, carpooling_id, requested_seats }) => {
     try {
         const carpooling = await db.query(`
@@ -14,18 +16,18 @@ const bookCarpooling = async ({ requester_id, carpooling_id, requested_seats }) 
         `, [carpooling_id]);
 
         if (carpooling.rows[0].length === 0) {
-            throw new Error('Carpooling not found');
+            throw new CustomError('Carpooling not found', 404);
+        }
+        if (carpooling.publisher_id === requester_id) {
+            throw new CustomError('You cannot book your own carpooling', 400);
         }
 
         const carpoolingData = carpooling.rows[0];
         const publisher_id = carpoolingData.publisher_id;
 
-        if (publisher_id === requester_id) {
-            throw new Error('You cannot book your own carpooling');
-        }
 
         if (carpoolingData.number_of_seats < requested_seats) {
-            throw new Error('Not enough seats available');
+            throw new CustomError('The number of requested seats is greater than the available seats', 400);
         }
 
         // check if the user has already booked this carpooling
@@ -40,7 +42,7 @@ const bookCarpooling = async ({ requester_id, carpooling_id, requested_seats }) 
         `, [carpooling_id, requester_id]);
 
         if (alreadyBooked.rows.length > 0) {
-            throw new Error('You have already booked this carpooling');
+            throw new CustomError('You have already booked this carpooling', 400);
         }
 
 

@@ -19,15 +19,8 @@ type FieldType = {
   user_id: string | null;
 };
 
-interface SearchCarpoolingProps {
-  redirect: boolean;
-  setCarpoolings?: any;
-}
 
-const SearchCarpooling = ({
-  redirect ,
-  setCarpoolings,
-}: SearchCarpoolingProps) => {
+const SearchCarpooling = () => {
   const [params, setSearchParams] = useSearchParams();
 
   const [data, setData] = useState<FieldType>({
@@ -39,7 +32,7 @@ const SearchCarpooling = ({
   });
   const navigate = useNavigate();
 
-  const user_id = localStorage.getItem("id");
+  const user_id = localStorage.getItem("id") || '-1';
   const searchForCarpooling = async () => {
 
     if (data.departure && data.destination ) {

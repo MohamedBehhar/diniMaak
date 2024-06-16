@@ -13,6 +13,7 @@ export const signOut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("username");
+    localStorage.removeItem("id");
     window.location.href = "/login";
   };
 

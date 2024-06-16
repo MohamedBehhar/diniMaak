@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { login } from "../api/methods";
-import { Navigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
-  const token = localStorage.getItem("token");
-  if (token) {
-    return <Navigate to="/" />;
-  }
   const handleLogin = async (e: any) => {
     e.preventDefault();
     await login({ username, password })
@@ -19,7 +19,7 @@ function Login() {
         localStorage.setItem("token", response.accessToken);
         localStorage.setItem("refreshToken", response.refreshToken);
         localStorage.setItem("id", response.id);
-        window.location.href = "/";
+        navigate(from, { replace: true }); // Navigate back to the original route
       })
       .catch((error: any) => {
         setErrorMessage(error.response.data.error);

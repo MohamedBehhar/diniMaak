@@ -25,7 +25,7 @@ const AvailableCarpooling = () => {
     const destination = params.get("destination") || "";
     const departure_day = params.get("departure_day") || "";
     const number_of_seats = params.get("number_of_seats") || "";
-    const user_id = localStorage.getItem("id") || "";
+    const user_id = localStorage.getItem("id") || "-1";
 
     // Set data state
     setData({

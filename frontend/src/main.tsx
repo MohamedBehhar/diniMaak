@@ -23,32 +23,36 @@ import Conversations from "./pages/Conversations.tsx";
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
   { path: "/signup", element: <SignUp /> },
+  { path: "/", element: <Home /> },
+  {
+    path: "/carpooling/search",
+    element: <AvailableCarpooling />,
+  },
 
   {
     path: "/",
     element: <ProtectedRoutes />,
     children: [
-      { path: "/", element: <Home /> },
       {
         path: "/profile/:user_id",
         element: <Profile />,
       },
       {
-        path: '/user/:user_id',
-        element: <User />
+        path: "/user/:user_id",
+        element: <User />,
       },
       {
         path: "/chat/:sender_id/:receiver_id/:conversation_id",
         element: <Chat />,
       },
       {
-        path: '/conversations/:user_id',
-        element: <Conversations />
+        path: "/conversations/:user_id",
+        element: <Conversations />,
       },
       {
         path: "/notifications/:user_id",
         element: <Notifications />,
-      }
+      },
     ],
   },
   {
@@ -85,10 +89,6 @@ const router = createBrowserRouter([
       {
         path: "/carpooling/",
         element: <CarpoolingRequests />,
-      },
-      {
-        path: "/carpooling/search",
-        element: <AvailableCarpooling />,
       },
     ],
   },

@@ -9,37 +9,40 @@ import TravelingSvg from "../assets/traveling.svg";
 
 const popularRides = [
   {
+    key: 1,
     from: "Casablanca",
     to: "Rabat",
     search: `?departure=Casablanca&destination=Rabat&departure_day=${
       new Date().toISOString().split("T")[0]
-    }&number_of_seats=1&user_id=${localStorage.getItem("id") || ""}`,
+    }&number_of_seats=1&user_id=${localStorage.getItem("id") || "-1"}`,
   },
   {
+    key: 2,
     from: "Casablanca",
     to: "Marrakech",
     search: `?departure=Casablanca&destination=Marrakech&departure_day=${
       new Date().toISOString().split("T")[0]
-    }&number_of_seats=1&user_id=${localStorage.getItem("id") || ""}`,
+    }&number_of_seats=1&user_id=${localStorage.getItem("id") || "-1"}`,
   },
   {
+    key: 3,
     from: "Casablanca",
     to: "Tanger",
     search: `?departure=Casablanca&destination=Tanger&departure_day=${
       new Date().toISOString().split("T")[0]
-    }&number_of_seats=1&user_id=${localStorage.getItem("id") || ""}`,
+    }&number_of_seats=1&user_id=${localStorage.getItem("id") || "-1"}`,
   },
   {
+    key: 4,
     from: "Casablanca",
     to: "Fes",
     search: `?departure=Casablanca&destination=Fes&departure_day=${
       new Date().toISOString().split("T")[0]
-    }&number_of_seats=1&user_id=${localStorage.getItem("id") || ""}`,
+    }&number_of_seats=1&user_id=${localStorage.getItem("id") || "-1"}`,
   },
 ];
 
 function Home() {
-  const user_id = localStorage.getItem("id");
   const navigate = useNavigate();
   return (
     <div className="h-full w-full">
@@ -67,6 +70,7 @@ function Home() {
             {popularRides.map((ride, index) => {
               return (
                 <div
+                  key={index}
                 className="cursor-pointer hover:shadow-lg transition-all duration-300 ease-in-out"
                   onClick={() => {
                     navigate({

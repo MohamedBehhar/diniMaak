@@ -22,13 +22,15 @@ const CarpoolingDetails = () => {
       carpooling_id: carpooling_id,
       requested_seats: number_of_seats,
     };
-    console.log('---- =- -= ',data);
     try {
       await bookCarpooling(data);
       message.success("Carpooling booked successfully");
       navigate("/carpooling/history/" + localStorage.getItem("id"));
     } catch (error) {
-      alert("error booking carpooling");
+      console.log(error.response);
+      message.error(error.response.data.error).then(() => {
+        navigate("/");
+      });
     }
   };
 
@@ -36,20 +38,20 @@ const CarpoolingDetails = () => {
     <>
       {carpooling ? (
         <div className="flex flex-col gap-3 text-xl  items-center justify-center ">
-
           <div className="mt-5">
             <div className="text-4xl text-cyan-700 font-semibold my-5">
-              {carpooling.departure_day && format(new Date(carpooling.departure_day), "EEEE dd MMMM yyyy")}
+              {carpooling.departure_day &&
+                format(new Date(carpooling.departure_day), "EEEE dd MMMM yyyy")}
             </div>
             <div className="mb-2">
               <h1 className="text-2xl font-semibold ">
                 {carpooling.departure}
               </h1>
               <h1>
-                {
-                  carpooling.departure_time && (
-                  carpooling.departure_time.split(":")[0] + ":" + carpooling.departure_time.split(":")[1])
-                }
+                {carpooling.departure_time &&
+                  carpooling.departure_time.split(":")[0] +
+                    ":" +
+                    carpooling.departure_time.split(":")[1]}
               </h1>
             </div>
             <div className="mb-2">
@@ -59,20 +61,13 @@ const CarpoolingDetails = () => {
             </div>
 
             <div className="mb-2">
-              <h1 className="text-2xl font-semibold ">
-                {carpooling.price} €
-              </h1>
+              <h1 className="text-2xl font-semibold ">{carpooling.price} €</h1>
             </div>
 
             <div className="mb-2">
-              <h1 className="text-2xl font-semibold ">
-                {carpooling.brand}
-              </h1>
-              <p>
-                {carpooling.year} 
-              </p>
+              <h1 className="text-2xl font-semibold ">{carpooling.brand}</h1>
+              <p>{carpooling.year}</p>
             </div>
-
 
             <div className="mb-2 flex my-5 gap-2">
               <p className="m-0">Number of seats: </p>

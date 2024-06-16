@@ -1,17 +1,19 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Layout from "../components/Layout";
 
 const ProtectedRoutes = () => {
-  // TODO: Use authentication token
+  const location = useLocation();
   const localStorageToken = localStorage.getItem("token");
+
   if (localStorageToken) {
     return (
-        <Layout>
-          <Outlet />
-        </Layout>
+      <Layout>
+        <Outlet />
+      </Layout>
     );
   }
-  return <Navigate to="/login" />;
+
+  return <Navigate to="/login" state={{ from: location }} />;
 };
 
 export default ProtectedRoutes;
