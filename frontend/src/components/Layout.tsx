@@ -6,7 +6,7 @@ import {
   getUserInfo,
   getUnreadLastMessagesCount,
 } from "../api/methods";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { FaCarSide } from "react-icons/fa";
@@ -15,11 +15,11 @@ import { Dropdown } from "antd";
 import { concatinatePictureUrl, signOut } from "../utils/helperFunctions";
 import { message } from "antd";
 import { useDispatch } from "react-redux";
-import { setUserInfo } from "../store/user/userSlice";
+import { resetUserInfos, setUserInfo } from "../store/user/userSlice";
 import { IoChatboxEllipses } from "react-icons/io5";
 import DefaultUserImage from "../assets/user.png";
 
-const Layout = ({ children }: any) => {
+const Layout = () => {
   const userInfo = useSelector((state: RootState) => state.user.user);
   const [unreadMessages, setUnreadMessages] = useState(0);
 
@@ -78,10 +78,11 @@ const Layout = ({ children }: any) => {
       getMessagesCount();
     });
 
-    getMessagesCount();
-    fetchNotificationsCount();
-    fetchUserInfo();
-
+    if (userInfo.isAuth) {
+      getMessagesCount();
+      fetchNotificationsCount();
+      fetchUserInfo();
+    }
     return () => {
       socket.off("connection");
       socket.off("newBookingRequest");
@@ -143,6 +144,7 @@ const Layout = ({ children }: any) => {
       key: "4",
       label: "Sign Out",
       onClick: () => {
+        dispatch(resetUserInfos());
         signOut();
       },
     },
@@ -159,41 +161,52 @@ const Layout = ({ children }: any) => {
             </div>
           </Link>
 
-          <div
-            className="flex items-center gap-5 cursor-pointer relative"
-            onClick={() => Navigate("/conversations/" + user_id)}
-          >
-            {unreadMessages > 0 && (
-              <div className="notifications bg-red-600 absolute bottom-4 -right-1 w-[12px] aspect-square rounded-full text-[10px] flex  justify-center text-white ">
-                {unreadMessages}
-              </div>
-            )}
-            <IoChatboxEllipses className="text-cyan-600 text-2xl" />
-          </div>
-          <div className="flex gap-1 items-center">
-            <h1 className="text-lg font-bold text-cyan-600 ">
-              {userInfo.username}
-            </h1>
-            <Dropdown menu={{ items }} placement="bottomRight">
-              <div className="  rounded-full relative">
-                {notifications.length > 0 && (
-                  <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-                )}
-                <img
-                  src={concatinatePictureUrl(userInfo.profile_picture)}
-                  alt=""
-                  className="w-8 h-8 rounded-full cursor-pointer border"
-                  onError={(e) => {
-                    e.currentTarget.src = DefaultUserImage;
-                  }}
-                />
-              </div>
-            </Dropdown>
-          </div>
+          {userInfo.isAuth == true && (
+            <div
+              className="flex items-center gap-5 cursor-pointer relative"
+              onClick={() => Navigate("/conversations/" + user_id)}
+            >
+              {unreadMessages > 0 && (
+                <div className="notifications bg-red-600 absolute bottom-4 -right-1 w-[12px] aspect-square rounded-full text-[10px] flex  justify-center text-white ">
+                  {unreadMessages}
+                </div>
+              )}
+              <IoChatboxEllipses className="text-cyan-600 text-2xl" />
+            </div>
+          )}
+          {userInfo.isAuth == true ? (
+            <div className="flex gap-1 items-center">
+              <h1 className="text-lg font-bold text-cyan-600 ">
+                {userInfo.username}
+              </h1>
+              <Dropdown menu={{ items }} placement="bottomRight">
+                <div className="  rounded-full relative">
+                  {notifications.length > 0 && (
+                    <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                  )}
+                  <img
+                    src={concatinatePictureUrl(userInfo.profile_picture)}
+                    alt=""
+                    className="w-8 h-8 rounded-full cursor-pointer border"
+                    onError={(e) => {
+                      e.currentTarget.src = DefaultUserImage;
+                    }}
+                  />
+                </div>
+              </Dropdown>
+            </div>
+          ) : (
+            <button
+              className="btn bg-cyan-700 p-1 rounded-md text-white"
+              onClick={() => Navigate("/login", { replace: true })}
+            >
+              Sign In
+            </button>
+          )}
         </div>
       </header>
-      <div className=" " style={{ height: "calc(100vh - (3.5rem + 4rem))"  }}>
-        {children}
+      <div className=" " style={{ height: "calc(100vh - (3.5rem + 4rem))" }}>
+        <Outlet />
       </div>
       <footer className="p-3 bg-blue-500 text-white h-[4rem] ">footer</footer>
     </div>

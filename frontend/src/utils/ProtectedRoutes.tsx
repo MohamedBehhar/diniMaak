@@ -7,9 +7,7 @@ const ProtectedRoutes = () => {
 
   if (localStorageToken) {
     return (
-      <Layout>
         <Outlet />
-      </Layout>
     );
   }
 

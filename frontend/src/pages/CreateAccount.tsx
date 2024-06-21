@@ -26,15 +26,14 @@ function CreateAccount() {
 
   const onsubmit: SubmitHandler<Inputs> = async (data) => {
     const { username, email, password, phone_number } = data;
-    alert("Creating account... " + phone_number)
     await signUp({ username, email, password, phone_number })
       .then((response: any) => {
         localStorage.setItem("token", response.token);
         localStorage.setItem("refreshToken", response.refreshToken);
         localStorage.setItem("username", response.username);
         localStorage.setItem("id", response.id);
-        window.location.href = "/";
         dispatch(setUserInfo(response));
+        window.location.href = "/";
       })
       .catch((error: any) => {
         console.log(error.response);

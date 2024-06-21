@@ -19,76 +19,83 @@ import User from "./pages/User.tsx";
 import Notifications from "./pages/Notifications.tsx";
 import Chat from "./pages/Chat.tsx";
 import Conversations from "./pages/Conversations.tsx";
+import Layout from "./components/Layout.tsx";
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
   { path: "/signup", element: <SignUp /> },
-  { path: "/", element: <Home /> },
-  {
-    path: "/carpooling/search",
-    element: <AvailableCarpooling />,
-  },
-
   {
     path: "/",
-    element: <ProtectedRoutes />,
+    element: <Layout />,
     children: [
+      { path: "/", element: <Home /> },
       {
-        path: "/profile/:user_id",
-        element: <Profile />,
+        path: "/carpooling/search",
+        element: <AvailableCarpooling />,
+      },
+
+      {
+        path: "/",
+        element: <ProtectedRoutes />,
+        children: [
+          {
+            path: "/profile/:user_id",
+            element: <Profile />,
+          },
+          {
+            path: "/user/:user_id",
+            element: <User />,
+          },
+          {
+            path: "/chat/:sender_id/:receiver_id/:conversation_id",
+            element: <Chat />,
+          },
+          {
+            path: "/conversations/:user_id",
+            element: <Conversations />,
+          },
+          {
+            path: "/notifications/:user_id",
+            element: <Notifications />,
+          },
+        ],
       },
       {
-        path: "/user/:user_id",
-        element: <User />,
+        path: "/post-carpooling",
+        element: <ProtectedRoutes />,
+        children: [{ path: "/post-carpooling", element: <CreatCarPooling /> }],
       },
       {
-        path: "/chat/:sender_id/:receiver_id/:conversation_id",
-        element: <Chat />,
+        path: "/carpooling-details",
+        element: <ProtectedRoutes />,
+        children: [
+          {
+            path: "/carpooling-details/:carpooling_id/:number_of_seats",
+            element: <CarpoolingDetails />,
+          },
+        ],
       },
       {
-        path: "/conversations/:user_id",
-        element: <Conversations />,
-      },
-      {
-        path: "/notifications/:user_id",
-        element: <Notifications />,
-      },
-    ],
-  },
-  {
-    path: "/post-carpooling",
-    element: <ProtectedRoutes />,
-    children: [{ path: "/post-carpooling", element: <CreatCarPooling /> }],
-  },
-  {
-    path: "/carpooling-details",
-    element: <ProtectedRoutes />,
-    children: [
-      {
-        path: "/carpooling-details/:carpooling_id/:number_of_seats",
-        element: <CarpoolingDetails />,
-      },
-    ],
-  },
-  {
-    path: "/carpooling",
-    element: <ProtectedRoutes />,
-    children: [
-      {
-        path: "/carpooling/history/:user_id",
-        element: <CarpoolingHistory />,
-      },
-      {
-        path: "/carpooling/published-carpooling/:user_id",
-        element: <ManageYourCarpooling />,
-      },
-      {
-        path: "/carpooling/requests/:user_id",
-        element: <CarpoolingRequests />,
-      },
-      {
-        path: "/carpooling/",
-        element: <CarpoolingRequests />,
+        path: "/carpooling",
+        element: <ProtectedRoutes />,
+        children: [
+          {
+            path: "/carpooling/history/:user_id",
+            element: <CarpoolingHistory />,
+          },
+          {
+            path: "/carpooling/published-carpooling/:user_id",
+            element: <ManageYourCarpooling />,
+          },
+          {
+            path: "/carpooling/requests/:user_id",
+            element: <CarpoolingRequests />,
+          },
+          {
+            path: "/carpooling/",
+            element: <CarpoolingRequests />,
+          },
+        ],
       },
     ],
   },

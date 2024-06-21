@@ -6,6 +6,7 @@ interface User {
   email: string;
   phone_number: string;
   profile_picture: string;
+  isAuth?: boolean;
 }
 
 interface UserState {
@@ -15,6 +16,7 @@ interface UserState {
   error: string | null;
   value: number;
   obj: any;
+
 }
 
 const initialState: UserState = {
@@ -24,6 +26,7 @@ const initialState: UserState = {
     email: "",
     phone_number: "",
     profile_picture: "../assets/user.png",
+    isAuth: false,
   },
   loading: false,
   error: null,
@@ -37,7 +40,6 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserInfo: (state, action) => {
-      console.log("action.payload === ", action.payload);
       state.obj = action.payload;
       state.user = {
         id: action.payload.id,
@@ -45,14 +47,24 @@ const userSlice = createSlice({
         email: action.payload.email,
         phone_number: action.payload.phone_number,
         profile_picture: action.payload.profile_picture,
-        
+        isAuth: true,
       }
-      state.value = 100;
+      console.log("state.user === ", state.user);
     },
     incrementByAmount: (state, action) => {
       state.value += action.payload;
     },
+    resetUserInfos: (state) => {    
+      state.user = {
+        id: 0,
+        username: "",
+        email: "",
+        phone_number: "",
+        profile_picture: "../assets/user.png",
+        isAuth: false,
+      }
+    }
   },
 });
-export const { setUserInfo, incrementByAmount } = userSlice.actions;
+export const { setUserInfo, incrementByAmount, resetUserInfos } = userSlice.actions;
 export default userSlice.reducer;

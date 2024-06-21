@@ -2,8 +2,11 @@ import { useState } from "react";
 import { login } from "../api/methods";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "../store/user/userSlice";
 
 function Login() {
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -16,6 +19,7 @@ function Login() {
     await login({ username, password })
       .then((response: any) => {
         console.log(response);
+        dispatch(setUserInfo(response));
         localStorage.setItem("token", response.accessToken);
         localStorage.setItem("refreshToken", response.refreshToken);
         localStorage.setItem("id", response.id);
