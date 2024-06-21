@@ -18,7 +18,6 @@ function Login() {
     e.preventDefault();
     await login({ username, password })
       .then((response: any) => {
-        console.log(response);
         dispatch(setUserInfo(response));
         localStorage.setItem("token", response.accessToken);
         localStorage.setItem("refreshToken", response.refreshToken);

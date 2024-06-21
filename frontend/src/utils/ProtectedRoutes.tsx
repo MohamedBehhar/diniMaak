@@ -1,11 +1,13 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import Layout from "../components/Layout";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 const ProtectedRoutes = () => {
-  const location = useLocation();
-  const localStorageToken = localStorage.getItem("token");
+  const userInfo = useSelector((state: RootState) => state.user.user);
 
-  if (localStorageToken) {
+  const location = useLocation();
+
+  if (userInfo.isAuth) {
     return (
         <Outlet />
     );

@@ -4,9 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { setUserInfo } from "../store/user/userSlice";
 import { useDispatch } from "react-redux";
-import { Input } from "antd";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function CreateAccount() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
   const schema = z.object({
     username: z.string().min(2),
     email: z.string().email(),
@@ -28,12 +32,11 @@ function CreateAccount() {
     const { username, email, password, phone_number } = data;
     await signUp({ username, email, password, phone_number })
       .then((response: any) => {
-        localStorage.setItem("token", response.token);
-        localStorage.setItem("refreshToken", response.refreshToken);
-        localStorage.setItem("username", response.username);
-        localStorage.setItem("id", response.id);
         dispatch(setUserInfo(response));
-        window.location.href = "/";
+        localStorage.setItem("token", response.accessToken);
+        localStorage.setItem("refreshToken", response.refreshToken);
+        localStorage.setItem("id", response.id);
+        navigate(from, { replace: true });
       })
       .catch((error: any) => {
         console.log(error.response);
