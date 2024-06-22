@@ -15,12 +15,13 @@ const bookCarpooling = async ({ requester_id, carpooling_id, requested_seats }) 
                 id = $1
         `, [carpooling_id]);
 
-        if (carpooling.rows[0].length === 0) {
+        if (carpooling.rows[0].length === 0)
             throw new CustomError('Carpooling not found', 404);
-        }
-        if (carpooling.publisher_id === requester_id) {
+
+
+        if (carpooling.rows[0].publisher_id == requester_id)
             throw new CustomError('You cannot book your own carpooling', 400);
-        }
+
 
         const carpoolingData = carpooling.rows[0];
         const publisher_id = carpoolingData.publisher_id;

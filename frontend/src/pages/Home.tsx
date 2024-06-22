@@ -40,6 +40,14 @@ const popularRides = [
       new Date().toISOString().split("T")[0]
     }&number_of_seats=1&user_id=${localStorage.getItem("id") || "-1"}`,
   },
+  {
+    key: 5,
+    from: "Casablanca",
+    to: "Agadir",
+    search: `?departure=Casablanca&destination=Agadir&departure_day=${
+      new Date().toISOString().split("T")[0]
+    }&number_of_seats=1&user_id=${localStorage.getItem("id") || "-1"}`,
+  }
 ];
 
 function Home() {

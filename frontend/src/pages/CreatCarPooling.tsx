@@ -64,7 +64,8 @@ const CreatCarPooling = () => {
         );
       })
       .catch((error) => {
-        message.error("Error creating carpooling");
+        console.log("error", error.response.data.error.message);
+        message.error(error.response.data.error.message);
       });
   };
 
