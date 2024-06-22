@@ -72,7 +72,7 @@ async function sendNotification(sender_id, receiver_id, message, type, carpoolin
 
         console.log('notification', notification);
 
-        if (notification.rows.length > 0) {
+        if (notification.rows.length > 0 || notification === undefined) {
             return;
         }
 

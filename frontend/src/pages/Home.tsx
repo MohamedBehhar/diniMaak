@@ -47,7 +47,32 @@ const popularRides = [
     search: `?departure=Casablanca&destination=Agadir&departure_day=${
       new Date().toISOString().split("T")[0]
     }&number_of_seats=1&user_id=${localStorage.getItem("id") || "-1"}`,
-  }
+  },
+  {
+    key: 6,
+    from: "Casablanca",
+    to: "Oujda",
+    search: `?departure=Casablanca&destination=Oujda&departure_day=${
+      new Date().toISOString().split("T")[0]
+    }&number_of_seats=1&user_id=${localStorage.getItem("id") || "-1"}`,
+  },
+  {
+    key: 7,
+    from: "Casablanca",
+    to: "El Jadida",
+    search: `?departure=Casablanca&destination=El Jadida&departure_day=${
+      new Date().toISOString().split("T")[0]
+    }&number_of_seats=1&user_id=${localStorage.getItem("id") || "-1"}`,
+  },
+  {
+    key: 8,
+    from: "Casablanca",
+    to: "Tetouan",
+    search: `?departure=Casablanca&destination=Tetouan&departure_day=${
+      new Date().toISOString().split("T")[0]
+    }&number_of_seats=1&user_id=${localStorage.getItem("id") || "-1"}`,
+  },
+
 ];
 
 function Home() {
