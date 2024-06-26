@@ -1,5 +1,5 @@
-import { socket } from "../socket/socket";
 import { useEffect, useState } from "react";
+import { socket } from "../socket/socket";
 import {
   getNotifications,
   getNotificationsCount,
@@ -151,8 +151,8 @@ const Layout = () => {
   ];
 
   return (
-    <div className="h-full relative ">
-      <header className="border-b border-b-gray-200 h-[3.5rem]   ">
+    <div className="relative h-screen">
+      <header className=" fixed z-50 w-full bg-white shadow-md top-0 left-0  ">
         <div className="container flex justify-between items-center p-3  text-gray-600 ">
           <Link to="/">
             <div className="bg-[#F3D0D7]  flex flex-col items-center  justify-center rounded-full p-2">
@@ -205,10 +205,24 @@ const Layout = () => {
           )}
         </div>
       </header>
-      <div className=" " style={{ height: "calc(100vh - (3.5rem + 4rem))" }}>
-        <Outlet />
+      <div className=" h-[100%]    flex flex-col pt-6">
+        <div
+          style={{
+            height: "calc(100vh - 4rem)",
+          }}
+          className="container overflow-y-auto flex-1"
+        >
+          <Outlet />
+        </div>
+
+        <div className="p-3 bg-blue-500 text-white h-[4rem] ">
+          <div className="container">
+            <p className="text-center text-sm">
+              &copy; 2024 Dini-Maak. All rights reserved
+            </p>
+          </div>
+        </div>
       </div>
-      <footer className="p-3 bg-blue-500 text-white h-[4rem] ">footer</footer>
     </div>
   );
 };

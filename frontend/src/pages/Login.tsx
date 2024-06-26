@@ -20,7 +20,7 @@ function Login() {
       .then((response: any) => {
         dispatch(setUserInfo(response));
         localStorage.setItem("token", response.accessToken);
-        localStorage.setItem("refreshToken", response.refreshToken);
+        localStorage.setItem("refresh_token", response.refresh_token);
         localStorage.setItem("id", response.id);
         navigate(from, { replace: true }); // Navigate back to the original route
       })
@@ -31,7 +31,7 @@ function Login() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen ">
       <form
         onSubmit={handleLogin}
         className="flex flex-col gap-5 justify-center items-center"
@@ -43,7 +43,7 @@ function Login() {
               className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4
                 absolute top-0 left-0 right-0 z-10 mx-auto w-1/2 mt-4 rounded-md
                 shadow-lg text-center animate-bounce
-              " 
+              "
               role="alert"
             >
               <p>{errorMessage}</p>

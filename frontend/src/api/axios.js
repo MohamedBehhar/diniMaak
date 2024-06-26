@@ -2,7 +2,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export const getToken = () => localStorage.getItem("token");
-export const getRefreshToken = () => localStorage.getItem("refreshToken");
+export const getrefresh_token = () => localStorage.getItem("refresh_token");
 
 const instance = axios.create({
 	baseURL: "http://localhost:3000/api/v1",
@@ -31,7 +31,7 @@ instance.interceptors.response.use(
 			// Redirect to login or handle as needed
 			// Example: window.location.href = "/login";
 			localStorage.removeItem("token");
-			localStorage.removeItem("refreshToken");
+			localStorage.removeItem("refresh_token");
 			window.location.href = "/login";
 		}
 		if (error?.response?.status === 401 && !originalRequest._retry) {
@@ -41,7 +41,7 @@ instance.interceptors.response.use(
 				const response = await instance.post("/auth/refresh-token",
 					{
 
-						refreshToken: getRefreshToken(),
+						refresh_token: getrefresh_token(),
 
 					}
 				);

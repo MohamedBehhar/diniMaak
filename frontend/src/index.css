@@ -26,11 +26,15 @@
 }
 
 body {
-  width: 100%;
-  min-height: 100vh;
-  background: rgb(255, 255, 255);
   color: #242424;
-  font-family: "Cairo", sans-serif;}
+  font-family: "Cairo", sans-serif;
+  background-color: white;
+  font-size: 1rem;
+
+}
+
+
+
 
 
 

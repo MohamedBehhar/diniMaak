@@ -99,7 +99,7 @@ const Chat = () => {
   }, [sender_id, receiver_id, socket]);
 
   return (
-    <div className="container h-full    p-2">
+    <div className="container h-full flex flex-col gap-1  p-2">
       <div className="bg-gray-200 p-2 rounded-lg flex gap-2 justify-between items-center ">
         <h1>{carpoolingInfo.destination}</h1>
         <h1>{carpoolingInfo.departure}</h1>
@@ -107,7 +107,7 @@ const Chat = () => {
         <h1>{carpoolingInfo.departure_time}</h1>
       </div>
       <div
-        className=" flex flex-col overflow-y-scroll p-2 h-[92%]"
+        className="flex-1 flex flex-col   overflow-y-scroll p-2 "
         ref={chatContainerRef}
       >
         {chats.map((chat: any) => {
@@ -152,7 +152,7 @@ const Chat = () => {
             type="text"
             name=""
             id=""
-            className="w-full border-2 border-gray-300 p-2"
+            className="w-full border-2 border-gray-300 p-2 rounded-lg" 
             onChange={(e) => {
               setMessage(e.target.value);
               socket.emit("writeMsg", { sender_id, receiver_id });

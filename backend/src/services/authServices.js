@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 // 1 minute
 const accessTokenMaxAge = 1 * 30;
 // two days
-const refreshTokenMaxAge = 2 * 24 * 60 * 60;
+const refresh_tokenMaxAge = 2 * 24 * 60 * 60;
 
 const getUserByUsername = async (username) => {
 	try {
@@ -62,18 +62,18 @@ const signUp = async ({ username, password, email, phone_number }, res) => {
 			const token = jwt.sign({ id: result.rows[0].id }, process.env.JWT_SECRET, {
 				expiresIn: accessTokenMaxAge
 			});
-			const refreshToken = jwt.sign({ id: result.rows[0].id }, process.env.REFRESH_SECRET, {
-				expiresIn: refreshTokenMaxAge
+			const refresh_token = jwt.sign({ id: result.rows[0].id }, process.env.REFRESH_SECRET, {
+				expiresIn: refresh_tokenMaxAge
 			});
 
 			// add refresh token to db in users table
 			if (result.rows[0].refresh_token == null) {
 				// hash refresh token
-				const hashedRefreshToken = bcrypt.hash(refreshToken, salt);
-				db.query('UPDATE users SET refresh_token = $1 WHERE id = $2', [refreshToken, result.rows[0].id]);
+				const hashedrefresh_token = bcrypt.hash(refresh_token, salt);
+				db.query('UPDATE users SET refresh_token = $1 WHERE id = $2', [refresh_token, result.rows[0].id]);
 			}
 
-			return { ...result.rows[0], token, refreshToken };
+			return { ...result.rows[0], token, refresh_token };
 		});
 
 		return newUser;
@@ -102,16 +102,16 @@ const login = async ({ username, password }) => {
 				// one minute
 				expiresIn: accessTokenMaxAge
 			});
-			const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
-				expiresIn: refreshTokenMaxAge
+			const refresh_token = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
+				expiresIn: refresh_tokenMaxAge
 			});
 
-			hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
+			hashedrefresh_token = await bcrypt.hash(refresh_token, salt);
 			// replace refresh token in db
 			console.log('user id333 ', user.id);
-			await db.query('UPDATE users SET refresh_token = $1 WHERE id = $2', [refreshToken, user.id]);
+			await db.query('UPDATE users SET refresh_token = $1 WHERE id = $2', [refresh_token, user.id]);
 
-			return { ...user, token, refreshToken };
+			return { ...user, token, refresh_token };
 		}
 	}
 	catch (err) {
@@ -133,18 +133,18 @@ const logout = async (id) => {
 	}
 }
 
-const updateToken = async ({ refreshToken }) => {
+const updateToken = async ({ refresh_token }) => {
 	try {
 		// verify refresh token
 
-		let user = await db.query('SELECT * FROM users WHERE refresh_token = $1', [refreshToken]);
+		let user = await db.query('SELECT * FROM users WHERE refresh_token = $1', [refresh_token]);
 		if (!user.rows[0]) {
 			console.log('no user found');
 			return null;
 		}
 
 		try {
-			jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+			jwt.verify(refresh_token, process.env.REFRESH_SECRET);
 		}
 		catch (err) {
 			if (err.name === 'TokenExpiredError') {
@@ -160,7 +160,7 @@ const updateToken = async ({ refreshToken }) => {
 
 
 
-		if (refreshToken !== user.rows[0].refresh_token) {
+		if (refresh_token !== user.rows[0].refresh_token) {
 			console.log('refresh token not in db');
 			logout(user.id);
 			return null
@@ -169,14 +169,14 @@ const updateToken = async ({ refreshToken }) => {
 		const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
 			expiresIn: accessTokenMaxAge
 		});
-		const newRefreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
-			expiresIn: refreshTokenMaxAge
+		const newrefresh_token = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, {
+			expiresIn: refresh_tokenMaxAge
 		});
 
-		const hashedRefreshToken = await bcrypt.hash(newRefreshToken, 10);
-		await db.query('UPDATE users SET refresh_token = $1 WHERE id = $2', [newRefreshToken, user.id]);
+		const hashedrefresh_token = await bcrypt.hash(newrefresh_token, 10);
+		await db.query('UPDATE users SET refresh_token = $1 WHERE id = $2', [newrefresh_token, user.id]);
 
-		return { ...user, token, refreshToken: newRefreshToken };
+		return { ...user, token, refresh_token: newrefresh_token };
 	} catch (err) {
 		console.error(err);
 		return res.status(500).json({ error: 'Internal Server Error' });

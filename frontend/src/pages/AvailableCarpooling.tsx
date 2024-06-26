@@ -6,9 +6,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { format, set } from "date-fns";
 import { url } from "../api/methods";
 import { message } from "antd";
-import { number } from "zod";
+import { useLocation } from "react-router-dom";
 
 const AvailableCarpooling = () => {
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/login";
   const [carpoolings, setCarpoolings] = useState([]);
   const [params] = useSearchParams();
   const [data, setData] = useState({
@@ -16,7 +18,7 @@ const AvailableCarpooling = () => {
     destination: "",
     departure_day: "",
     number_of_seats: "",
-    user_id: "",
+    user_id: "" as string | null,
   });
 
   useEffect(() => {
@@ -25,7 +27,7 @@ const AvailableCarpooling = () => {
     const destination = params.get("destination") || "";
     const departure_day = params.get("departure_day") || "";
     const number_of_seats = params.get("number_of_seats") || "";
-    const user_id = localStorage.getItem("id") || "-1";
+    const user_id = localStorage.getItem("id") || null;
 
     // Set data state
     setData({
@@ -74,7 +76,7 @@ const AvailableCarpooling = () => {
         navigate("/");
       })
       .catch((error: any) => {
-        message.error("Error setting reminder");
+        navigate(from, { replace: true })
       });
   };
 
@@ -92,7 +94,7 @@ const AvailableCarpooling = () => {
         navigate("/carpooling/history/" + requester_id);
       })
       .catch((error: any) => {
-        alert("error booking carpooling");
+        
       });
   };
 
@@ -101,7 +103,7 @@ const AvailableCarpooling = () => {
       <div className="p-5 w-full bg-cover bg-center">
         <h1 className=" text-5xl text-center p-10">Available Carpooling</h1>
       </div>
-      <SearchCarpooling redirect={false} setCarpoolings={setCarpoolings} />
+      <SearchCarpooling  />
 
       {carpoolings && carpoolings.length > 0 ? (
         <div>

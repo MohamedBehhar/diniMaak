@@ -25,9 +25,9 @@ export const signUp = async ({ username, password, email, phone_number }) => {
 	}
 }
 
-export const updateToken = async ({ refreshToken, username }) => {
+export const updateToken = async ({ refresh_token, username }) => {
 	try {
-		const response = await instance.get("/auth/updateToken", { refreshToken, username });
+		const response = await instance.get("/auth/updateToken", { refresh_token, username });
 		return response.data;
 	} catch (error) {
 		throw error;

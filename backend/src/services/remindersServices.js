@@ -1,13 +1,12 @@
 const db = require('../db/db');
+const customError = require('../errors/customErrors');
 
 const setReminder = async ({
     user_id,
     destination,
     departure,
 }) => {
-    console.log("user_id", user_id);
-    console.log("destination", destination);
-    console.log("departure", departure);
+    
 
     try {
         const newReminder = await db.query(

@@ -6,7 +6,7 @@ const signUp = async (req, res) => {
 	try {
 		const { username, password, email, phone_number } = req.body;
 		if (await authServices.checkUsernames(username)) {
-			return res.status(409).json({ error: { key: 'username', message: 'Username already exists' }});
+			return res.status(409).json({ error: { key: 'username', message: 'Username already exists' } });
 		}
 		if (await authServices.checkEmail(email)) {
 			return res.status(409).json({ error: { key: 'email', message: 'Email already exists' } });
@@ -34,7 +34,7 @@ const login = async (req, res) => {
 		if (!user) {
 			return res.status(401).json({ error: 'Invalid credentials' });
 		}
-		res.status(200).json({ accessToken: user.token, refreshToken: user.refreshToken, id: user.id, username: user.username })
+		res.status(200).json({ accessToken: user.token, refresh_token: user.refresh_token, id: user.id, username: user.username })
 	}
 	catch (error) {
 		console.error(error);
@@ -44,13 +44,13 @@ const login = async (req, res) => {
 
 const updateToken = async (req, res) => {
 	try {
-		const { refreshToken } = req.body;
+		const { refresh_token } = req.body;
 
-		if (!refreshToken) {
-			return res.status(400).json({ error: 'Missing required fields: refreshToken' });
+		if (!refresh_token) {
+			return res.status(400).json({ error: 'Missing required fields: refresh_token' });
 		}
 
-		const user = await authServices.updateToken({ refreshToken });
+		const user = await authServices.updateToken({ refresh_token });
 		if (!user) {
 
 
@@ -59,7 +59,7 @@ const updateToken = async (req, res) => {
 
 
 		}
-		res.status(200).json({ accessToken: user.token, refreshToken: user.refreshToken })
+		res.status(200).json({ accessToken: user.token, refresh_token: user.refresh_token })
 	}
 	catch (error) {
 		console.error(error);
