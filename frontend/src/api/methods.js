@@ -313,3 +313,12 @@ export const setReminder = async (data) => {
 		throw error;
 	}
 }
+
+export const changeNotificationStatus = async (receiver_id) => {
+	try {
+		const response = await instance.put(`/notifications/${receiver_id}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getNotifications } from "../api/methods";
+import { getNotifications, changeNotificationStatus } from "../api/methods";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 
@@ -20,30 +20,35 @@ const Notifications = () => {
 
   return (
     <div className="container">
-      <h1
-        className="text-3xl font-bold text-center mt-5"
-      >Notifications</h1>
+      <h1 className="text-3xl font-bold text-center mt-5">Notifications</h1>
       <div>
-        { notifications && notifications.map((notification: any) => {
-          return (
-            <div 
-              key={notification.id}
-              className="p-2 rounded-md shadow-md my-2 bg-gray-50 hover:bg-gray-100 transition duration-300 ease-in-out cursor-pointer flex justify-between items-center gap-2" 
-
-            >
-              <p>{notification.message}</p>
-              <button
-                className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded"
-                type="button"
-                onClick={() => {
-                  Navigate('/carpooling-details/' + notification.carpooling_id + '/' + notification.number_of_seats)
-                }}
+        {notifications &&
+          notifications.map((notification: any) => {
+            return (
+              <div
+                key={notification.id}
+                className={`${
+                  notification.is_read ? "bg-gray-200" : "bg-white"
+                } p-2 rounded-md shadow-md my-2  hover:bg-gray-100 transition duration-300 ease-in-out cursor-pointer flex justify-between items-center gap-2`}
               >
-                Reserve
-              </button>
-            </div>
-          );
-        })}
+                <p>{notification.message}</p>
+                <button
+                  className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded"
+                  type="button"
+                  onClick={() => {
+                    Navigate(
+                      "/carpooling-details/" +
+                        notification.carpooling_id +
+                        "/" +
+                        1
+                    );
+                  }}
+                >
+                  Reserve
+                </button>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

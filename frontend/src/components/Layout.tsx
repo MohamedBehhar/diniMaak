@@ -19,9 +19,18 @@ import { resetUserInfos, setUserInfo } from "../store/user/userSlice";
 import { IoChatboxEllipses } from "react-icons/io5";
 import DefaultUserImage from "../assets/user.png";
 
+interface Notifications {
+  total: number;
+  requestsCount: number;
+  reservationsCount: number;
+  carpoolingPublishedCount: number;
+}
+
 const Layout = () => {
   const userInfo = useSelector((state: RootState) => state.user.user);
   const [unreadMessages, setUnreadMessages] = useState(0);
+  const token = localStorage.getItem("token");
+  const [notifications, setNotifications] = useState({} as Notifications);
 
   const dispatch = useDispatch();
 
@@ -56,7 +65,6 @@ const Layout = () => {
   };
 
   console.log("userInfo === ", userInfo);
-  const [notifications, setNotifications] = useState([]);
 
   const user_id = localStorage.getItem("id");
   useEffect(() => {
@@ -78,7 +86,7 @@ const Layout = () => {
       getMessagesCount();
     });
 
-    if (userInfo.isAuth) {
+    if (token) {
       getMessagesCount();
       fetchNotificationsCount();
       fetchUserInfo();
@@ -108,7 +116,16 @@ const Layout = () => {
     },
     {
       key: "notifications",
-      label: "Notifications",
+      label: (
+        <p className="flex gap-1">
+          Notifications
+          {notifications.total > 0 && (
+            <span className=" w-6 h-6 flex justify-center items-center bg-red-500 text-white rounded-full p-1">
+              {notifications.total}
+            </span>
+          )}
+        </p>
+      ),
       onClick: () => {
         Navigate("/notifications/" + user_id);
       },
@@ -181,13 +198,12 @@ const Layout = () => {
               </h1>
               <Dropdown menu={{ items }} placement="bottomRight">
                 <div className="  rounded-full relative">
-                  {notifications.length > 0 && (
-                    <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-                  )}
                   <img
                     src={concatinatePictureUrl(userInfo.profile_picture)}
                     alt=""
-                    className="w-8 h-8 rounded-full cursor-pointer border"
+                    className={`${
+                      notifications.total ? "ring-1 ring-red-500" : ""
+                    } w-10 h-10 rounded-full object-cover`}
                     onError={(e) => {
                       e.currentTarget.src = DefaultUserImage;
                     }}
@@ -205,13 +221,8 @@ const Layout = () => {
           )}
         </div>
       </header>
-      <div className=" h-[100%]    flex flex-col pt-6">
-        <div
-          style={{
-            height: "calc(100vh - 4rem)",
-          }}
-          className="container overflow-y-auto flex-1"
-        >
+      <div className=" h-full    flex flex-col pt-6">
+        <div className="container overflow-y-auto flex-1">
           <Outlet />
         </div>
 

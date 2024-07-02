@@ -60,31 +60,30 @@ async function sendNotification(sender_id, receiver_id, message, type, carpoolin
         io.to(receiverSocketId).emit(
             type, { message, sender_id }
         );
-
-        const notification = await db.query(`
-            SELECT
-                *
-            FROM
-                notifications
-            WHERE
-                sender_id = $1 AND receiver_id = $2 AND message = $3 AND notifications_type = $4
-        `, [sender_id, receiver_id, message, type]);
-
-        console.log('notification', notification);
-
-        if (notification.rows.length > 0 || notification === undefined) {
-            return;
-        }
-
-        db.query(`
-            INSERT INTO
-                notifications (sender_id, receiver_id, message, notifications_type, carpooling_id)
-            VALUES
-                ($1, $2, $3, $4, $5)
-        `, [sender_id, receiver_id, message, type, carpooling_id]);
     } else {
         console.log('receiver is offline');
     }
+    const notification = await db.query(`
+    SELECT
+        *
+    FROM
+        notifications
+    WHERE
+        sender_id = $1 AND receiver_id = $2 AND message = $3 AND notifications_type = $4
+`, [sender_id, receiver_id, message, type]);
+
+console.log('notification', notification);
+
+if (notification.rows.length > 0 || notification === undefined) {
+    return;
+}
+
+db.query(`
+    INSERT INTO
+        notifications (sender_id, receiver_id, message, notifications_type, carpooling_id)
+    VALUES
+        ($1, $2, $3, $4, $5)
+`, [sender_id, receiver_id, message, type, carpooling_id]);
 }
 
 async function sendMessage(sender_id, receiver_id, message, conversation_id) {

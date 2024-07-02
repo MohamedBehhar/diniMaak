@@ -117,10 +117,10 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
   };
 
   return (
-    <div className=" h-full">
+    <div className=" relative h-full">
       {alreadyHasCar === false ? (
-        <div>
-          <div className="flex sm:flex-row flex-col h-[80%] gap-5">
+        <div className="">
+          <div className="flex sm:flex-row flex-col h-[80%] gap-5 ">
             <div className="sm:w-[50%]  h-full  flex flex-col justify-evenly gap-5">
               <Select
                 size="large"
@@ -192,14 +192,19 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
               </div>
             </div>
           </div>
-          <button
-            className="bg-cyan-600 text-white p-2 rounded-md max-w-64 mx-auto"
-            onClick={() => {
-              car_id ? handleEditCar() : handleAddCar();
-            }}
+          <div
+            className="gap-5 border absolute bottom-0 w-full "
+            style={{ marginTop: "2rem" }}
           >
-            confirm
-          </button>
+            <button
+              className="bg-cyan-600 text-white p-2 rounded-md max-w-64 "
+              onClick={() => {
+                car_id ? handleEditCar() : handleAddCar();
+              }}
+            >
+              confirm
+            </button>
+          </div>
         </div>
       ) : (
         ""

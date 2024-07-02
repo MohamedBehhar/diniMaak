@@ -30,15 +30,21 @@ const getNotificationsCount = async (
 			`SELECT COUNT(*) FROM notifications WHERE receiver_id = $1 AND notifications_type = 'requestAccepted' AND is_read = false`,
 			[user_id]
 		);
+		let carpoolingPublishedCount = await db.query(
+			`SELECT COUNT(*) FROM notifications WHERE receiver_id = $1 AND notifications_type = 'carpoolingPublished' AND is_read = false`,
+			[user_id]
+		);
 
 		requestsCount = parseInt(requestsCount.rows[0].count);
 		reservationsCount = parseInt(reservationsCount.rows[0].count);
-		const total = requestsCount + reservationsCount;
+		carpoolingPublishedCount = parseInt(carpoolingPublishedCount.rows[0].count);
+		const total = requestsCount + reservationsCount + carpoolingPublishedCount;
 
 		return {
 			total,
 			requestsCount,
-			reservationsCount
+			reservationsCount,
+			carpoolingPublishedCount
 		};
 
 	} catch (error) {
@@ -46,7 +52,21 @@ const getNotificationsCount = async (
 	}
 }
 
+const changeNotificationStatus = async (
+	receiver_id
+) => {
+	try {
+		const notification = await db.query(
+			`UPDATE notifications SET is_read = true WHERE receiver_id = $1 RETURNING *`,
+			[receiver_id]
+		);
+		return notification.rows[0];
+	} catch (error) {
+		throw error;
+	}
+}
 module.exports = {
 	getNotifications,
-	getNotificationsCount
+	getNotificationsCount,
+	changeNotificationStatus
 };

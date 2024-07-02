@@ -23,8 +23,22 @@ const getNotificationsCount = async (req, res) => {
 	}
 }
 
+const changeNotificationStatus = async (req, res) => {
+	const { receiver_id } = req.params;
+	console.log("receiver_id", receiver_id);
+	try {
+		const notification = await notificationsServices.changeNotificationStatus(receiver_id);
+		res.status(200).json(notification);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: error.message });
+	}
+}
+
+
 
 module.exports = {
 	getNotifications,
-	getNotificationsCount
+	getNotificationsCount,
+	changeNotificationStatus
 };

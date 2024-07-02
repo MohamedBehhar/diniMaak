@@ -46,6 +46,11 @@ const bookCarpooling = async ({ requester_id, carpooling_id, requested_seats }) 
             throw new CustomError('You have already booked this carpooling', 400);
         }
 
+        console.log('publisher_id', publisher_id);
+        console.log('requester_id', requester_id);
+        console.log('carpooling_id', carpooling_id);
+        console.log('requested_seats', requested_seats);
+        
 
         const booking = await db.query(`
             INSERT INTO

@@ -100,7 +100,7 @@ const Chat = () => {
 
   return (
     <div className="container h-full flex flex-col gap-1  p-2">
-      <div className="bg-gray-200 p-2 rounded-lg flex gap-2 justify-between items-center ">
+      <div className="bg-gray-200 p-2 rounded-lg flex gap-2 justify-between items-center mt-6">
         <h1>{carpoolingInfo.destination}</h1>
         <h1>{carpoolingInfo.departure}</h1>
         <h1>{carpoolingInfo.departure_day}</h1>
@@ -128,7 +128,7 @@ const Chat = () => {
                 }
                 className={`${
                   chat.sender_id == sender_id ? "order-2" : ""
-                } w-10 h-10 rounded-full`}
+                } w-10 h-10 rounded-full object-cover`}
                 alt=""
                 onError={(e) => {
                   e.currentTarget.src = DefaultUserImage;
@@ -152,7 +152,7 @@ const Chat = () => {
             type="text"
             name=""
             id=""
-            className="w-full border-2 border-gray-300 p-2 rounded-lg" 
+            className="w-full border-2 border-gray-300 p-2 rounded-lg"
             onChange={(e) => {
               setMessage(e.target.value);
               socket.emit("writeMsg", { sender_id, receiver_id });
