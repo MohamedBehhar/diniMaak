@@ -402,10 +402,17 @@ const getCarpoolingByPublisherId = async (user_id) => {
 
 const deleteCarpooling = async (carpooling_id) => {
 	try {
-		const booking = await db.query('DELETE FROM booking WHERE carpooling_id = $1', [carpooling_id]);
-		const notifications = await db.query('DELETE FROM notifications WHERE carpooling_id = $1', [carpooling_id]);
-		const conversations = await db.query('DELETE FROM conversations WHERE carpooling_id = $1', [carpooling_id]);
-		const carpooling = await db.query('DELETE FROM carpooling WHERE id = $1 RETURNING * ', [carpooling_id]);
+		console.log("carpooling_id", carpooling_id);
+		// const booking = await db.query('DELETE FROM booking WHERE carpooling_id = $1', [carpooling_id]);
+		// const notifications = await db.query('DELETE FROM notifications WHERE carpooling_id = $1', [carpooling_id]);
+		// const conversations = await db.query('DELETE FROM conversations WHERE carpooling_id = $1', [carpooling_id]);
+		const carpooling = await db.query('SELECT * FROM carpooling WHERE id = $1 ', [carpooling_id]);
+		console.log("carpooling.rows", carpooling.rows[0]);
+		// emit a notification to the users that the carpooling has been deleted
+		for (let i = 0; i < carpooling.rows[0].confirmed_passengers.length; i++) {
+			const user_id = carpooling.rows[i].confirmed_passengers[i];
+			sendNotification(carpooling.rows[0].publisher_id, user_id, 'The carpooling has been deleted', 'carpoolingDeleted', carpooling_id);
+		}
 		return carpooling.rows[0];
 	} catch (err) {
 		console.error(err);

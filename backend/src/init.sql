@@ -11,7 +11,7 @@ CREATE TYPE role AS ENUM ('driver', 'passenger');
 CREATE TYPE bookingStatus AS ENUM ('pending', 'accepted', 'rejected', 'canceled', 'confirmed', 'completed');
 
 -- Create notifications type enum
-CREATE TYPE notifications_type AS ENUM ('rating', 'comment', 'newBookingRequest', 'bookingConfirmed', 'bookingCanceled', 'requestAccepted', 'requestRejected', 'requestCanceled', 'chat', 'carpoolingPublished');
+CREATE TYPE notifications_type AS ENUM ('rating', 'comment', 'newBookingRequest', 'bookingConfirmed', 'bookingCanceled', 'requestAccepted', 'requestRejected', 'requestCanceled', 'chat', 'carpoolingPublished', 'carpoolingDeleted');
 
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (

@@ -178,7 +178,7 @@ const Layout = () => {
             </div>
           </Link>
 
-          {userInfo.isAuth == true && (
+          {userInfo.isAuth === true && (
             <div
               className="flex items-center gap-5 cursor-pointer relative"
               onClick={() => Navigate("/conversations/" + user_id)}
@@ -191,7 +191,7 @@ const Layout = () => {
               <IoChatboxEllipses className="text-cyan-600 text-2xl" />
             </div>
           )}
-          {userInfo.isAuth == true ? (
+          {userInfo.isAuth === true ? (
             <div className="flex gap-1 items-center">
               <h1 className="text-lg font-bold text-cyan-600 ">
                 {userInfo.username}
