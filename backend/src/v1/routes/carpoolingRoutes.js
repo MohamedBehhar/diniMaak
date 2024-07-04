@@ -8,6 +8,7 @@ router.get('/', carpoolingControllers.getCarpooling);
 router.get('/:id', carpoolingControllers.getCarpoolingById);
 router.post('/', carpoolingControllers.createCarpooling);
 router.get('/search/:user_id/:departure/:destination/:departure_day?/:number_of_seats?', carpoolingControllers.searchCarpooling);
+router.delete('/:id', carpoolingControllers.deleteCarpooling);
 
 router.get('/requests/:user_id', carpoolingControllers.getCarpoolingRequests);
 router.get('/request/:requester_id/:carpooling_id', carpoolingControllers.getSingleRequestInfo);

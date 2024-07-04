@@ -400,6 +400,19 @@ const getCarpoolingByPublisherId = async (user_id) => {
 	}
 }
 
+const deleteCarpooling = async (carpooling_id) => {
+	try {
+		const booking = await db.query('DELETE FROM booking WHERE carpooling_id = $1', [carpooling_id]);
+		const notifications = await db.query('DELETE FROM notifications WHERE carpooling_id = $1', [carpooling_id]);
+		const conversations = await db.query('DELETE FROM conversations WHERE carpooling_id = $1', [carpooling_id]);
+		const carpooling = await db.query('DELETE FROM carpooling WHERE id = $1 RETURNING * ', [carpooling_id]);
+		return carpooling.rows[0];
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+}
+
 module.exports = {
 	getCarpooling,
 	getCarpoolingById,
@@ -412,5 +425,6 @@ module.exports = {
 	acceptCarpoolingRequest,
 	rejectCarpoolingRequest,
 	getAvailableSeats,
-	getCarpoolingByPublisherId
+	getCarpoolingByPublisherId,
+	deleteCarpooling
 }

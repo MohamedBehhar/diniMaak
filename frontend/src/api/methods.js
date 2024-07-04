@@ -322,3 +322,13 @@ export const changeNotificationStatus = async (receiver_id) => {
 		throw error;
 	}
 }
+
+
+export const deleteCarpooling = async (id) => {
+	try {
+		const response = await instance.delete(`/carpooling/${id}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}

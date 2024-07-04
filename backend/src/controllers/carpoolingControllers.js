@@ -158,6 +158,17 @@ const getCarpoolingByPublisherId = async (req, res) => {
 }
 
 
+const deleteCarpooling = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const updatedCarpooling = await carpoolingServices.deleteCarpooling(id);
+		res.status(200).json(updatedCarpooling);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+}
+
 
 
 
@@ -171,5 +182,6 @@ module.exports = {
 	getSingleRequestInfo,
 	acceptCarpoolingRequest,
 	rejectCarpoolingRequest,
-	getCarpoolingByPublisherId
+	getCarpoolingByPublisherId,
+	deleteCarpooling
 }
