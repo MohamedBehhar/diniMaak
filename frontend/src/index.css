@@ -25,6 +25,14 @@
   padding: 0;
 }
 
+html,
+#root,
+body{
+  min-height: 100vh;
+  height: 100%;
+  background-color: white;
+}
+
 body {
   color: #242424;
   font-family: "Cairo", sans-serif;

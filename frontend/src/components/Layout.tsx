@@ -86,6 +86,11 @@ const Layout = () => {
       getMessagesCount();
     });
 
+    socket.on("carpoolingDeleted", (data: any) => {
+      console.log("carpoolingDeleted", data);
+      alert("Carpooling deleted");
+    });
+
     if (token) {
       getMessagesCount();
       fetchNotificationsCount();
@@ -168,7 +173,7 @@ const Layout = () => {
   ];
 
   return (
-    <div className="relative h-screen">
+    <div className="relative h-full flex flex-col">
       <header className=" fixed z-50 w-full bg-white shadow-md top-0 left-0  ">
         <div className="container flex justify-between items-center p-3  text-gray-600 ">
           <Link to="/">
@@ -221,8 +226,8 @@ const Layout = () => {
           )}
         </div>
       </header>
-      <div className=" h-full    flex flex-col pt-6">
-        <div className="container overflow-y-auto flex-1">
+      <div className="bg-white flex flex-col flex-1">
+        <div className="container flex-1">
           <Outlet />
         </div>
 

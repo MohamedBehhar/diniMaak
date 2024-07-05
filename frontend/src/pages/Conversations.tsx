@@ -69,7 +69,7 @@ const Conversations = () => {
                     <span>{conversation.departure}</span>
                     <span>{conversation.destination}</span>
                   </div>
-                  <p>{format(conversation.departure_day, "EEEE, MM/yyyy")}</p>
+                  {/* <p>{format(conversation.departure_day, "EEEE, MM/yyyy")}</p> */}
                 </div>
               </div>
             );
