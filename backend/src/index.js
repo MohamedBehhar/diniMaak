@@ -37,12 +37,12 @@ app.use(cors());
 app.use("/api/v1/tasks", tasksRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", usersRouter);
-// app.use(verifyJWT); // this is a middleware that checks if the user is authorized
 app.use("/api/v1/cities", citiesRouter);
 app.use("/api/v1/carpooling", carpoolingRouter);
 app.use("/api/v1/carpooling", carpoolingBookingRouter);
 app.use('/api/v1/notifications', notificationsRouter);
 app.use('/api/v1/car', carRouter);
+app.use(verifyJWT); // this is a middleware that checks if the user is authorized
 app.use('/api/v1/chat/', chatRouter);
 app.use('/api/v1/conversations/', conversationsRouter);
 app.use('/api/v1/reminders/', remindersRouter);

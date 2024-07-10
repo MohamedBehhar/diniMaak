@@ -47,6 +47,16 @@ const checkEmail = async (email) => {
 	}
 }
 
+const checkPhone = async (phone_number) => {
+	try {
+		const user = await db.query('SELECT * FROM users WHERE phone_number = $1', [phone_number]);
+		return user.rows[0];
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
+}
+
 const signUp = async ({ username, password, email, phone_number }, res) => {
 
 	try {
@@ -79,6 +89,7 @@ const signUp = async ({ username, password, email, phone_number }, res) => {
 		return newUser;
 	}
 	catch (err) {
+		console.log('err ', err);
 		throw err;
 	}
 }
@@ -193,5 +204,6 @@ module.exports = {
 	isAuthorized,
 	updateToken,
 	checkUsernames,
-	checkEmail
+	checkEmail,
+	checkPhone,
 }

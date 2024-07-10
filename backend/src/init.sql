@@ -5,125 +5,193 @@ CREATE DATABASE TODO_DB;
 \c TODO_DB;
 
 -- Create user roles enum
-CREATE TYPE role AS ENUM ('driver', 'passenger');
+CREATE TYPE role AS ENUM
+('driver', 'passenger');
 
 -- Create carpooling status enum
-CREATE TYPE bookingStatus AS ENUM ('pending', 'accepted', 'rejected', 'canceled', 'confirmed', 'completed');
+CREATE TYPE bookingStatus AS ENUM
+('pending', 'accepted', 'rejected', 'canceled', 'confirmed', 'completed');
 
 -- Create notifications type enum
-CREATE TYPE notifications_type AS ENUM ('rating', 'comment', 'newBookingRequest', 'bookingConfirmed', 'bookingCanceled', 'requestAccepted', 'requestRejected', 'requestCanceled', 'chat', 'carpoolingPublished', 'carpoolingDeleted');
+CREATE TYPE notifications_type AS ENUM
+('rating', 'comment', 'newBookingRequest', 'bookingConfirmed', 'bookingCanceled', 'requestAccepted', 'requestRejected', 'requestCanceled', 'chat', 'carpoolingPublished', 'carpoolingDeleted');
 
 -- Create users table
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE
+IF NOT EXISTS users
+(
     id SERIAL PRIMARY KEY,
-    username VARCHAR (50) NOT NULL UNIQUE,
-    phone_number VARCHAR (50) NOT NULL UNIQUE,
-    password VARCHAR (250) NOT NULL,
-    email VARCHAR (100) NOT NULL UNIQUE,
-    refresh_token VARCHAR (250),
-    profile_picture VARCHAR (250),
+    username VARCHAR
+(50) NOT NULL UNIQUE,
+    phone_number VARCHAR
+(50) NOT NULL UNIQUE,
+    password VARCHAR
+(250) NOT NULL,
+    email VARCHAR
+(100) NOT NULL UNIQUE,
+    refresh_token VARCHAR
+(250),
+    profile_picture VARCHAR
+(250),
     rating INT,
     role role DEFAULT 'passenger',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create cars table
-CREATE TABLE IF NOT EXISTS cars (
+CREATE TABLE
+IF NOT EXISTS cars
+(
     car_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
-    brand VARCHAR (50) NOT NULL,
+    brand VARCHAR
+(50) NOT NULL,
     year INT NOT NULL,
-    plate VARCHAR (50),
-    image VARCHAR (250),
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    plate VARCHAR
+(50),
+    image VARCHAR
+(250),
+    FOREIGN KEY
+(user_id) REFERENCES users
+(id)
 );
 
 
 -- Create cars_brands table
-CREATE TABLE IF NOT EXISTS cars_brands (
+CREATE TABLE
+IF NOT EXISTS cars_brands
+(
     id SERIAL PRIMARY KEY,
-    label VARCHAR (50) NOT NULL
+    label VARCHAR
+(50) NOT NULL
 );
 
 -- Create carpooling table
-CREATE TABLE IF NOT EXISTS carpooling (
+CREATE TABLE
+IF NOT EXISTS carpooling
+(
     id SERIAL PRIMARY KEY,
     publisher_id INT NOT NULL,
     car_id INT NOT NULL,
-    departure VARCHAR (50) NOT NULL,
-    destination VARCHAR (50) NOT NULL,
+    departure VARCHAR
+(50) NOT NULL,
+    destination VARCHAR
+(50) NOT NULL,
     departure_day TIMESTAMP,
     departure_time TIME NOT NULL,
     number_of_seats INT NOT NULL,
     available_seats INT NOT NULL,
     price INT NOT NULL,
-    driver_name VARCHAR (50) NOT NULL,
+    driver_name VARCHAR
+(50) NOT NULL,
     confirmed_passengers INTEGER [],
     booking_requests_ids INTEGER [],
-    FOREIGN KEY (publisher_id) REFERENCES users (id),
-    FOREIGN KEY (car_id) REFERENCES cars (car_id)
+    FOREIGN KEY
+(publisher_id) REFERENCES users
+(id),
+    FOREIGN KEY
+(car_id) REFERENCES cars
+(car_id)
 );
 
 
 -- REMAINDERS TABLE 
-CREATE TABLE IF NOT EXISTS reminders (
+CREATE TABLE
+IF NOT EXISTS reminders
+(
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
-    destination VARCHAR (50) NOT NULL,
-    departure VARCHAR (50) NOT NULL,
+    destination VARCHAR
+(50) NOT NULL,
+    departure VARCHAR
+(50) NOT NULL,
     is_reminded BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY
+(user_id) REFERENCES users
+(id)
 );
 
 ALTER TABLE reminders ADD CONSTRAINT reminders_unique_constraint UNIQUE (user_id, destination, departure);
 
 -- Create booking table
-CREATE TABLE IF NOT EXISTS booking (
+CREATE TABLE
+IF NOT EXISTS booking
+(
     booking_id SERIAL PRIMARY KEY,
     publisher_id INT NOT NULL,
     requester_id INT NOT NULL,
     carpooling_id INT NOT NULL,
     requested_seats INT NOT NULL,
     status bookingStatus DEFAULT 'pending',
-    FOREIGN KEY (publisher_id) REFERENCES users (id),
-    FOREIGN KEY (requester_id) REFERENCES users (id),
-    FOREIGN KEY (carpooling_id) REFERENCES carpooling (id)
+    FOREIGN KEY
+(publisher_id) REFERENCES users
+(id),
+    FOREIGN KEY
+(requester_id) REFERENCES users
+(id),
+    FOREIGN KEY
+(carpooling_id) REFERENCES carpooling
+(id) ON
+DELETE CASCADE
 );
 
 
 -- Create notifications table
-CREATE TABLE IF NOT EXISTS notifications (
+CREATE TABLE
+IF NOT EXISTS notifications
+(
     notification_id SERIAL PRIMARY KEY,
     sender_id INT NOT NULL,
     receiver_id INT NOT NULL,
-    message VARCHAR(250) NOT NULL,
+    message VARCHAR
+(250) NOT NULL,
     carpooling_id INT,
     notifications_type notifications_type NOT NULL,
     is_read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (carpooling_id) REFERENCES carpooling (id),
-    FOREIGN KEY (sender_id) REFERENCES users(id),
-    FOREIGN KEY (receiver_id) REFERENCES users(id)
+    FOREIGN KEY
+(carpooling_id) REFERENCES carpooling
+(id ) ON
+DELETE CASCADE,
+    FOREIGN KEY (sender_id)
+REFERENCES users
+(id),
+    FOREIGN KEY
+(receiver_id) REFERENCES users
+(id)
 );
 
 -- Create conversations table without the foreign key constraint on last_message_id
-CREATE TABLE IF NOT EXISTS conversations (
+CREATE TABLE
+IF NOT EXISTS conversations
+(
     id SERIAL PRIMARY KEY,
-    carpooling_id INT REFERENCES carpooling(id),
-    user1_id INT REFERENCES users(id),
-    user2_id INT REFERENCES users(id),
-    last_message_id INT -- This will be added as a foreign key later
+    carpooling_id INT REFERENCES carpooling
+(id) ON
+DELETE CASCADE,
+    user1_id INT
+REFERENCES users
+(id),
+    user2_id INT REFERENCES users
+(id),
+    last_message_id INT
 );
 
+
 -- Create messages table with the foreign key constraint on conversation_id
-CREATE TABLE IF NOT EXISTS messages (
+CREATE TABLE
+IF NOT EXISTS messages
+(
     id SERIAL PRIMARY KEY,
-    sender_id INT REFERENCES users(id),
-    receiver_id INT REFERENCES users(id),
+    sender_id INT REFERENCES users
+(id),
+    receiver_id INT REFERENCES users
+(id),
     is_read BOOLEAN DEFAULT FALSE,
     message TEXT NOT NULL,
     timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    conversation_id INT REFERENCES conversations(id)
+    conversation_id INT REFERENCES conversations
+(id)
 );
 
 -- Alter conversations table to add the foreign key constraint on last_message_id
@@ -132,41 +200,66 @@ ADD CONSTRAINT fk_last_message
 FOREIGN KEY (last_message_id) REFERENCES messages(id);
 
 
+
 -- Create user_conversations table
-CREATE TABLE IF NOT EXISTS user_conversations (
-    user_id INT REFERENCES users(id),
-    conversation_id INT REFERENCES conversations(id),
-    PRIMARY KEY (user_id, conversation_id)
+CREATE TABLE
+IF NOT EXISTS user_conversations
+(
+    user_id INT REFERENCES users
+(id),
+    conversation_id INT REFERENCES conversations
+(id),
+    PRIMARY KEY
+(user_id, conversation_id)
 );
 
 -- Create rating table
-CREATE TABLE IF NOT EXISTS rating (
+CREATE TABLE
+IF NOT EXISTS rating
+(
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     carpooling_id INT NOT NULL,
     rating INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (carpooling_id) REFERENCES carpooling (id)
+    FOREIGN KEY
+(user_id) REFERENCES users
+(id),
+    FOREIGN KEY
+(carpooling_id) REFERENCES carpooling
+(id) ON
+DELETE CASCADE
 );
 
 -- Create comment table
-CREATE TABLE IF NOT EXISTS comment (
+CREATE TABLE
+IF NOT EXISTS comment
+(
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     carpooling_id INT NOT NULL,
-    comment VARCHAR (250) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (carpooling_id) REFERENCES carpooling (id)
+    comment VARCHAR
+(250) NOT NULL,
+    FOREIGN KEY
+(user_id) REFERENCES users
+(id),
+    FOREIGN KEY
+(carpooling_id) REFERENCES carpooling
+(id) ON
+DELETE CASCADE
 );
 
 -- Create cities table
-CREATE TABLE IF NOT EXISTS cities (
+CREATE TABLE
+IF NOT EXISTS cities
+(
     id SERIAL PRIMARY KEY,
-    label VARCHAR (50) NOT NULL
+    label VARCHAR
+(50) NOT NULL
 );
 
 -- Insert some Moroccan cities into the cities table only once
-INSERT INTO cities (label)
+INSERT INTO cities
+    (label)
 SELECT label
 FROM (
     VALUES
@@ -198,12 +291,13 @@ FROM (
 ) AS cities(label)
 WHERE NOT EXISTS (
     SELECT 1
-    FROM cities
-    WHERE cities.label = cities.label
+FROM cities
+WHERE cities.label = cities.label
 );
 
 -- Insert some car brands into the cars_brands table only once
-INSERT INTO cars_brands (label)
+INSERT INTO cars_brands
+    (label)
 SELECT label
 FROM (
     VALUES
@@ -235,7 +329,7 @@ FROM (
 ) AS cars_brands(label)
 WHERE NOT EXISTS (
     SELECT 1
-    FROM cars_brands
-    WHERE cars_brands.label = cars_brands.label
+FROM cars_brands
+WHERE cars_brands.label = cars_brands.label
 );
 

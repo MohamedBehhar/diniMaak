@@ -72,7 +72,6 @@ const popularRides = [
       new Date().toISOString().split("T")[0]
     }&number_of_seats=1&user_id=${localStorage.getItem("id") || "-1"}`,
   },
-
 ];
 
 function Home() {
@@ -104,12 +103,12 @@ function Home() {
               return (
                 <div
                   key={index}
-                className="cursor-pointer hover:shadow-lg transition-all duration-300 ease-in-out"
+                  className="cursor-pointer hover:shadow-lg transition-all duration-300 ease-in-out"
                   onClick={() => {
                     navigate({
                       pathname: "/carpooling/search",
                       search: ride.search,
-                    })
+                    });
                   }}
                 >
                   <div className="p-5 bg-gray-100 rounded-md shadow-md mt-5">

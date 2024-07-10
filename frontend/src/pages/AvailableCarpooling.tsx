@@ -18,7 +18,7 @@ const AvailableCarpooling = () => {
     destination: "",
     departure_day: "",
     number_of_seats: "",
-    user_id: "" as string | null,
+    user_id: "" as string,
   });
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const AvailableCarpooling = () => {
     const destination = params.get("destination") || "";
     const departure_day = params.get("departure_day") || "";
     const number_of_seats = params.get("number_of_seats") || "";
-    const user_id = localStorage.getItem("id") || null;
+    const user_id = localStorage.getItem("id") || "-1";
 
     // Set data state
     setData({

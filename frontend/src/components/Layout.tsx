@@ -57,6 +57,7 @@ const Layout = () => {
   const fetchUserInfo = async () => {
     await getUserInfo(user_id)
       .then((response: any) => {
+        console.log("response === ", response);
         dispatch(setUserInfo(response));
       })
       .catch((error: any) => {
@@ -91,7 +92,7 @@ const Layout = () => {
       alert("Carpooling deleted");
     });
 
-    if (token) {
+    if (token !== "undefined" && token) {
       getMessagesCount();
       fetchNotificationsCount();
       fetchUserInfo();
@@ -183,7 +184,7 @@ const Layout = () => {
             </div>
           </Link>
 
-          {userInfo.isAuth === true && (
+          {token && (
             <div
               className="flex items-center gap-5 cursor-pointer relative"
               onClick={() => Navigate("/conversations/" + user_id)}
@@ -196,7 +197,7 @@ const Layout = () => {
               <IoChatboxEllipses className="text-cyan-600 text-2xl" />
             </div>
           )}
-          {userInfo.isAuth === true ? (
+          {token ? (
             <div className="flex gap-1 items-center">
               <h1 className="text-lg font-bold text-cyan-600 ">
                 {userInfo.username}
@@ -226,8 +227,8 @@ const Layout = () => {
           )}
         </div>
       </header>
-      <div className="bg-white flex flex-col flex-1">
-        <div className="container flex-1">
+      <div className="bg-white flex flex-col flex-1 pt-12">
+        <div className="container flex-1 ">
           <Outlet />
         </div>
 

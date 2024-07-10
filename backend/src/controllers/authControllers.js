@@ -11,6 +11,9 @@ const signUp = async (req, res) => {
 		if (await authServices.checkEmail(email)) {
 			return res.status(409).json({ error: { key: 'email', message: 'Email already exists' } });
 		}
+		if (await authServices.checkPhone(phone_number)) {
+			return res.status(409).json({ error: { key: 'phone_number', message: 'Phone number already exists' } });
+		}
 		if (!username || !password) {
 			return res.status(400).json({ error: 'Missing required fields: username and password' });
 		}

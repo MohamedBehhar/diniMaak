@@ -37,7 +37,10 @@ function CreateAccount() {
         localStorage.setItem("token", response.accessToken);
         localStorage.setItem("refresh_token", response.refresh_token);
         localStorage.setItem("id", response.id);
-        navigate(from, { replace: true });
+        alert("Account created successfully: " + from);
+        // if (from === "/signup") navigate("/");
+        // else
+         navigate(from, { replace: true });
       })
       .catch((error: any) => {
         console.log(error.response);
