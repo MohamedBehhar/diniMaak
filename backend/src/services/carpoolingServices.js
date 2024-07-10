@@ -1,5 +1,5 @@
 const db = require('../db/db');
-const { usersMap, sendNotification } = require('../initSocket');
+const { usersMap, sendNotification, sendMessage } = require('../initSocket');
 
 const getCarpooling = async () => {
 	try {
@@ -359,6 +359,7 @@ const getCarpoolingByPublisherId = async (user_id) => {
 			carpooling
 		WHERE
 			publisher_id = $1
+			AND status != 'canceled'
 		ORDER BY
 			departure_day ASC
 		`, [user_id]);
@@ -413,22 +414,22 @@ const getCarpoolingByPublisherId = async (user_id) => {
 }
 
 const deleteCarpooling = async (carpooling_id) => {
-    try {
-        const carpooling = await db.query('DELETE FROM carpooling WHERE id = $1 RETURNING *', [carpooling_id]);
+	try {
+		const carpooling = await db.query('UPDATE carpooling SET status = $1 WHERE id = $2 RETURNING *', ['canceled', carpooling_id]);
 
-        console.log("carpooling.rows confirmed_passengers: ", carpooling.rows[0]);
+		// emit a notification to the users that the carpooling has been deleted
+		for (let i = 0; i < carpooling.rows[0]?.confirmed_passengers?.length; i++) {
+			console.log('carpooling.rows[0].confirmed_passengers[i]', carpooling.rows[0].confirmed_passengers[i]);
+			const user_id = carpooling.rows[0].confirmed_passengers[i];
+			sendNotification(carpooling.rows[0].publisher_id, user_id, 'The carpooling has been deleted', 'carpoolingDeleted', carpooling_id);
+			sendMessage(carpooling.rows[0].publisher_id, user_id, 'The carpooling has been deleted', carpooling_id);
+		}
 
-        // emit a notification to the users that the carpooling has been deleted
-        for (let i = 0; i < carpooling.rows[0]?.confirmed_passengers?.length; i++) {
-            const user_id = carpooling.rows[0].confirmed_passengers[i];
-            sendNotification(carpooling.rows[0].publisher_id, user_id, 'The carpooling has been deleted', 'carpoolingDeleted', carpooling_id);
-        }
-
-        return carpooling.rows[0];
-    } catch (err) {
-        console.error(err);
-        throw err;
-    }
+		return carpooling.rows[0];
+	} catch (err) {
+		console.error(err);
+		throw err;
+	}
 };
 
 

@@ -72,7 +72,6 @@ async function sendNotification(sender_id, receiver_id, message, type, carpoolin
         sender_id = $1 AND receiver_id = $2 AND message = $3 AND notifications_type = $4
 `, [sender_id, receiver_id, message, type]);
 
-console.log('notification', notification);
 
 if (notification.rows.length > 0 || notification === undefined) {
     return;

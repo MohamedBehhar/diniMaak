@@ -6,7 +6,7 @@ const getNotifications = async (
 
 	try {
 		const notifications = await db.query(
-			`SELECT * FROM notifications WHERE receiver_id = $1`,
+			`SELECT * FROM notifications WHERE receiver_id = $1 ORDER BY created_at ASC`,
 			[user_id]
 		);
 		console.log("notifications", notifications.rows[1]);

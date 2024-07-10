@@ -52,22 +52,35 @@ const CarpoolingDetails = () => {
           className="max-w-4xl w-full bg-white shadow-lg rounded-lg overflow-hidden h-fit
         "
         >
-          <div className="p-6 bg-gray-100">
-            <div className="flex items-center gap-3 text-cyan-700 mb-6">
-              <FaCalendarAlt className="text-4xl" />
-              <div className="text-4xl font-semibold">
-                {carpooling.departure_day &&
-                  format(
-                    new Date(carpooling.departure_day),
-                    "EEEE dd MMMM yyyy"
-                  )}
+          <div className="p-6 bg-gray-100 ">
+            <div className="flex ">
+              <div className="flex items-center gap-3 text-cyan-700 mb-6 flex-1">
+                <FaCalendarAlt className="text-4xl" />
+                <div className="text-4xl font-semibold">
+                  {carpooling.departure_day &&
+                    format(
+                      new Date(carpooling.departure_day),
+                      "EEEE dd MMMM yyyy"
+                    )}
+                </div>
+              </div>
+              <div
+                className={
+                  "h-fit p-2 rounded-md text-cyan-700 text-xl capitalize " +
+                  (carpooling.status === "pending"
+                    ? "border border-yellow-500 text-yellow-500"
+                    : carpooling.status === "completed"
+                    ? "border border-green-500 text-green-500"
+                    : "border border-red-500 text-red-500")
+                }
+              >
+                {carpooling.status}
               </div>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex items-start">
                 <FaMapMarkerAlt className="text-2xl text-cyan-700 mr-2" />
-                <div className="debug">
+                <div className="">
                   <h1 className="text-xl font-semibold ">
                     {carpooling.departure}
                   </h1>
@@ -143,7 +156,10 @@ const CarpoolingDetails = () => {
             </div>
             <div className="text-center">
               <button
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-md transition duration-200"
+                className={
+                  "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-md transition duration-200" +
+                  (carpooling.status !== "pending" ? " hidden" : "")
+                }
                 onClick={handleBook}
               >
                 Book

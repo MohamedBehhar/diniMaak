@@ -34,7 +34,7 @@ function CreateAccount() {
       .then((response: any) => {
         console.log("0-0-0-0-0-0-0- ", response);
         dispatch(setUserInfo(response));
-        localStorage.setItem("token", response.accessToken);
+        localStorage.setItem("token", response.token);
         localStorage.setItem("refresh_token", response.refresh_token);
         localStorage.setItem("id", response.id);
         alert("Account created successfully: " + from);
