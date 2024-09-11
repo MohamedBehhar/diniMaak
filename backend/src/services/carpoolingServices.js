@@ -101,7 +101,8 @@ const createCarpooling = async ({ user_id, departure, destination, departure_tim
 		const carpooling = await db.query('INSERT INTO carpooling (publisher_id, departure, destination, departure_day, departure_time, number_of_seats, available_seats,  price, driver_name, car_id) VALUES ( $1, $2, $3, $4, $5 , $6, $7, $8, $9, $10) RETURNING *', [user_id, departure, destination, departure_day, departure_time, number_of_seats, number_of_seats, price, driver_name, car_id]);
 
 		// check if there is a request in reminders table for the same departure and destination and sent a notification to the user
-		const reminders = await db.query('SELECT * FROM reminders WHERE departure = $1 AND destination = $2', [departure, destination]);
+		const reminders = await db.query('SELECT * FROM reminders WHERE departure = $1 AND destination = $2 AND user_id != $3', [departure, destination, user_id ]);
+		console.log('reminders====>', reminders.rows);	
 
 		if (reminders.rows.length > 0) {
 			const user = await db.query('SELECT * FROM users WHERE id = $1', [user_id]);
@@ -244,18 +245,18 @@ const acceptCarpoolingRequest = async ({ requester_id, publisher_id, carpooling_
 		RETURNING *
 	`, [requester_id, carpooling_id]);
 
-
-		const carpooling = await db.query(`
+const carpooling = await db.query(`
 	UPDATE
 		carpooling
 	SET
 		available_seats = available_seats - $1,
-		confirmed_passengers = array_append(confirmed_passengers, $3)
+		confirmed_passengers = array_append(confirmed_passengers, $3),
+		status = $4
 	WHERE
 		id = $2
 	RETURNING
 		*
-`, [requested_seats, carpooling_id, requester_id]);
+`, [requested_seats, carpooling_id, requester_id, 'confirmed']);
 
 		const receiver_id = requestInfo.rows[0].requester_id;
 		const sender_id = requestInfo.rows[0].publisher_id;

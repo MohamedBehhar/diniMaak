@@ -9,7 +9,6 @@ import {
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { FaCarSide } from "react-icons/fa";
 import type { MenuProps } from "antd";
 import { Dropdown } from "antd";
 import { concatinatePictureUrl, signOut } from "../utils/helperFunctions";
@@ -18,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { resetUserInfos, setUserInfo } from "../store/user/userSlice";
 import { IoChatboxEllipses } from "react-icons/io5";
 import DefaultUserImage from "../assets/user.png";
+import Logo from "../assets/logo.png";
 
 interface Notifications {
   total: number;
@@ -76,11 +76,14 @@ const Layout = () => {
       console.log("new booking request === ", data);
       message.info(data.message);
       getNotifications(user_id);
+      fetchNotificationsCount()
     });
 
     socket.on("requestAccepted", (data: any) => {
       message.info(data.message);
       getNotifications(user_id);
+      fetchNotificationsCount()
+      getMessagesCount();
     });
 
     socket.on("newMsg", () => {
@@ -90,6 +93,13 @@ const Layout = () => {
     socket.on("carpoolingDeleted", (data: any) => {
       console.log("carpoolingDeleted", data);
       alert("Carpooling deleted");
+    });
+
+    socket.on("carpoolingPublished", (data: any) => {
+      console.log("carpoolingPublished", data);
+      alert("Carpooling published");
+      getNotifications(user_id);
+      fetchNotificationsCount();
     });
 
     if (token !== "undefined" && token) {
@@ -175,16 +185,17 @@ const Layout = () => {
 
   return (
     <div className="relative h-full flex flex-col">
-      <header className=" fixed z-50 w-full bg-white shadow-md top-0 left-0  ">
+      <header className=" fixed z-50 w-full bg-white shadow-md top-0 left-0 overflow-hidden ">
         <div className="container flex justify-between items-center p-3  text-gray-600 ">
           <Link to="/">
-            <div className="bg-[#F3D0D7]  flex flex-col items-center  justify-center rounded-full p-2">
-              <FaCarSide className="text-cyan-600 " />
-              {/* <p className="text-xs">Dini-Maak</p> */}
-            </div>
+            <img
+              src={Logo}
+              alt="Dini-Maak"
+              className="w-[50px] aspect-square"
+            />
           </Link>
 
-          {token !== 'undefined' && token !== null && (
+          {token !== "undefined" && token !== null && (
             <div
               className="flex items-center gap-5 cursor-pointer relative"
               onClick={() => Navigate("/conversations/" + user_id)}
@@ -197,7 +208,7 @@ const Layout = () => {
               <IoChatboxEllipses className="text-cyan-600 text-2xl" />
             </div>
           )}
-          {token !== 'undefined' && token !== null ? (
+          {token !== "undefined" && token !== null ? (
             <div className="flex gap-1 items-center">
               <h1 className="text-lg font-bold text-cyan-600 ">
                 {userInfo.username}

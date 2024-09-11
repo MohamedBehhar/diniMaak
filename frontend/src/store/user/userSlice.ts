@@ -39,7 +39,9 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    
     setUserInfo: (state, action) => {
+      console.log("action.payloadjhhhhhhh === ", action.payload.profile_picture);
       state.obj = action.payload;
       state.user = {
         id: action.payload.id,

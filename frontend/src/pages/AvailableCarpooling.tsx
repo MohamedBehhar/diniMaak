@@ -7,8 +7,13 @@ import { format, set } from "date-fns";
 import { url } from "../api/methods";
 import { message } from "antd";
 import { useLocation } from "react-router-dom";
+import DefaultUserImage from "../assets/user.png";
+import { concatinatePictureUrl } from "../utils/helperFunctions";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 const AvailableCarpooling = () => {
+  const userInfo = useSelector((state: RootState) => state.user.user);
   const location = useLocation();
   const from = location.state?.from?.pathname || "/login";
   const [carpoolings, setCarpoolings] = useState([]);
@@ -48,7 +53,13 @@ const AvailableCarpooling = () => {
     });
   }, [params]); // Add params to dependency array
 
-  const fetchCarpoolings = async ({ departure, destination, departure_day, number_of_seats, user_id }:any) => {
+  const fetchCarpoolings = async ({
+    departure,
+    destination,
+    departure_day,
+    number_of_seats,
+    user_id,
+  }: any) => {
     if (!departure || !destination || !departure_day || !number_of_seats) {
       return;
     }
@@ -66,17 +77,17 @@ const AvailableCarpooling = () => {
     }
   };
 
-
   const handelSetReminder = async () => {
     await setReminder(data)
       .then((response: any) => {
         console.log(response);
         message.success("Reminder set successfully");
-      }).then(() => {
+      })
+      .then(() => {
         navigate("/");
       })
       .catch((error: any) => {
-        navigate(from, { replace: true })
+        navigate(from, { replace: true });
       });
   };
 
@@ -93,9 +104,7 @@ const AvailableCarpooling = () => {
       .then((response: any) => {
         navigate("/carpooling/history/" + requester_id);
       })
-      .catch((error: any) => {
-        
-      });
+      .catch((error: any) => {});
   };
 
   return (
@@ -103,7 +112,7 @@ const AvailableCarpooling = () => {
       <div className="p-5 w-full bg-cover bg-center">
         <h1 className=" text-5xl text-center p-10">Available Carpooling</h1>
       </div>
-      <SearchCarpooling  />
+      <SearchCarpooling />
 
       {carpoolings && carpoolings.length > 0 ? (
         <div>
@@ -127,8 +136,12 @@ const AvailableCarpooling = () => {
                     <div className="flex  items-center gap-2">
                       <img
                         src={`${url}${carpooling.profile_picture}`}
-                        alt="d"
-                        className="w-10 h-10 rounded-full object-cover"
+                        alt=""
+                        className="
+                         w-10 h-10 rounded-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = DefaultUserImage;
+                        }}
                       />
                       <div>
                         <p>Driver: {carpooling.driver_name}</p>
@@ -178,22 +191,21 @@ const AvailableCarpooling = () => {
         </div>
       ) : (
         <div className="text-center p-5">
-          <h1
-            className="text-2xl font-bold text-gray-700"
-          >Oops!
-         <br /> No carpooling available</h1>
-         <p
-          className="text-gray-500 font-semibold"
-         >
-          There is no carpooling available for the selected criteria for the moment, you can set a reminder to get notified when a carpooling is available.
-         </p>
-         <button
-          className="bg-blue-500 text-white px-3 py-1 rounded-md"
-          onClick={handelSetReminder}
-          
-         >
-          Set A Reminder
-         </button>
+          <h1 className="text-2xl font-bold text-gray-700">
+            Oops!
+            <br /> No carpooling available
+          </h1>
+          <p className="text-gray-500 font-semibold">
+            There is no carpooling available for the selected criteria for the
+            moment, you can set a reminder to get notified when a carpooling is
+            available.
+          </p>
+          <button
+            className="bg-blue-500 text-white px-3 py-1 rounded-md"
+            onClick={handelSetReminder}
+          >
+            Set A Reminder
+          </button>
         </div>
       )}
     </div>

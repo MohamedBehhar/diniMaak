@@ -40,6 +40,8 @@ const CreatCarPooling = () => {
     if (stepNumber > 0) setStepNumber(stepNumber - 1);
   };
 
+  const showNextButton = [false, true, false]
+
   const [modify, setModify] = useState(false);
   const [car_id, setCar_id] = useState("");
   const [data, setData] = useState({
@@ -79,8 +81,8 @@ const CreatCarPooling = () => {
         stepNumber={stepNumber}
         increament={increament}
         decreament={decreament}
+        showNext={showNextButton}
       >
-        {stepNumber}
         {stepNumber == 0 && (
           <div className="w-full h-[300px]">
             <AddCar

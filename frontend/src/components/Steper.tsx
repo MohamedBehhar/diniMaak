@@ -9,6 +9,8 @@ interface Props {
   increament: () => void;
   decreament: () => void;
   stepNumber: number;
+  // array of boolean to show next button
+  showNext?: boolean[];
 }
 
 const Steper = ({
@@ -17,6 +19,7 @@ const Steper = ({
   increament,
   decreament,
   stepNumber,
+  showNext,
 }: Props) => {
   return (
     <div className="w-[90%] mx-auto">
@@ -97,7 +100,7 @@ const Steper = ({
           )}
           {
 
-            stepNumber <= steps.length - 1 ? (
+            showNext[stepNumber] ? (
               <button
                 className="bg-cyan-600 text-white p-2 rounded-md col-start-2 justify-self-end"
                 onClick={() => {

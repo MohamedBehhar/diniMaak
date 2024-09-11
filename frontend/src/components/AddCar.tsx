@@ -193,7 +193,7 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
             </div>
           </div>
           <div
-            className="gap-5 border absolute bottom-0 w-full "
+            className="gap-5  absolute bottom-0 w-full  flex justify-end items-center"
             style={{ marginTop: "2rem" }}
           >
             <button

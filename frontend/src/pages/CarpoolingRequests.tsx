@@ -25,6 +25,7 @@ const CarpoolingRequests = () => {
   const acceptRequest = async (data: any) => {
     await acceptCarpoolingRequest(data)
       .then((response: any) => {
+        alert('ácce')
         getRequest(user_id);
       })
       .catch((error: any) => {
@@ -62,7 +63,11 @@ const CarpoolingRequests = () => {
                   : "bg-red-700"
               } text-white p-1 rounded-md text-center`}
             >
-              {request.status === "accepted" ? "Accepted" : request.status ? "Confirmed" : "Declined"}
+              {request.status === "accepted"
+                ? "Accepted"
+                : request.status
+                ? "Confirmed"
+                : "Declined"}
             </div>
           ) : (
             <div className="flex justify-between">
@@ -71,7 +76,7 @@ const CarpoolingRequests = () => {
                 type="button"
                 onClick={() => acceptRequest(request)}
               >
-                Accept
+                Accept2
               </button>
               <button
                 className="bg-red-700 text-white p-1 rounded-md cursor-pointer"

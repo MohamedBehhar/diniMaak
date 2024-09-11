@@ -9,6 +9,7 @@ const Notifications = () => {
   const Navigate = useNavigate();
 
   useEffect(() => {
+    // Fetch notifications on component mount
     getNotifications(user_id)
       .then((response: any) => {
         setNotifications(response);
@@ -16,6 +17,16 @@ const Notifications = () => {
       .catch((error: any) => {
         message.error("Error while fetching notifications");
       });
+
+    changeNotificationStatus(user_id)
+      .then((response: any) => {
+        console.log("response === ", response);
+      })
+      .catch((error: any) => {
+        console.log("error === ", error);
+      });
+
+    // Cleanup function to mark all notifications as read on unmount
   }, []);
 
   return (

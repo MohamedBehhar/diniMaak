@@ -57,6 +57,7 @@ async function sendNotification(sender_id, receiver_id, message, type, carpoolin
     console.log('sender_idtype ; ; ', type);
 
     if (receiverSocketId) {
+        console.log('receiver is online', receiverSocketId);
         io.to(receiverSocketId).emit(
             type, { message, sender_id }
         );
