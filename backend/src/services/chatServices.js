@@ -56,10 +56,27 @@ const getUnreadMessages = async (user_id) => {
 	}
 }
 
+const setMessagesAsRead = async (conversation_id, receiver_id) => {
+	try {
+		const updateMessagesStatus = await db.query(
+			`UPDATE messages SET is_read = true WHERE conversation_id = $1 AND receiver_id = $2`,
+			[conversation_id, receiver_id]
+		);
+		// emit event to update unread messages count in frontend for the user who sent the message to the receiver "newMsg" event
+		io.getIO().emit('newMsg', { conversation_id, receiver_id });
+
+		return updateMessagesStatus.rows;
+	} catch (error) {
+		console.error(error);
+		throw error;
+	}
+}
+
 
 
 module.exports = {
 	getChats,
 	sendMessage,
-	getUnreadMessages
+	getUnreadMessages,
+	setMessagesAsRead
 };

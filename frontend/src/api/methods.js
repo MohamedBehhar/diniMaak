@@ -305,6 +305,15 @@ export const getConversations = async (user_id) => {
 }
 
 
+export const setMessagesAsRead = async (conversation_id, receiver_id) => {
+	try {
+		const response = await instance.put(`/chat/read/${conversation_id}/${receiver_id}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
+
 export const setReminder = async (data) => {
 	try {
 		const response = await instance.post("/reminders/setReminder", data);

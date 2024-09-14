@@ -32,10 +32,27 @@ const getUnreadMessages = async (req, res) => {
 	}
 }
 
+const setMessagesAsRead = async (req, res) => {
+	const conversation_id = parseInt(req.params.conversation_id);
+	const receiver_id = parseInt(req.params.receiver_id);
+	if (!conversation_id || !receiver_id) {
+		res.status(400).json({ error: 'Invalid request' });
+		return;
+	}
+	try {
+		const updateMessagesStatus = await chatServices.setMessagesAsRead(conversation_id, receiver_id);
+		res.json(updateMessagesStatus).status(200);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+}
+
 
 
 module.exports = {
 	getChats,
-	getUnreadMessages
+	getUnreadMessages,
+	setMessagesAsRead
 };
 

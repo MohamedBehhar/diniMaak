@@ -26,6 +26,9 @@ const Conversations = () => {
     socket.on("newMsg", () => {
       fetchConversations();
     });
+    socket.on("sendMsg", () => {
+      fetchConversations();
+    });
     fetchConversations();
   }, []);
 
@@ -38,10 +41,9 @@ const Conversations = () => {
             return (
               <div
                 key={conversation.id}
-                className={ `${
+                className={`${
                   conversation.is_read ? "bg-gray-100" : "bg-white"
                 } container flex w-full justify-between items-center p-5 border rounded-md shadow-md my-2 gap-2 cursor-pointer hover:bg-gray-100`}
-                
                 onClick={() => {
                   Navigate(
                     `/chat/${user_id}/${conversation.receiver_id}/${conversation.conversation_id}`
@@ -65,7 +67,7 @@ const Conversations = () => {
                   </div>
                 </div>
                 <div className="flex-1 flex gap-4 justify-between self-start">
-                  <div className='flex gap-2 text-xl bold'>
+                  <div className="flex gap-2 text-xl bold">
                     <span>{conversation.departure}</span>
                     <span>{conversation.destination}</span>
                   </div>

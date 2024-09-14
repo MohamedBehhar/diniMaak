@@ -1,4 +1,4 @@
-import { getChats, getUserInfo, getCarpoolingById } from "../api/methods";
+import { getChats, getUserInfo, getCarpoolingById, setMessagesAsRead } from "../api/methods";
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { socket } from "../socket/socket";
@@ -37,6 +37,7 @@ const Chat = () => {
     getCarpoolingById(conversation_id).then((response: any) => {
       setCarpoolingInfo(response);
     });
+    // setMessagesAsRead(conversation_id, receiver_id);
   }, [sender_id, receiver_id, conversation_id]);
 
   const sendMsg = () => {

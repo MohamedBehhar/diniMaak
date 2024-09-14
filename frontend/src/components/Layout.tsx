@@ -35,8 +35,11 @@ const Layout = () => {
   const dispatch = useDispatch();
 
   const getMessagesCount = async () => {
+    // check if the user is the sender or the receiver
+
     await getUnreadLastMessagesCount(user_id)
       .then((response: any) => {
+        alert("response === " + response);
         setUnreadMessages(response);
       })
       .catch((error: any) => {
@@ -76,17 +79,19 @@ const Layout = () => {
       console.log("new booking request === ", data);
       message.info(data.message);
       getNotifications(user_id);
-      fetchNotificationsCount()
+      fetchNotificationsCount();
     });
 
     socket.on("requestAccepted", (data: any) => {
       message.info(data.message);
       getNotifications(user_id);
-      fetchNotificationsCount()
+      fetchNotificationsCount();
       getMessagesCount();
     });
 
     socket.on("newMsg", () => {
+
+      alert("New message");
       getMessagesCount();
     });
 
