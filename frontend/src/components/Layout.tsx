@@ -76,7 +76,6 @@ const Layout = () => {
       socket.emit("join", user_id);
     });
     socket.on("newBookingRequest", (data: any) => {
-      console.log("new booking request === ", data);
       message.info(data.message);
       getNotifications(user_id);
       fetchNotificationsCount();
@@ -92,6 +91,11 @@ const Layout = () => {
     socket.on("newMsg", () => {
 
       alert("New message");
+      getMessagesCount();
+    });
+
+    socket.on("updateMsgCount", () => {
+      alert("updateMsgCounte");
       getMessagesCount();
     });
 
@@ -215,7 +219,7 @@ const Layout = () => {
           )}
           {token !== "undefined" && token !== null ? (
             <div className="flex gap-1 items-center">
-              <h1 className="text-lg font-bold text-cyan-600 ">
+              <h1 className="text-lg font-bold text-cyan-600 capitalize">
                 {userInfo.username}
               </h1>
               <Dropdown menu={{ items }} placement="bottomRight">
@@ -248,7 +252,7 @@ const Layout = () => {
           <Outlet />
         </div>
 
-        <div className="p-3 bg-blue-500 text-white h-[4rem] ">
+        <div className="p-3 bg-cyan-700 text-white h-[4rem] ">
           <div className="container">
             <p className="text-center text-sm">
               &copy; 2024 Dini-Maak. All rights reserved

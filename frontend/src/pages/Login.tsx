@@ -59,6 +59,10 @@ function Login() {
               className="mx-auto h-80 w-auto"
               src={Logo}
               alt="Your Company"
+              onError={(e: any) => {
+                e.target.onerror = null;
+                e.target.src = Logo;
+              }}
             />
           </div>
 

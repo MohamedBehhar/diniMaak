@@ -11,7 +11,6 @@ if (!fs.existsSync(uploadDir)) {
 	fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-console.log('0---0--0-0--0-0-0-0-0-0-0--0 ',uploadDir);
 
 // Configure storage for multer
 const storage = multer.diskStorage({

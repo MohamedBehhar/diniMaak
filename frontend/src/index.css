@@ -42,8 +42,13 @@ body {
 }
 .ant-btn{
   font-family: "Cairo", sans-serif;
-  background-color: rgb(8 145 178);
+  background-color: #0891b2;
   color: white;
+  font-weight: semi-bold;
+}
+
+.ant-picker-suffix{
+  color: #0891b2;
 }
 
 

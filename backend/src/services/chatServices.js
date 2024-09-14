@@ -62,8 +62,9 @@ const setMessagesAsRead = async (conversation_id, receiver_id) => {
 			`UPDATE messages SET is_read = true WHERE conversation_id = $1 AND receiver_id = $2`,
 			[conversation_id, receiver_id]
 		);
+		console.log('ooopopopopopopopopopopo ',updateMessagesStatus);
 		// emit event to update unread messages count in frontend for the user who sent the message to the receiver "newMsg" event
-		io.getIO().emit('newMsg', { conversation_id, receiver_id });
+		io.getIO().emit('updateMsgCount', { conversation_id, receiver_id });
 
 		return updateMessagesStatus.rows;
 	} catch (error) {
