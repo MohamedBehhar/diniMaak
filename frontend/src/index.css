@@ -47,8 +47,13 @@ body {
   font-weight: semi-bold;
 }
 
+.ant-btn:hover{
+  background-color: #0891b2;
+  color: white;
+}
+
 .ant-picker-suffix{
-  color: #0891b2;
+  color: #014859;
 }
 
 

@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { PlusOutlined } from "@ant-design/icons";
 import { Image } from "antd";
 import { addCar, getCarByUserId, editCar } from "../api/methods";
+import DefaultCar from "../assets/car.png";
 
 interface AddCarProps {
   increment: () => void;
@@ -166,7 +167,7 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
                     width={"100%"}
                     height={"100%"}
                     className="rounded-full object-cover"
-                    src={image ? URL.createObjectURL(image) : ""}
+                    src={image ? URL.createObjectURL(image) : DefaultCar}
                     alt=""
                   />
                 </div>

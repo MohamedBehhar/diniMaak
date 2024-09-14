@@ -86,8 +86,8 @@ function Home() {
           backgroundPosition: "center",
         }}
       >
-        <h1 className="absolute   text-white  rounded-md p-1 sm:text-5xl text-xl text-nowrap  border text-center w-fit">
-          Let's Go Somewhere
+        <h1 className="absolute   text-white  rounded-md p-1 sm:text-5xl text-3xl text-nowrap  border text-center w-fit">
+          Let's Share the Ride
         </h1>
         <div className="search w-full h-[100px]  absolute bottom-[-50px] flex items-center px-2">
           <SearchCarpooling redirect={true} />

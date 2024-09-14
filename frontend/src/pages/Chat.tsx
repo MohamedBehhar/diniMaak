@@ -108,7 +108,7 @@ const Chat = () => {
   }, [sender_id, receiver_id, socket]);
 
   return (
-    <div className="container h-full flex flex-col gap-1  p-2">
+    <div className="container max-h-screen flex flex-col gap-1  p-2">
       <div className="bg-gray-200 p-2 rounded-lg flex gap-2 justify-between items-center mt-6">
         <h1>{carpoolingInfo.destination}</h1>
         <h1>{carpoolingInfo.departure}</h1>
@@ -116,7 +116,7 @@ const Chat = () => {
         <h1>{carpoolingInfo.departure_time}</h1>
       </div>
       <div
-        className="flex-1 flex flex-col   overflow-y-scroll p-2 "
+        className="flex-1 flex flex-col   overflow-y-scroll p-2 m-1 "
         ref={chatContainerRef}
       >
         {chats.map((chat: any) => {
@@ -125,9 +125,9 @@ const Chat = () => {
               key={chat.id}
               className={`${
                 chat.sender_id == sender_id
-                  ? "bg-blue-100  self-end"
-                  : "bg-red-100  self-start"
-              } p-2 m-2 w-fit rounded-lg  flex gap-2 items-center`}
+                  ? "bg-blue-50  self-end"
+                  : "bg-red-50  self-start"
+              } p-2 m-2 w-fit rounded-lg  flex gap-2 items-center max-w-[80%] text-wrap`}
             >
               <img
                 src={
