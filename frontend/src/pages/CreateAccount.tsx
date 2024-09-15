@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Logo from "../assets/logo.png";
+import SignInSvg from "../assets/signin.svg";
 
 function CreateAccount() {
   const navigate = useNavigate();
@@ -59,15 +60,16 @@ function CreateAccount() {
   const errorClass: string = "text-red-500 text-sm font-semibold";
 
   return (
-    <div className="min-h-screen  flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-cyan-800 capitalize">
-          Create your account
-        </h2>
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+    <div className="min-h-screen flex flex-col items-center justify-center gap-8 p-4">
+      <h2 className="mt-6 text-center text-xl sm:text-3xl font-extrabold text-cyan-800 capitalize">
+        Create your account
+      </h2>
+
+      <div className="w-full max-w-[800px] flex flex-col md:flex-row justify-center items-center text-center gap-4">
+        <div className="md:flex-1 max-w-[300px] md:max-w-full">
           <img
-            className="mx-auto h-80 w-auto"
-            src={Logo}
+            className=" flex-1 flex-shrink"
+            src={SignInSvg}
             alt="Your Company"
             onError={(e: any) => {
               e.target.onerror = null;
@@ -75,7 +77,10 @@ function CreateAccount() {
             }}
           />
         </div>
-        <form onSubmit={handleSubmit(onsubmit)} className="space-y-6">
+        <form
+          onSubmit={handleSubmit(onsubmit)}
+          className="space-y-6  w-full sm:w-[500px] md:flex-1 "
+        >
           <div className=" flex flex-col gap-4">
             <div>
               <label htmlFor="username" className="sr-only">
@@ -150,12 +155,21 @@ function CreateAccount() {
           <div>
             <button
               type="submit"
-              className="ant-btn group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 "
+              className="ant-btn max-w-[200px] mx-auto group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 "
             >
               {isSubmitting ? "Creating account..." : "Create account"}
             </button>
           </div>
         </form>
+      </div>
+      <div className="text-sm text-gray-600">
+        Already have an account?{" "}
+        <button
+          onClick={() => navigate("/login")}
+          className="text-cyan-700 hover:underline font-semibold cursor-pointer"
+        >
+          Login
+        </button>
       </div>
     </div>
   );

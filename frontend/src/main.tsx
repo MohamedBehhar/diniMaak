@@ -20,6 +20,7 @@ import Notifications from "./pages/Notifications.tsx";
 import Chat from "./pages/Chat.tsx";
 import Conversations from "./pages/Conversations.tsx";
 import Layout from "./components/Layout.tsx";
+import ErrorPage from "./pages/ErrorPage.tsx";
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -102,7 +103,7 @@ const router = createBrowserRouter([
 
   {
     path: "*",
-    element: <div>Not Found</div>,
+    element: <ErrorPage />,
   },
 ]);
 

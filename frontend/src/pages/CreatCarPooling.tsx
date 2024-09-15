@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import AddCar from "../components/AddCar";
 import { useNavigate } from "react-router-dom";
 import { addCar, getCarByUserId } from "../api/methods";
+import { FaRegEdit } from "react-icons/fa";
 
 const CreatCarPooling = () => {
   const [stepNumber, setStepNumber] = useState(0);
@@ -40,8 +41,6 @@ const CreatCarPooling = () => {
     if (stepNumber > 0) setStepNumber(stepNumber - 1);
   };
 
-  const showNextButton = [false, true, false]
-
   const [modify, setModify] = useState(false);
   const [car_id, setCar_id] = useState("");
   const [data, setData] = useState({
@@ -54,6 +53,7 @@ const CreatCarPooling = () => {
     user_id: localStorage.getItem("id"),
     car_id: car_id,
   });
+  const showNextButton = [car_id ? true : false, true, false];
 
   const Navigate = useNavigate();
   const handleCreatCarpooling = async () => {
@@ -66,8 +66,9 @@ const CreatCarPooling = () => {
         );
       })
       .catch((error) => {
-        console.log("error", error.response.data.error.message);
-        message.error(error.response.data.error.message);
+        message.error(
+          "An error occured while creating the carpooling, please try again later"
+        );
       });
   };
 
@@ -206,14 +207,12 @@ const CreatCarPooling = () => {
                           setData({ ...data, price: value });
                         }}
                         value={data.price}
-                        className="flex-1"
+                        className="flex-1 "
                       />
-                    <div className="text-center">{data.price} MAD</div>
+                      <div className="text-center">{data.price} MAD</div>
                     </div>
                   </div>
                 </div>
-
-
               </div>
               <div className="svg flex-1">
                 <img
@@ -228,15 +227,12 @@ const CreatCarPooling = () => {
         )}
 
         {stepNumber == 2 && (
-          <div>
-            <h1>Confirmation</h1>
+          <div className="relative">
             <div className=" flex  gap-5 items-center justify-center relative">
-              <button
-                className="btn bg-gray-800 text-white absolute top-0 right-0"
+              <FaRegEdit
+                className="absolute top-0 right-0 primary cursor-pointer font-semibold text-2xl text-cyan-800"
                 onClick={() => setModify(!modify)}
-              >
-                Modify
-              </button>
+              />
               <div className="left flex flex-col  gap-5  text-balance ">
                 <h1 className="text-2xl font-bold text-cyan-700 ">
                   Departure:{" "}
@@ -378,12 +374,14 @@ const CreatCarPooling = () => {
                 </p>
               </div>
             </div>
-            <button
-              className="btn mt-5 bg-cyan-700 py-2  px-4 rounded-md  text-xl text-white mx-auto"
-              onClick={handleCreatCarpooling}
-            >
-              Confirm
-            </button>
+            <div className="flex justify-center items-center gap-5 ">
+              <button
+                className="btn mt-5 bg-cyan-700 py-2  px-4 rounded-md  text-xl text-white mx-auto"
+                onClick={handleCreatCarpooling}
+              >
+                Confirm
+              </button>
+            </div>
           </div>
         )}
       </Steper>

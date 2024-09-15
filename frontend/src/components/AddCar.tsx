@@ -7,6 +7,9 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Image } from "antd";
 import { addCar, getCarByUserId, editCar } from "../api/methods";
 import DefaultCar from "../assets/car.png";
+import { IMask, IMaskInput } from "react-imask";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 interface AddCarProps {
   increment: () => void;
@@ -74,14 +77,12 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
   });
 
   const handleAddCar = async () => {
-    console.log("data === ", data);
     const formdata = new FormData();
     formdata.append("image", image);
     formdata.append("brand", data.brand);
     formdata.append("year", data.year);
     formdata.append("user_id", data.user_id);
     formdata.append("plate", data.plate);
-    console.log("formdata === ", formdata);
 
     await addCar(formdata)
       .then((response: any) => {
@@ -96,7 +97,6 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
   };
 
   const handleEditCar = async () => {
-    console.log("data === ", data);
     const formdata = new FormData();
     formdata.append("image", image);
     formdata.append("brand", data.brand);
@@ -120,9 +120,8 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
   return (
     <div className=" relative h-full">
       {alreadyHasCar === false ? (
-        <div className="">
-          <div className="flex sm:flex-row flex-col h-[80%] gap-5 ">
-            <div className="sm:w-[50%]  h-full  flex flex-col justify-evenly gap-5">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="  h-full  flex flex-col justify-evenly gap-5">
               <Select
                 size="large"
                 showSearch
@@ -136,6 +135,7 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
                 filterOption={filterOption}
                 style={{ width: "100%", color: "black", border: "none" }}
                 className="border-none"
+                required
               />
               <DatePicker
                 size="large"
@@ -150,17 +150,30 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
                 }}
                 width={"100%"}
               />
-              <Input
-                size="large"
-                placeholder="Car Plate"
-                onChange={(e) => {
-                  setData({ ...data, plate: e.target.value });
+              <IMaskInput
+                mask="00000/A/00" // Mask format: 5 digits, 1 letter, 2 digits
+                definitions={{
+                  "0": /[0-9]/, // Only allow digits for numbers
+                  A: /[A-Za-z]/, // Allow English letters for the letter part
                 }}
-                // set a patern for the plate
-                pattern="[A-Z]{2}-[0-9]{2}-[A-Z]{2}-[0-9]{4}"
+                value={data.plate}
+                overwrite={true} // Ensures proper input
+                className="border p-2 rounded-md"
+                placeholder="Car Plate 000000/b/00"
+                render={(ref, props) => (
+                  <Input
+                    {...props}
+                    ref={ref}
+                    size="large"
+                    placeholder="Car Plate"
+                    onChange={(e) => {
+                      setData({ ...data, plate: e.target.value });
+                    }}
+                  />
+                )}
               />
             </div>
-            <div className="  sm:w-[50%] flex flex-col ">
+            <div className="   flex flex-col ">
               <div className="h-[72%] flex items-center justify-center ">
                 <div className="w-[100px] h-[100px] bg-gray-200 rounded-full object-cover">
                   <Image
@@ -192,37 +205,34 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
                 />
               </div>
             </div>
-          </div>
-          <div
-            className="gap-5  absolute bottom-0 w-full  flex justify-end items-center"
-            style={{ marginTop: "2rem" }}
+            <div
+            className="gap-5    flex justify-center items-center  col-span-2"
           >
             <button
               className="bg-cyan-600 text-white p-2 rounded-md max-w-64 "
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 car_id ? handleEditCar() : handleAddCar();
               }}
             >
-              confirm
+              Confirm adding new car
             </button>
           </div>
-        </div>
+          </div>
+
       ) : (
         ""
       )}
       {alreadyHasCar === true ? (
         <div className="">
-          <div className="flex gap-2  text-center  justify-center items-center">
-            <h1
-              className="text-2xl font-bold text-center "
-              style={{ color: "#333" }}
-            >
+          <div className="flex flex-col items-center gap-2">
+            <h1 className="text-xl font-bold text-center ">
               You already have a car registered
             </h1>
-            <div>
+            <div className="flex gap-2 items-center">
               did you change your car?
               <button
-                className="bg-cyan-600 text-white p-1 rounded-md max-w-64 mx-auto"
+                className=" ant-btn "
                 onClick={() => setAlreadyHasCar(false)}
               >
                 Add new car
@@ -231,12 +241,16 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
           </div>
 
           <div className="text-center flex items-center gap-5 justify-center">
-            <div className="image w-[200px] aspect-square">
+            <div className="image w-[200px] aspect-square bg-slate-100 rounded-full">
               <Image
                 width={"100%"}
                 height={"100%"}
                 className="rounded-full object-cover"
                 src={`http://localhost:3000${car.image}`}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = DefaultCar;
+                }}
                 alt="d"
               />
             </div>

@@ -172,7 +172,7 @@ const AvailableCarpooling = () => {
                     </div>
                   </div>
                   <button
-                    className="bg-blue-500 text-white px-3 py-1 rounded-md"
+                    className="ant-btn"
                     onClick={() => {
                       navigate(
                         "/carpooling-details/" +

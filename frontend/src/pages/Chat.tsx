@@ -10,12 +10,19 @@ import { socket } from "../socket/socket";
 import { concatinatePictureUrl } from "../utils/helperFunctions";
 import DefaultUserImage from "../assets/user.png";
 
+interface CarpoolingInfo {
+  departure: string;
+  destination: string;
+  departure_day: string;
+  departure_time: string;
+}
+
 const Chat = () => {
   const [chats, setChats] = useState([]);
   const [message, setMessage] = useState("");
   const [senderInfo, setSenderInfo] = useState({});
   const [receiverInfo, setReceiverInfo] = useState({});
-  const [carpoolingInfo, setCarpoolingInfo] = useState({});
+  const [carpoolingInfo, setCarpoolingInfo] = useState({} as CarpoolingInfo);
   let { conversation_id, sender_id, receiver_id } = useParams();
 
   const chatContainerRef = useRef(null);
@@ -108,11 +115,14 @@ const Chat = () => {
   }, [sender_id, receiver_id, socket]);
 
   return (
-    <div className="container max-h-screen flex flex-col gap-1  p-2">
+    <div className="container h-[95%] flex flex-col gap-1  p-2">
       <div className="bg-gray-200 p-2 rounded-lg flex gap-2 justify-between items-center mt-6">
-        <h1>{carpoolingInfo.destination}</h1>
-        <h1>{carpoolingInfo.departure}</h1>
-        <h1>{carpoolingInfo.departure_day}</h1>
+        <h1 className="text-lg font-semibold">
+          {carpoolingInfo.departure} - {carpoolingInfo.destination}
+        </h1>{" "}
+        <h2 className="text-md text-gray-600">
+          {carpoolingInfo.departure_day}
+        </h2>
         <h1>{carpoolingInfo.departure_time}</h1>
       </div>
       <div
@@ -170,7 +180,7 @@ const Chat = () => {
             placeholder={placeholder}
           />
 
-          <button className="bg-blue-500 p-2 text-white" type="submit">
+          <button className="ant-btn w-[100px]" type="submit">
             Send
           </button>
         </form>

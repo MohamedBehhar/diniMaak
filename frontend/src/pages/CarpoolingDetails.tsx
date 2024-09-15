@@ -157,7 +157,7 @@ const CarpoolingDetails = () => {
             <div className="text-center">
               <button
                 className={
-                  "bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-md transition duration-200" +
+                  "ant-btn" +
                   (carpooling.status !== "pending" ? " hidden" : "")
                 }
                 onClick={handleBook}

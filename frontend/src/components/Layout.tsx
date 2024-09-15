@@ -144,7 +144,7 @@ const Layout = () => {
       label: (
         <p className="flex gap-1">
           Notifications
-          {notifications.total > 0 && (
+          {notifications.total > 0 || notifications.requestsCount && (
             <span className=" w-6 h-6 flex justify-center items-center bg-red-500 text-white rounded-full p-1">
               {notifications.total}
             </span>

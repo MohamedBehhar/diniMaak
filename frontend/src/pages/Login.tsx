@@ -54,7 +54,6 @@ function Login() {
         }
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-
             <img
               className="mx-auto h-80 w-auto"
               src={Logo}
@@ -68,71 +67,57 @@ function Login() {
 
           <div className=" sm:mx-auto sm:w-full sm:max-w-sm">
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Username
-              </label>
-              <div className="mt-2">
+              <div className="mt-4">
                 <input
                   id="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 p-2"
+                  placeholder="Username"
                 />
               </div>
             </div>
 
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+            <div className="mt-4">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                required
+                className="p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
+              />
+              <div className="text-sm flex justify-end mt-2">
+                <a
+                  href="#"
+                  className="font-semibold text-cyan-700 hover:text-cyan-600"
                 >
-                  Password
-                </label>
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-semibold text-cyan-600 hover:text-cyan-500"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete="current-password"
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
-                />
+                  Forgot password?
+                </a>
               </div>
             </div>
 
             <div>
               <button
                 type="submit"
-                className=" mt-2 flex w-full justify-center rounded-md ant-btn px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm  focus-visible:outline-offset-2 "
+                className=" mt-4 flex w-full justify-center rounded-md ant-btn px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm  focus-visible:outline-offset-2 "
               >
                 Sign in
               </button>
             </div>
 
             <p className="mt-10 text-center text-sm text-gray-500">
-              Don't have an Account?
-              <a
-                href="/signup"
-                className="font-semibold leading-6 text-cyan-600 hover:text-cyan-500"
+              Don't have an Account? &nbsp;
+              <button
+                onClick={() => navigate("/signup")}
+                className="hover:underline font-semibold leading-6 text-cyan-700 hover:text-cyan-600"
               >
                 Sign Up
-              </a>
+              </button>
             </p>
           </div>
         </div>

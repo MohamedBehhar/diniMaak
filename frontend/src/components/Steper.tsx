@@ -69,8 +69,7 @@ const Steper = ({
       >
         {steps[stepNumber] && (
           <h1
-            className="text-2xl font-bold text-center mb-4"
-            style={{ color: "#333" }}
+            className="text-2xl font-bold text-center mb-4 text-gray-700" 
           >
             {steps[stepNumber].title}
           </h1>
@@ -88,7 +87,7 @@ const Steper = ({
                   "hidden" :
                     "bg-gray-300 text-gray-500 justify-self-start"
               
-                } p-2 rounded-md`
+                } p-2 rounded-md w-[150px]`
                 
               }
               onClick={() => {
@@ -100,18 +99,14 @@ const Steper = ({
           )}
           {
 
-            showNext[stepNumber] ? (
               <button
-                className="bg-cyan-600 text-white p-2 rounded-md col-start-2 justify-self-end"
+                className="bg-cyan-600 text-white p-2 rounded-md col-start-2 justify-self-end w-[150px]"
                 onClick={() => {
                   increament();
                 }}
               >
                 next
               </button>
-            ) : (
-              ""
-            )
           }
          
         </footer>

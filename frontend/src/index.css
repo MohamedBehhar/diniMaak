@@ -45,6 +45,8 @@ body {
   background-color: #0891b2;
   color: white;
   font-weight: semi-bold;
+  padding: .3rem;
+  border-radius: .3rem;
 }
 
 .ant-btn:hover{

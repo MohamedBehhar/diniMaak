@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getBookingRequest, acceptCarpoolingRequest } from "../api/methods";
+import { getBookingRequest, acceptCarpoolingRequest, changeNotificationStatus } from "../api/methods";
 import { socket } from "../socket/socket";
 import { format } from "date-fns";
 
@@ -20,6 +20,7 @@ const CarpoolingRequests = () => {
 
   useEffect(() => {
     getRequest(user_id);
+    changeNotificationStatus(user_id);
   }, []);
 
   const acceptRequest = async (data: any) => {
