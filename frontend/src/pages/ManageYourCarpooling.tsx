@@ -16,6 +16,8 @@ import { IoChatboxEllipses } from "react-icons/io5";
 import { MdDeleteForever } from "react-icons/md";
 import type { PopconfirmProps } from "antd";
 import { Button, message, Popconfirm } from "antd";
+import { concatinatePictureUrl } from "../utils/helperFunctions";
+import DefaultUserImage from "../assets/user.png";
 
 const ManageYourCarpooling = () => {
   const [carpoolings, setCarpoolings] = useState([]);
@@ -75,13 +77,15 @@ const ManageYourCarpooling = () => {
 
   return (
     <div className="p-2">
-      <h1 className="text-2xl text-center p-5">Manage your carpooling</h1>
+      <h1 className="text-2xl text-center p-5 font-semibold text-gray-800">
+        Manage your carpooling
+      </h1>
       {carpoolings && carpoolings.length > 0 ? (
         <div>
-          {carpoolings.map((carpooling: any) => {
+          {carpoolings.map((carpooling: any, index: number) => {
             return (
               <div
-                key={carpooling.id}
+                key={index}
                 className="container flex w-full justify-between items-center p-5 border rounded-md shadow-md my-2"
               >
                 <div className="w-full">
@@ -125,46 +129,55 @@ const ManageYourCarpooling = () => {
                       Confirmed Passengers :{" "}
                     </h1>
                     <div className="flex gap-2 wrap ">
-                      {carpooling.confirmed_requests.map((request: any) => {
-                        return (
-                          <div className="flex items-center gap-4 border min-w-[150px] max-w-[250px] p-1 rounded-md">
-                            <div className="w-12 h-12 bg-gray-300 rounded-full">
-                              <img
-                                src={`${url}${request.profile_picture}`}
-                                alt=""
-                                className="w-12 h-12 rounded-full object-cover"
-                              />
-                            </div>
-                            <div className="flex-1">
-                              <p>{request.username}</p>
-                              <div className="flex gap-3  w-full ">
-                                <div className="flex items-center">
-                                  <PiSeatbeltFill className="text-cyan-500" />
-                                  <p>{request.requested_seats}</p>
-                                </div>
-                                <div className="rating flex ">
-                                  <IoMdStar
-                                    className="text-yellow-500"
-                                    size={20}
-                                  />
-                                  <p>{request.rating}</p>
-                                </div>
-                                <IoChatboxEllipses
-                                  className="text-cyan-600"
-                                  onClick={() =>
-                                    navigate(
-                                      "/chat/" +
-                                        user_id +
-                                        "/" +
-                                        request.requester_id
-                                    )
-                                  }
+                      {carpooling.confirmed_requests.map(
+                        (request: any, index: number) => {
+                          return (
+                            <div
+                              className="flex items-center gap-4 border min-w-[150px] max-w-[250px] p-1 rounded-md"
+                              key={index}
+                            >
+                              <div className="w-12 h-12 bg-gray-300 rounded-full">
+                                <img
+                                  src={`${url}${request.profile_picture}`}
+                                  onError={(e: any) => {
+                                    e.target.onerror = null;
+                                    e.target.src = DefaultUserImage;
+                                  }}
+                                  alt=""
+                                  className="w-12 h-12 rounded-full object-cover"
                                 />
                               </div>
+                              <div className="flex-1">
+                                <p>{request.username}</p>
+                                <div className="flex gap-3  w-full ">
+                                  <div className="flex items-center">
+                                    <PiSeatbeltFill className="text-cyan-500" />
+                                    <p>{request.requested_seats}</p>
+                                  </div>
+                                  <div className="rating flex ">
+                                    <IoMdStar
+                                      className="text-yellow-500"
+                                      size={20}
+                                    />
+                                    <p>{request.rating}</p>
+                                  </div>
+                                  <IoChatboxEllipses
+                                    className="text-cyan-600"
+                                    onClick={() =>
+                                      navigate(
+                                        "/chat/" +
+                                          user_id +
+                                          "/" +
+                                          request.requester_id
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        }
+                      )}
                     </div>
                   </div>
                   <div className="info flex flex-col sm:flex-row gap-2 mt-2 ">
@@ -189,8 +202,13 @@ const ManageYourCarpooling = () => {
                                   >
                                     <div className="w-12 h-12 bg-gray-300 rounded-full">
                                       <img
-                                        src={request.profile_picture}
+                                        src={`${url}${request.profile_picture}`}
+                                        onError={(e: any) => {
+                                          e.target.onerror = null;
+                                          e.target.src = DefaultUserImage;
+                                        }}
                                         alt=""
+                                        className="w-12 h-12 rounded-full object-cover"
                                       />
                                     </div>
                                     <div className="flex-1">

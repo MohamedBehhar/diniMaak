@@ -47,16 +47,11 @@ IF NOT EXISTS cars
 (
     car_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
-    brand VARCHAR
-(50) NOT NULL,
+    brand VARCHAR(50) NOT NULL,
     year INT NOT NULL,
-    plate VARCHAR
-(50),
-    image VARCHAR
-(250),
-    FOREIGN KEY
-(user_id) REFERENCES users
-(id)
+    plate VARCHAR(50)  NOT NULL,
+    image VARCHAR(250),
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 

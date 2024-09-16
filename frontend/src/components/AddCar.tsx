@@ -75,6 +75,7 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
     user_id: localStorage.getItem("id") || "",
     plate: "",
   });
+  const [error, setError] = useState({} as any);
 
   const handleAddCar = async () => {
     const formdata = new FormData();
@@ -92,7 +93,8 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
       })
       .catch((error: any) => {
         message.error("Error adding car");
-        console.log(error);
+        setError(error.response.data.error);
+        console.log(error.response.data.error);
       });
   };
 
@@ -113,6 +115,7 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
       })
       .catch((error: any) => {
         message.error("Error adding car");
+        setError(error);
         console.log(error);
       });
   };
@@ -120,94 +123,105 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
   return (
     <div className=" relative h-full">
       {alreadyHasCar === false ? (
-          <div className="grid grid-cols-2 gap-4">
-            <div className="  h-full  flex flex-col justify-evenly gap-5">
-              <Select
-                size="large"
-                showSearch
-                placeholder="Search Car Brand"
-                optionFilterProp="children"
-                onSearch={onSearch}
-                options={brands}
-                onChange={(value) => {
-                  setData({ ...data, brand: value });
-                }}
-                filterOption={filterOption}
-                style={{ width: "100%", color: "black", border: "none" }}
-                className="border-none"
-                required
-              />
-              <DatePicker
-                size="large"
-                placeholder="Year of Manufacture"
-                format="YYYY"
-                picker="year"
-                disabledDate={(current) =>
-                  current && current > dayjs().endOf("day")
-                }
-                onChange={(date, dateString) => {
-                  setData({ ...data, year: dateString });
-                }}
-                width={"100%"}
-              />
-              <IMaskInput
-                mask="00000/A/00" // Mask format: 5 digits, 1 letter, 2 digits
-                definitions={{
-                  "0": /[0-9]/, // Only allow digits for numbers
-                  A: /[A-Za-z]/, // Allow English letters for the letter part
-                }}
-                value={data.plate}
-                overwrite={true} // Ensures proper input
-                className="border p-2 rounded-md"
-                placeholder="Car Plate 000000/b/00"
-                render={(ref, props) => (
-                  <Input
-                    {...props}
-                    ref={ref}
-                    size="large"
-                    placeholder="Car Plate"
-                    onChange={(e) => {
-                      setData({ ...data, plate: e.target.value });
-                    }}
-                  />
-                )}
-              />
-            </div>
-            <div className="   flex flex-col ">
-              <div className="h-[72%] flex items-center justify-center ">
-                <div className="w-[100px] h-[100px] bg-gray-200 rounded-full object-cover">
-                  <Image
-                    width={"100%"}
-                    height={"100%"}
-                    className="rounded-full object-cover"
-                    src={image ? URL.createObjectURL(image) : DefaultCar}
-                    alt=""
-                  />
-                </div>
-              </div>
-              <div className="flex items-center mt-4 ">
-                <label
-                  htmlFor="avatar"
-                  className="cursor-pointer w-full flex justify-center items-center bg-gray-200  mx-4 rounded-md gap-5"
-                >
-                  <PlusOutlined className="text-4xl text-gray-500" />
-                  <p>Upload a car image</p>
-                </label>
-                <input
-                  type="file"
-                  id="avatar"
-                  name="avatar"
-                  accept="image/png, image/jpeg"
-                  onChange={(e) => {
-                    setImage(e.target.files![0]);
+        <div className="grid grid-cols-2 gap-4">
+          <div className="  h-full  flex flex-col justify-evenly gap-2">
+            <Select
+              size="large"
+              showSearch
+              placeholder="Search Car Brand"
+              optionFilterProp="children"
+              onSearch={onSearch}
+              options={brands}
+              onChange={(value) => {
+                setData({ ...data, brand: value });
+              }}
+              filterOption={filterOption}
+              style={{ width: "100%", color: "black", border: "none" }}
+              className="border-none"
+              required
+            />
+            {error.brand && (
+              <p className="text-red-500 text-sm ">{error.brand}</p>
+            )}
+            <DatePicker
+              size="large"
+              placeholder="Year of Manufacture"
+              format="YYYY"
+              picker="year"
+              disabledDate={(current) =>
+                current && current > dayjs().endOf("day")
+              }
+              onChange={(date, dateString) => {
+                setData({ ...data, year: dateString });
+              }}
+              width={"100%"}
+            />
+            {error.year && (
+              <p className="text-red-500 text-sm ">{error.year}</p>
+            )}
+            <IMaskInput
+              mask="00000/A/00" // Mask format: 5 digits, 1 letter, 2 digits
+              definitions={{
+                "0": /[0-9]/, // Only allow digits for numbers
+                A: /[A-Za-z]/, // Allow English letters for the letter part
+              }}
+              value={data.plate}
+              overwrite={true} // Ensures proper input
+              className="border p-2 rounded-md"
+              placeholder="Car Plate 000000/b/00"
+              onChange={(e) => {
+                setData({ ...data, plate: e.target.value });
+              }}
+              render={(ref, props) => (
+                <Input
+                  {...props}
+                  ref={ref}
+                  size="large"
+                  placeholder="Car Plate"
+                  name="plate"
+                  onChange={(e : any) => {
+                    setData({ ...data, plate: e.target.value });
                   }}
-                  className="hidden"
+                />
+              )}
+            />
+            {error.plate && (
+              <div className="text-red-500 text-sm ">{error.plate}</div>
+            )}
+          </div>
+          <div className="   flex flex-col ">
+            <div className="h-[72%] flex items-center justify-center ">
+              <div className="w-[100px] h-[100px] bg-gray-200 rounded-full object-cover">
+                <Image
+                  width={"100%"}
+                  height={"100%"}
+                  className="rounded-full object-cover"
+                  src={image ? URL.createObjectURL(image) : DefaultCar}
+                  alt=""
                 />
               </div>
             </div>
-            <div
-            className="gap-5    flex justify-center items-center  col-span-2"
-          >
+            <div className="flex items-center mt-4 ">
+              <label
+                htmlFor="avatar"
+                className="cursor-pointer w-full flex justify-center items-center bg-gray-200  mx-4 rounded-md gap-5"
+              >
+                <PlusOutlined className="text-4xl text-gray-500" />
+                <p>Upload a car image</p>
+              </label>
+              <input
+                type="file"
+                id="avatar"
+                name="avatar"
+                accept="image/png, image/jpeg"
+                onChange={(e) => {
+                  setImage(e.target.files![0]);
+                }}
+                className="hidden"
+              />
+            </div>
+          </div>
+          <div className="gap-5    flex justify-center items-center  col-span-2">
             <button
               className="bg-cyan-600 text-white p-2 rounded-md max-w-64 "
               onClick={(e) => {
@@ -215,11 +229,10 @@ const AddCar = ({ increment, setCar_id, car_id }: AddCarProps) => {
                 car_id ? handleEditCar() : handleAddCar();
               }}
             >
-              Confirm adding new car
+              Register
             </button>
           </div>
-          </div>
-
+        </div>
       ) : (
         ""
       )}

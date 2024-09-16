@@ -260,7 +260,10 @@ const carpooling = await db.query(`
 
 		const receiver_id = requestInfo.rows[0].requester_id;
 		const sender_id = requestInfo.rows[0].publisher_id;
-		const sender_name = requestInfo.rows[0].driver_name;
+		const sender_name = carpooling.rows[0].driver_name;
+		console.log('receiver_id   ===>', requestInfo.rows[0]);
+
+		console.log('sender_name   ===>', sender_name);
 
 		sendNotification(sender_id, receiver_id,
 			`${sender_name} has accepted your request`, 'requestAccepted', carpooling_id);

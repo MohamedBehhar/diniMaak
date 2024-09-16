@@ -45,7 +45,6 @@ instance.interceptors.response.use(
 
 					}
 				);
-				console.log("respspsps", response);
 				if (!response.data.accessToken) {
 					// Redirect to login or handle as needed
 					// Example: window.location.href = "/login";

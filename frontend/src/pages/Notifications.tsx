@@ -18,13 +18,13 @@ const Notifications = () => {
         message.error("Error while fetching notifications");
       });
 
-    changeNotificationStatus(user_id)
-      .then((response: any) => {
-        console.log("response === ", response);
-      })
-      .catch((error: any) => {
-        console.log("error === ", error);
-      });
+    // changeNotificationStatus(user_id)
+    //   .then((response: any) => {
+    //     console.log("response === ", response);
+    //   })
+    //   .catch((error: any) => {
+    //     console.log("error === ", error);
+    //   });
 
     // Cleanup function to mark all notifications as read on unmount
   }, []);

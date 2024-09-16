@@ -26,6 +26,7 @@ const getCarByUserId = async (req, res) => {
 }
 
 const addCar = async (req, res) => {
+  const requiredFields = ['brand', 'year', 'plate', ];
   try {
     const car = {
       brand: req.body.brand,
@@ -35,7 +36,21 @@ const addCar = async (req, res) => {
       user_id: req.body.user_id,
       image: req.file ? `/public/cars/${req.file.filename}` : null, // Add the file path here
     };
-    console.log('car: ', car);
+    // Find missing fields
+    const missingFields = requiredFields.filter(field => !car[field]);
+
+    // If any fields are missing, return a 400 error with dynamic messages
+    if (missingFields.length) {
+      const errorMessages = missingFields.reduce((acc, field) => {
+        acc[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+        return acc;
+      }, {});
+
+      return res.status(400).json({
+        status: 400,
+        error: errorMessages
+      });
+    }
     const result = await carServices.addCar(car);
     res.status(201).send(result);
   } catch (error) {
