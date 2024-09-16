@@ -6,8 +6,6 @@ const getChats = async (
 	receiver_id,
 	sender_id
 ) => {
-	console.log('conversation_id', conversation_id);
-	console.log('receiver_id', receiver_id);
 	try {
 		const chats = await db.query(
 			`SELECT * FROM messages WHERE conversation_id = $1 ORDER BY timestamp ASC`,
@@ -57,6 +55,7 @@ const getUnreadMessages = async (user_id) => {
 }
 
 const setMessagesAsRead = async (conversation_id, receiver_id) => {
+	console.log('======================= READ =======================', );
 	try {
 		const updateMessagesStatus = await db.query(
 			`UPDATE messages SET is_read = true WHERE conversation_id = $1 AND receiver_id = $2`,
@@ -64,6 +63,7 @@ const setMessagesAsRead = async (conversation_id, receiver_id) => {
 		);
 		// emit event to update unread messages count in frontend for the user who sent the message to the receiver "newMsg" event
 		io.getIO().emit('updateMsgCount', { conversation_id, receiver_id });
+		io.emitEvent('updateMsgCount', 'test', receiver_id);
 
 		return updateMessagesStatus.rows;
 	} catch (error) {

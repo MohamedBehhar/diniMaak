@@ -35,7 +35,6 @@ const Layout = () => {
   const dispatch = useDispatch();
 
   const getMessagesCount = async () => {
-    // check if the user is the sender or the receiver
 
     await getUnreadLastMessagesCount(user_id)
       .then((response: any) => {
@@ -67,7 +66,6 @@ const Layout = () => {
       });
   };
 
-  console.log("userInfo === ", userInfo);
 
   const user_id = localStorage.getItem("id");
   useEffect(() => {
@@ -88,7 +86,6 @@ const Layout = () => {
     });
 
     socket.on("newMsg", () => {
-      alert("New message");
       getMessagesCount();
     });
 

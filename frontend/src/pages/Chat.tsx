@@ -121,9 +121,10 @@ const Chat = () => {
           {carpoolingInfo.departure} - {carpoolingInfo.destination}
         </h1>{" "}
         <h2 className="text-md text-gray-600">
-          {carpoolingInfo.departure_day}
+          {carpoolingInfo?.departure_day}
         </h2>
-        <h1>{carpoolingInfo.departure_time}</h1>
+        <h1>{carpoolingInfo.departure_time
+        }</h1>
       </div>
       <div
         className="flex-1 flex flex-col   overflow-y-scroll p-2 m-1 "

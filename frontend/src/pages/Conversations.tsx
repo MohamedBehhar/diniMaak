@@ -43,7 +43,7 @@ const Conversations = () => {
                 key={conversation.id}
                 className={`${
                   conversation.is_read ? "bg-gray-100" : "bg-white"
-                } w-full max-w-[600px]  p-5 border rounded-md shadow-md my-2 gap-2 cursor-pointer hover:bg-gray-100`}
+                } w-full   p-5 border rounded-md shadow-md my-2 gap-2 cursor-pointer hover:bg-gray-100`}
                 onClick={() => {
                   Navigate(
                     `/chat/${user_id}/${conversation.receiver_id}/${conversation.conversation_id}`
