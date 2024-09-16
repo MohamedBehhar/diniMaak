@@ -39,7 +39,6 @@ const Layout = () => {
 
     await getUnreadLastMessagesCount(user_id)
       .then((response: any) => {
-        alert("response === " + response);
         setUnreadMessages(response);
       })
       .catch((error: any) => {
@@ -89,7 +88,6 @@ const Layout = () => {
     });
 
     socket.on("newMsg", () => {
-
       alert("New message");
       getMessagesCount();
     });
@@ -108,6 +106,11 @@ const Layout = () => {
       console.log("carpoolingPublished", data);
       alert("Carpooling published");
       getNotifications(user_id);
+      fetchNotificationsCount();
+    });
+
+    socket.on("updateNotificationCount", () => {
+      alert("updateNotificationCount");
       fetchNotificationsCount();
     });
 
@@ -144,7 +147,7 @@ const Layout = () => {
       label: (
         <p className="flex gap-1">
           Notifications
-          {notifications.total > 0 || notifications.requestsCount && (
+          {notifications.total > 0 && (
             <span className=" w-6 h-6 flex justify-center items-center bg-red-500 text-white rounded-full p-1">
               {notifications.total}
             </span>
@@ -203,7 +206,6 @@ const Layout = () => {
               className="w-[50px] aspect-square"
             />
           </Link>
-
           {token !== "undefined" && token !== null && (
             <div
               className="flex items-center gap-5 cursor-pointer relative"

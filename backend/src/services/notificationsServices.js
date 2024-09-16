@@ -1,4 +1,6 @@
 const db = require('../db/db');
+const io = require('../initSocket');
+const {emitEvent} = require('../initSocket');
 
 const getNotifications = async (
 	user_id
@@ -60,6 +62,8 @@ const changeNotificationStatus = async (
 			`UPDATE notifications SET is_read = true WHERE receiver_id = $1 RETURNING *`,
 			[receiver_id]
 		);
+		emitEvent('updateNotificationCount', 'test',receiver_id);
+		
 		return notification.rows[0];
 	} catch (error) {
 		throw error;

@@ -128,9 +128,21 @@ async function sendMessage(sender_id, receiver_id, message, conversation_id) {
 
 }
 
+
+async function emitEvent(event, message, receiver_id) {
+    const receiverSocketId = usersMap.get(receiver_id + '');
+    if (receiverSocketId) {
+        io.to(receiverSocketId).emit(
+            event, { message }
+        );
+    }
+}
+
+
 module.exports = {
     initializeSocket,
     sendNotification,
     sendMessage,
-    usersMap
+    usersMap,
+    emitEvent
 }
