@@ -40,7 +40,8 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    setMessagesAsRead(conversation_id, receiver_id);
+    // setMessagesAsRead(conversation_id, receiver_id);
+    socket.emit("updateMsgCount", { sender_id, receiver_id });
   }, []);
 
   useEffect(() => {
@@ -178,7 +179,7 @@ const Chat = () => {
               socket.emit("writeMsg", { sender_id, receiver_id });
             }}
             value={message}
-            placeholder={placeholder}
+            placeholder={isTyping ? "Typing..." : "Type a message"}
           />
 
           <button className="ant-btn w-[100px]" type="submit">

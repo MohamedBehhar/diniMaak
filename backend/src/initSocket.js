@@ -30,9 +30,14 @@ function initializeSocket(server) {
         });
 
         socket.on('sendMsg', ({ sender_id, receiver_id, message, conversation_id }) => {
-            console.log('948390248230948230948: ', sender_id, receiver_id, message, conversation_id);
+            console.log('---------sendMsg -------- : ', sender_id, receiver_id, message, conversation_id);
             sendMessage(sender_id, receiver_id, message, conversation_id);
         });
+
+        socket.on('updateMsgCount', ({sender_id}) => {
+            console.log('---------updateMsgCount -------- : ', sender_id);
+            emitEvent('updateMsgCount', null, sender_id);
+        })
 
         socket.on('writeMsg', data => {
             const receiverSocketId = usersMap.get(data.receiver_id + '');

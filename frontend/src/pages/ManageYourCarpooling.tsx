@@ -203,7 +203,7 @@ const ManageYourCarpooling = () => {
                                     <div className="w-12 h-12 bg-gray-300 rounded-full">
                                       <img
                                         src={`${url}${request.profile_picture}`}
-                                        onError={(e: any) => {
+                                        onError={(e) => {
                                           e.target.onerror = null;
                                           e.target.src = DefaultUserImage;
                                         }}
@@ -213,12 +213,12 @@ const ManageYourCarpooling = () => {
                                     </div>
                                     <div className="flex-1">
                                       <p>{request.username}</p>
-                                      <div className="flex gap-3  w-full ">
+                                      <div className="flex gap-3 w-full">
                                         <div className="flex items-center">
                                           <PiSeatbeltFill className="text-cyan-500" />
                                           <p>{request.requested_seats}</p>
                                         </div>
-                                        <div className="rating flex ">
+                                        <div className="rating flex">
                                           <IoMdStar
                                             className="text-yellow-500"
                                             size={20}

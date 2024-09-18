@@ -43,9 +43,9 @@ app.use("/api/v1/carpooling", carpoolingBookingRouter);
 app.use('/api/v1/notifications', notificationsRouter);
 app.use('/api/v1/car', carRouter);
 app.use(verifyJWT); // this is a middleware that checks if the user is authorized
-app.use('/api/v1/chat/', chatRouter);
-app.use('/api/v1/conversations/', conversationsRouter);
-app.use('/api/v1/reminders/', remindersRouter);
+app.use('/api/v1/chat', chatRouter);
+app.use('/api/v1/conversations', conversationsRouter);
+app.use('/api/v1/reminders', remindersRouter);
 
 
 

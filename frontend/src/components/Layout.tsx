@@ -86,6 +86,7 @@ const Layout = () => {
     });
 
     socket.on("newMsg", () => {
+      alert("newMsg");
       getMessagesCount();
     });
 
@@ -100,7 +101,7 @@ const Layout = () => {
     });
 
     socket.on("carpoolingPublished", (data: any) => {
-      console.log("carpoolingPublished", data);
+
       alert("Carpooling published");
       getNotifications(user_id);
       fetchNotificationsCount();
