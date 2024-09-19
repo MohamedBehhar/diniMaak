@@ -16,10 +16,28 @@ import {
   FaUser,
   FaPhone,
 } from "react-icons/fa";
+import { PiSeatbeltFill } from "react-icons/pi";
+
+interface Carpooling {
+  id: number;
+  departure: string;
+  destination: string;
+  departure_day: string;
+  departure_time: string;
+  price: number;
+  brand: string;
+  year: number;
+  number_of_seats: number;
+  available_seats: number;
+  driver_name: string;
+  phone_number: string;
+  status: string;
+}
 
 const CarpoolingDetails = () => {
-  const { carpooling_id, number_of_seats } = useParams();
-  const [carpooling, setCarpooling] = useState({});
+  const [numberOfSeats, setNumberOfSeats] = useState(1);
+  const { carpooling_id } = useParams();
+  const [carpooling, setCarpooling] = useState({} as Carpooling);
   useEffect(() => {
     getCarpoolingById(carpooling_id).then((response: any) => {
       setCarpooling(response);
@@ -31,7 +49,7 @@ const CarpoolingDetails = () => {
     const data = {
       requester_id: localStorage.getItem("id"),
       carpooling_id: carpooling_id,
-      requested_seats: number_of_seats,
+      requested_seats: numberOfSeats,
     };
     try {
       await bookCarpooling(data);
@@ -64,7 +82,7 @@ const CarpoolingDetails = () => {
                     )}
                 </div>
               </div>
-              <div
+              {/* <div
                 className={
                   "h-fit p-2 rounded-md text-cyan-700 text-xl capitalize " +
                   (carpooling.status === "pending"
@@ -75,7 +93,7 @@ const CarpoolingDetails = () => {
                 }
               >
                 {carpooling.status}
-              </div>
+              </div> */}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex items-start">
@@ -132,33 +150,58 @@ const CarpoolingDetails = () => {
                   </h1>
                 </div>
               </div>
+              <div className="flex items-center mb-4">
+                <FaUser className="text-2xl text-cyan-700 mr-2" />
+                <div>
+                  <p className="m-0">Driver:</p>
+                  <h1 className="text-xl font-semibold capitalize">
+                    {carpooling.driver_name}
+                  </h1>
+                </div>
+              </div>
+              <div className="flex items-center mb-4">
+                <FaPhone className="text-2xl text-cyan-700 mr-2" />
+                <div>
+                  <p className="m-0">Phone Number:</p>
+                  <h1 className="text-xl font-semibold">
+                    {carpooling.phone_number}
+                  </h1>
+                </div>
+              </div>
             </div>
           </div>
 
           <div className="p-6 bg-white border-t">
-            <div className="flex items-center mb-4">
-              <FaUser className="text-2xl text-cyan-700 mr-2" />
-              <div>
-                <p className="m-0">Driver:</p>
-                <h1 className="text-xl font-semibold capitalize">
-                  {carpooling.driver_name}
-                </h1>
-              </div>
-            </div>
-            <div className="flex items-center mb-4">
-              <FaPhone className="text-2xl text-cyan-700 mr-2" />
-              <div>
-                <p className="m-0">Phone Number:</p>
-                <h1 className="text-xl font-semibold">
-                  {carpooling.phone_number}
-                </h1>
-              </div>
-            </div>
+            <p>
+              Number of seats you want to book:{" "}
+              <span className="text-xl font-semibold">{numberOfSeats}</span>
+            </p>
+            {
+              // creat an array of length 4 and map over it to create 4 buttons
+              Array.from({ length: carpooling.available_seats }).map(
+                (_, index) => (
+                  <button
+                    type="button"
+                    key={index}
+                    onClick={() => {
+                      setNumberOfSeats(index + 1);
+                    }}
+                    className={`${
+                      numberOfSeats >= index + 1
+                        ? "bg-cyan-700 text-white"
+                        : "bg-gray-300"
+                    } border-none p-2 mx-[2px] text-xl rounded-md`}
+                  >
+                    <PiSeatbeltFill />
+                  </button>
+                )
+              )
+            }
             <div className="text-center">
               <button
                 className={
-                  "ant-btn" +
-                  (carpooling.status !== "pending" ? " hidden" : "")
+                  "ant-btn min-w-[300px] p-4" +
+                  (carpooling.status !== "available" ? " hidden" : "")
                 }
                 onClick={handleBook}
               >

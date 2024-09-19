@@ -17,7 +17,7 @@ CREATE TYPE notifications_type AS ENUM
 ('rating', 'comment', 'newBookingRequest', 'bookingConfirmed', 'bookingCanceled', 'requestAccepted', 'requestRejected', 'requestCanceled', 'chat', 'carpoolingPublished', 'carpoolingDeleted');
 
 CREATE TYPE carpoolingStatus AS ENUM
-('pending', 'confirmed', 'completed', 'canceled');
+('available', 'completed', 'canceled');
 
 CREATE TYPE conversationStatus AS ENUM
 ('active', 'archived');
@@ -88,7 +88,7 @@ IF NOT EXISTS carpooling
 (50) NOT NULL,
     confirmed_passengers INTEGER [],
     booking_requests_ids INTEGER [],
-    status carpoolingStatus DEFAULT 'pending',
+    status carpoolingStatus DEFAULT 'available',
     FOREIGN KEY
 (publisher_id) REFERENCES users
 (id),

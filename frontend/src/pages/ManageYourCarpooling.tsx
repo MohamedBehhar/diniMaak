@@ -54,7 +54,8 @@ const ManageYourCarpooling = () => {
         message.success("Request accepted");
       })
       .catch((error: any) => {
-        console.log(error);
+        message.error(error.response.data.error);
+        setOpen(false);
       });
   };
 

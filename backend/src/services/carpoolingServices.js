@@ -250,13 +250,12 @@ const carpooling = await db.query(`
 		carpooling
 	SET
 		available_seats = available_seats - $1,
-		confirmed_passengers = array_append(confirmed_passengers, $3),
-		status = $4
+		confirmed_passengers = array_append(confirmed_passengers, $3)
 	WHERE
 		id = $2
 	RETURNING
 		*
-`, [requested_seats, carpooling_id, requester_id, 'confirmed']);
+`, [requested_seats, carpooling_id, requester_id]);
 
 		const receiver_id = requestInfo.rows[0].requester_id;
 		const sender_id = requestInfo.rows[0].publisher_id;
