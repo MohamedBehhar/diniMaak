@@ -303,6 +303,15 @@ export const getConversations = async (user_id) => {
 	}
 }
 
+export const getConversationStatus = async (conversation_id) => {
+	try {
+		const response = await instance.get(`/conversations/status/${conversation_id}`);
+		return response.data;
+	} catch (error) {
+		throw error;
+	}
+}
+
 
 export const setMessagesAsRead = async (conversation_id, receiver_id) => {
 	try {

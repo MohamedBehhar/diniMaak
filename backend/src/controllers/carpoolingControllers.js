@@ -14,6 +14,10 @@ const getCarpooling = async (req, res) => {
 const getCarpoolingById = async (req, res) => {
 	try {
 		const { id } = req.params;
+		if (!id) {
+			res.status(400).json({ error: 'Missing required field: id' });
+			return;
+		}
 		const carpooling = await carpoolingServices.getCarpoolingById(id);
 		res.status(200).json(carpooling);
 	} catch (error) {

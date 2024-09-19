@@ -5,5 +5,6 @@ const conversationsController = require('../../controllers/conversationsControll
 
 router.get('/:user_id', conversationsController.getConversations);
 router.get('/unread/:user_id', conversationsController.getUnreadLastMessagesCount);
+router.get('/status/:conversation_id', conversationsController.getConversationStatus);
 
 module.exports = router;

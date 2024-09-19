@@ -87,8 +87,24 @@ const getUnreadLastMessagesCount = async (user_id) => {
 }
 
 
+const getConversationStatus = async (conversation_id) => {
+	try {
+		const conversationStatus = await db.query(
+			`
+			SELECT status FROM conversations WHERE id = $1
+			`,
+			[conversation_id]
+		);
+		return conversationStatus.rows[0].status;
+	} catch (error) {
+		throw error;
+	}
+}
+
+
 
 module.exports = {
 	getConversations,
-	getUnreadLastMessagesCount
+	getUnreadLastMessagesCount,
+	getConversationStatus
 };

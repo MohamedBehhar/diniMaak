@@ -71,6 +71,7 @@ const Layout = () => {
   useEffect(() => {
     socket.on("connection", () => {
       socket.emit("join", user_id);
+      console.log("connected");
     });
     socket.on("newBookingRequest", (data: any) => {
       message.info(data.message);
@@ -91,7 +92,6 @@ const Layout = () => {
     });
 
     socket.on("updateMsgCount", () => {
-      alert("updateMsgCounte");
       getMessagesCount();
     });
 
@@ -108,7 +108,6 @@ const Layout = () => {
     });
 
     socket.on("updateNotificationCount", () => {
-      alert("updateNotificationCount");
       fetchNotificationsCount();
     });
 

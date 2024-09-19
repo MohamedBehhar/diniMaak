@@ -19,6 +19,9 @@ CREATE TYPE notifications_type AS ENUM
 CREATE TYPE carpoolingStatus AS ENUM
 ('pending', 'confirmed', 'completed', 'canceled');
 
+CREATE TYPE conversationStatus AS ENUM
+('active', 'archived');
+
 -- Create users table
 CREATE TABLE
 IF NOT EXISTS users
@@ -174,7 +177,8 @@ REFERENCES users
 (id),
     user2_id INT REFERENCES users
 (id),
-    last_message_id INT
+    last_message_id INT,
+    status conversationStatus DEFAULT 'active'
 );
 
 

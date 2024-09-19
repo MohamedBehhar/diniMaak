@@ -55,7 +55,7 @@ const Notifications = () => {
                     );
                   }}
                 >
-                  Reserve
+                  View
                 </button>
               </div>
             );

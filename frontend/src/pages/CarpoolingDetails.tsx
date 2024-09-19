@@ -46,7 +46,7 @@ const CarpoolingDetails = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center p-4">
+    <div className="min-h-screen flex justify-center p-4 mt-4">
       {carpooling ? (
         <div
           className="max-w-4xl w-full bg-white shadow-lg rounded-lg overflow-hidden h-fit
@@ -139,10 +139,10 @@ const CarpoolingDetails = () => {
             <div className="flex items-center mb-4">
               <FaUser className="text-2xl text-cyan-700 mr-2" />
               <div>
-                <h1 className="text-xl font-semibold">
+                <p className="m-0">Driver:</p>
+                <h1 className="text-xl font-semibold capitalize">
                   {carpooling.driver_name}
                 </h1>
-                <p>{carpooling.username}</p>
               </div>
             </div>
             <div className="flex items-center mb-4">

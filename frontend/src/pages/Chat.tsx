@@ -3,6 +3,7 @@ import {
   getUserInfo,
   getCarpoolingById,
   setMessagesAsRead,
+  getConversationStatus,
 } from "../api/methods";
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -29,6 +30,7 @@ const Chat = () => {
   const [isTyping, setIsTyping] = useState(false);
   const user_id = localStorage.getItem("id");
   const [placeholder, setPlaceholder] = useState("Type a message");
+  const [conversationStatus, setConversationStatus] = useState("");
 
   const handleGetChats = async () => {
     try {
@@ -42,6 +44,14 @@ const Chat = () => {
   useEffect(() => {
     // setMessagesAsRead(conversation_id, receiver_id);
     socket.emit("updateMsgCount", { sender_id, receiver_id });
+    getConversationStatus(conversation_id)
+      .then((response: any) => {
+        console.log("setConversationStatus === ", response);
+        setConversationStatus(response);
+      })
+      .catch((error: any) => {
+        console.log("error === ", error);
+      });
   }, []);
 
   useEffect(() => {
@@ -116,16 +126,22 @@ const Chat = () => {
   }, [sender_id, receiver_id, socket]);
 
   return (
-    <div className="container h-[95%] flex flex-col gap-1  p-2">
+    <div
+      className={`container h-[95%] flex flex-col gap-1  p-2 ${
+        conversationStatus == "archived" ? "bg-gray-100" : null
+      }`}
+    >
       <div className="bg-gray-200 p-2 rounded-lg flex gap-2 justify-between items-center mt-6">
         <h1 className="text-lg font-semibold">
           {carpoolingInfo.departure} - {carpoolingInfo.destination}
         </h1>{" "}
+        {conversationStatus == "archived" ? (
+          <h1 className="text-red-500 font-semibold">Archived</h1>
+        ) : null}
         <h2 className="text-md text-gray-600">
           {carpoolingInfo?.departure_day}
         </h2>
-        <h1>{carpoolingInfo.departure_time
-        }</h1>
+        <h1>{carpoolingInfo.departure_time}</h1>
       </div>
       <div
         className="flex-1 flex flex-col   overflow-y-scroll p-2 m-1 "
@@ -180,9 +196,14 @@ const Chat = () => {
             }}
             value={message}
             placeholder={isTyping ? "Typing..." : "Type a message"}
+            readOnly={conversationStatus == "archived" ? true : false}
           />
 
-          <button className="ant-btn w-[100px]" type="submit">
+          <button
+            className={` w-[100px] ${conversationStatus == "archived" ? "bg-gray-300" : "bg-cyan-600 text-white"} rounded-lg`}
+            type="submit"
+            disabled={conversationStatus == "archived" ? true : false}
+          >
             Send
           </button>
         </form>

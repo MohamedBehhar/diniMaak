@@ -22,7 +22,22 @@ const getUnreadLastMessagesCount = async (req, res) => {
 	}
 }
 
+const getConversationStatus = async (req, res) => {
+	if (!req.params.conversation_id) {
+		res.status(400).json({ error: 'Bad Request' });
+		return;
+	}
+	try {
+		const conversationStatus = await conversationsServices.getConversationStatus(req.params.conversation_id);
+		res.status(200).json(conversationStatus);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+}
+
 module.exports = {
 	getConversations,
-	getUnreadLastMessagesCount
+	getUnreadLastMessagesCount,
+	getConversationStatus
 };

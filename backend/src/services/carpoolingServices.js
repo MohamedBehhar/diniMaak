@@ -104,7 +104,7 @@ const createCarpooling = async ({ user_id, departure, destination, departure_tim
 		const reminders = await db.query('SELECT * FROM reminders WHERE departure = $1 AND destination = $2 AND user_id != $3', [departure, destination, user_id ]);
 		console.log('reminders====>', reminders.rows);	
 
-		if (reminders.rows.length > 0) {
+		if (reminders.rows.length > 0 && carpooling.rows[0].id) {
 			const user = await db.query('SELECT * FROM users WHERE id = $1', [user_id]);
 			const sender_id = user_id;
 			const receiver_id = reminders.rows[0].user_id;
@@ -265,6 +265,7 @@ const carpooling = await db.query(`
 
 		console.log('sender_name   ===>', sender_name);
 
+		if (carpooling_id)
 		sendNotification(sender_id, receiver_id,
 			`${sender_name} has accepted your request`, 'requestAccepted', carpooling_id);
 
@@ -420,6 +421,7 @@ const getCarpoolingByPublisherId = async (user_id) => {
 const deleteCarpooling = async (carpooling_id) => {
 	try {
 		const carpooling = await db.query('UPDATE carpooling SET status = $1 WHERE id = $2 RETURNING *', ['canceled', carpooling_id]);
+		const updateConversationStatus = await db.query('UPDATE conversations SET status = $1 WHERE carpooling_id = $2', ['archived', carpooling_id]);
 
 		// emit a notification to the users that the carpooling has been deleted
 		for (let i = 0; i < carpooling.rows[0]?.confirmed_passengers?.length; i++) {
